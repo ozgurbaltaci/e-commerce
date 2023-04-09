@@ -5,51 +5,57 @@ function App() {
   const products = [
     {
       id: 1,
-      name: "Product 1",
-      description: "This is product 1 description.",
+      name: "Manufacturor name",
+      description: "This is Manufacturor name description.",
       price: 10.99,
       amount: 1,
-      image: "https://via.placeholder.com/300x200.png?text=Product+1",
+      image:
+        "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
     },
     {
       id: 2,
-      name: "Product 2",
-      description: "This is product 2 description.",
+      name: "Manufacturor name",
+      description: "This is Manufacturor name description.",
       price: 19.99,
       amount: 1,
-      image: "https://via.placeholder.com/300x200.png?text=Product+2",
+      image:
+        "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
     },
     {
       id: 3,
-      name: "Product 3",
-      description: "This is product 3 description.",
+      name: "Manufacturor name",
+      description: "This is Manufacturor name description.",
       price: 5.99,
       amount: 1,
-      image: "https://via.placeholder.com/300x200.png?text=Product+3",
+      image:
+        "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
     },
     {
       id: 3,
-      name: "Product 3",
-      description: "This is product 3 description.",
+      name: "Manufacturor name",
+      description: "This is Manufacturor name description.",
       price: 5.99,
       amount: 1,
-      image: "https://via.placeholder.com/300x200.png?text=Product+3",
+      image:
+        "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
     },
     {
       id: 3,
-      name: "Product 3",
-      description: "This is product 3 description.",
+      name: "Manufacturor name",
+      description: "This is Manufacturor name description.",
       price: 5.99,
       amount: 1,
-      image: "https://via.placeholder.com/300x200.png?text=Product+3",
+      image:
+        "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
     },
     {
       id: 3,
-      name: "Product 3",
-      description: "This is product 3 description.",
+      name: "Manufacturor name",
+      description: "This is Manufacturor name description.",
       price: 5.99,
       amount: 1,
-      image: "https://via.placeholder.com/300x200.png?text=Product+3",
+      image:
+        "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
     },
   ];
 
