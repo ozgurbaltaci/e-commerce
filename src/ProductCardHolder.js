@@ -69,6 +69,7 @@ const ProductCardHolder = ({
 }) => {
   const [favorites, setFavorites] = useState(currUserFavoriteProductsIds);
   const [cartItems, setCartItems] = useState({});
+  const [hoveredProductId, setHoveredProductId] = useState(null);
 
   const handleAddToCart = (product) => {
     onAddToCart(product);
@@ -107,12 +108,24 @@ const ProductCardHolder = ({
     return favorites.some((favId) => favId === productId);
   };
 
+  const handleProductCardMouseEnter = (productId) => {
+    setHoveredProductId(productId);
+  };
+
+  const handleProductCardMouseLeave = () => {
+    setHoveredProductId(null);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Grid container spacing={3} style={{ overflowX: "hidden" }}>
         {products.map((product) => (
           <Grid item key={product.id}>
-            <Card style={{ width: 274, height: 384, position: "relative" }}>
+            <Card
+              style={{ width: 274, height: 384, position: "relative" }}
+              onMouseEnter={() => handleProductCardMouseEnter(product.id)}
+              onMouseLeave={handleProductCardMouseLeave}
+            >
               <IconButton
                 style={{
                   position: "absolute",
@@ -168,7 +181,7 @@ const ProductCardHolder = ({
               <CardActions>
                 <button
                   style={{
-                    display: "flex",
+                    display: hoveredProductId === product.id ? "flex" : "none",
                     width: "100%",
                     height: "25px",
                     position: "relative",
