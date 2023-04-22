@@ -20,15 +20,18 @@ import {
 
 import { FiPackage } from "react-icons/fi";
 import { GoTag } from "react-icons/go";
+import { TiStarOutline } from "react-icons/ti";
+import { TiStarFullOutline } from "react-icons/ti";
 
 import Labels from "./Labels";
 
 const theme = createMuiTheme({
   typography: {
     fontFamily: "Regular 400",
-    fontSize: 14,
+    fontSize: 12,
     fontWeightRegular: 400,
     fontWeightMedium: 500,
+
     h1: {
       fontSize: 36,
       fontWeight: 700,
@@ -66,8 +69,10 @@ const ProductCardHolder = ({
   products,
   onAddToCart,
   currUserFavoriteProductsIds,
+  currUserCartItems,
 }) => {
   const [favorites, setFavorites] = useState(currUserFavoriteProductsIds);
+  const [cart, setCart] = useState(currUserCartItems);
   const [cartItems, setCartItems] = useState({});
   const [hoveredProductId, setHoveredProductId] = useState(null);
 
@@ -118,6 +123,7 @@ const ProductCardHolder = ({
 
   return (
     <ThemeProvider theme={theme}>
+      <Button>{currUserCartItems.length}</Button>
       <Grid container spacing={3} style={{ overflowX: "hidden" }}>
         {products.map((product) => (
           <Grid item key={product.id}>
@@ -149,18 +155,14 @@ const ProductCardHolder = ({
                 alt={product.name}
                 style={{ width: 274, height: 224 }}
               />
-              <CardContent>
-                <Typography
-                  variant="h1"
-                  style={{ fontSize: "12px" }}
-                  gutterBottom
-                >
+              <CardContent style={{ paddingTop: "10px" }}>
+                <Typography style={{ fontSize: "12px", fontWeight: "bold" }}>
                   {product.name}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
                   {product.description}
                 </Typography>
-                <div style={{ display: "flex" }}>
+                <div style={{ display: "flex", marginTop: "4px" }}>
                   <div style={{ marginRight: "2px" }}>
                     <Labels
                       labelIcon={
@@ -175,18 +177,50 @@ const ProductCardHolder = ({
                     labelName="1 get 1 free"
                   ></Labels>
                 </div>
+                <div style={{ fontSize: "12px", marginTop: "4px" }}>
+                  <TiStarFullOutline
+                    style={{ color: "rgb(245, 195, 69)" }}
+                  ></TiStarFullOutline>
+                  <TiStarFullOutline
+                    style={{ color: "rgb(245, 195, 69)" }}
+                  ></TiStarFullOutline>
+                  <TiStarOutline></TiStarOutline>
+                  <TiStarOutline></TiStarOutline>
+                  <TiStarOutline></TiStarOutline>
+                </div>
 
-                <Typography variant="h6">{product.price}</Typography>
+                <Typography
+                  style={{
+                    fontWeight: "bold",
+                    fontSize:
+                      product.discountedPrice === null ? "14px" : "12px",
+                    textDecoration:
+                      product.discountedPrice === null
+                        ? "none"
+                        : "line-through",
+                    color:
+                      product.discountedPrice === null ? "#00990F" : "#707070",
+                  }}
+                >
+                  {product.price}₺
+                </Typography>
+                {product.discountedPrice !== null && (
+                  <Typography variant="h6" style={{ color: "#00990F" }}>
+                    {product.discountedPrice}₺
+                  </Typography>
+                )}
               </CardContent>
               <CardActions>
                 <button
                   style={{
                     display: hoveredProductId === product.id ? "flex" : "none",
-                    width: "100%",
                     height: "25px",
-                    position: "relative",
+                    position: "absolute",
                     bottom: "5px",
-                    backgroundColor: "rgb(47, 176, 9)",
+                    right: "5px",
+                    left: "5px",
+
+                    backgroundColor: "#2FB009",
                     borderRadius: "3px",
                     justifyContent: "center",
                     alignItems: "center",
