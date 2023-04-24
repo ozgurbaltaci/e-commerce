@@ -3,6 +3,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import "./App.css";
 import ProductCardHolder from "./ProductCardHolder";
+import Cart from "./Cart";
+
 function App() {
   const products = [
     {
@@ -88,6 +90,8 @@ function App() {
           />
         }
       />
+
+      <Route path="/cart" element={<Cart />} />
     </Routes>
   );
 }

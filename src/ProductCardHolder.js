@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import {
   Grid,
@@ -76,6 +78,8 @@ const ProductCardHolder = ({
   const [cartItems, setCartItems] = useState({});
   const [hoveredProductId, setHoveredProductId] = useState(null);
 
+  const navigate = useNavigate();
+
   const handleAddToCart = (product) => {
     onAddToCart(product);
     setCartItems((prevCartItems) => ({
@@ -121,9 +125,40 @@ const ProductCardHolder = ({
     setHoveredProductId(null);
   };
 
+  const productsInCart = [
+    {
+      id: 1,
+      name: "Manufacturor name",
+      description: "This is Manufacturor name description.",
+      price: 10.99,
+      discountedPrice: null,
+      amount: 1,
+      image:
+        "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
+    },
+    {
+      id: 2,
+      name: "Manufacturor name",
+      description: "This is Manufacturor name description.",
+      price: 19.99,
+      discountedPrice: 10.99,
+      amount: 1,
+      image:
+        "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
+    },
+  ];
+
   return (
     <ThemeProvider theme={theme}>
-      <Button>{currUserCartItems.length}</Button>
+      <Button
+        onClick={() =>
+          navigate("/cart", {
+            state: { productsInCart: productsInCart },
+          })
+        }
+      >
+        {currUserCartItems.length}
+      </Button>
       <Grid container spacing={3} style={{ overflowX: "hidden" }}>
         {products.map((product) => (
           <Grid item key={product.id}>
