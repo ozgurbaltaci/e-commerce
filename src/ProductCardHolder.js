@@ -20,10 +20,12 @@ import {
   Add,
 } from "@material-ui/icons";
 
+import IncrementDecrementButtonGroup from "./IncrementDecrementButtonGroup";
+
 import { FiPackage } from "react-icons/fi";
 import { GoTag } from "react-icons/go";
 import { TiStarOutline } from "react-icons/ti";
-import { TiStarFullOutline } from "react-icons/ti";
+import { TiStarFullOutline, TiStarHalfOutline } from "react-icons/ti";
 
 import Labels from "./Labels";
 
@@ -69,34 +71,47 @@ const theme = createMuiTheme({
 
 const ProductCardHolder = ({
   products,
-  onAddToCart,
   currUserFavoriteProductsIds,
-  currUserCartItems,
+  setCartItems,
+  cartItems,
 }) => {
   const [favorites, setFavorites] = useState(currUserFavoriteProductsIds);
-  const [cart, setCart] = useState(currUserCartItems);
-  const [cartItems, setCartItems] = useState({});
   const [hoveredProductId, setHoveredProductId] = useState(null);
-
-  const navigate = useNavigate();
+  const [addedProductId, setAddedProductId] = useState(null);
 
   const handleAddToCart = (product) => {
-    onAddToCart(product);
-    setCartItems((prevCartItems) => ({
-      ...prevCartItems,
-      [product.id]: prevCartItems[product.id]
-        ? prevCartItems[product.id] + 1
-        : 1,
-    }));
+    setCartItems([...cartItems, { ...product, desiredAmount: 1 }]);
   };
 
-  const handleRemoveFromCart = (product) => {
-    setCartItems((prevCartItems) => ({
-      ...prevCartItems,
-      [product.id]: prevCartItems[product.id]
-        ? prevCartItems[product.id] - 1
-        : 0,
-    }));
+  const handleRemoveFromCart = (productId) => {
+    const updatedItems = cartItems.filter((item) => item.id !== productId);
+    setCartItems(updatedItems);
+  };
+
+  const handleIncreaseAmount = (productId) => {
+    const updatedItems = cartItems.map((item) =>
+      item.id === productId
+        ? { ...item, desiredAmount: item.desiredAmount + 1 }
+        : item
+    );
+    setCartItems(updatedItems);
+  };
+
+  const handleDecreaseAmount = (productId) => {
+    const updatedItems = cartItems.map((item) => {
+      if (item.id === productId) {
+        const newAmount = item.desiredAmount - 1;
+        if (newAmount <= 0) {
+          return null;
+        } else {
+          return { ...item, desiredAmount: newAmount };
+        }
+      } else {
+        return item;
+      }
+    });
+    const filteredItems = updatedItems.filter((item) => item !== null);
+    setCartItems(filteredItems);
   };
 
   const handleAddToFavorites = (product) => {
@@ -125,45 +140,50 @@ const ProductCardHolder = ({
     setHoveredProductId(null);
   };
 
-  const productsInCart = [
-    {
-      id: 1,
-      name: "Manufacturor name",
-      description: "This is Manufacturor name description.",
-      price: 10.99,
-      discountedPrice: null,
-      amount: 1,
-      image:
-        "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
-    },
-    {
-      id: 2,
-      name: "Manufacturor name",
-      description: "This is Manufacturor name description.",
-      price: 19.99,
-      discountedPrice: 10.99,
-      amount: 1,
-      image:
-        "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
-    },
-  ];
+  const isItemAddedToCart = (product) => {
+    return cartItems.some((item) => item.id === product.id);
+  };
+
+  const getCartItemAmount = (productId) => {
+    const cartItem = cartItems.find((item) => item.id === productId);
+    return cartItem ? cartItem.desiredAmount : 0;
+  };
+
+  const renderStars = (starPoint) => {
+    const starElements = [];
+    const fullStars = Math.floor(starPoint);
+    const hasHalfStar = starPoint - fullStars >= 0.5;
+
+    for (let i = 0; i < 5; i++) {
+      if (i < fullStars) {
+        starElements.push(
+          <TiStarFullOutline key={i} style={{ color: "rgb(245, 195, 69)" }} />
+        );
+      } else if (i === fullStars && hasHalfStar) {
+        starElements.push(
+          <TiStarHalfOutline key={i} style={{ color: "rgb(245, 195, 69)" }} />
+        );
+      } else {
+        starElements.push(<TiStarOutline key={i} />);
+      }
+    }
+
+    return starElements;
+  };
 
   return (
     <ThemeProvider theme={theme}>
-      <Button
-        onClick={() =>
-          navigate("/cart", {
-            state: { productsInCart: productsInCart },
-          })
-        }
-      >
-        {currUserCartItems.length}
-      </Button>
       <Grid container spacing={3} style={{ overflowX: "hidden" }}>
         {products.map((product) => (
           <Grid item key={product.id}>
             <Card
-              style={{ width: 274, height: 384, position: "relative" }}
+              style={{
+                width: 274,
+                height: 384,
+                position: "relative",
+                display: "flex",
+                flexDirection: "column",
+              }}
               onMouseEnter={() => handleProductCardMouseEnter(product.id)}
               onMouseLeave={handleProductCardMouseLeave}
             >
@@ -187,15 +207,14 @@ const ProductCardHolder = ({
               <CardMedia
                 component="img"
                 image={product.image}
-                alt={product.name}
                 style={{ width: 274, height: 224 }}
               />
               <CardContent style={{ paddingTop: "10px" }}>
                 <Typography style={{ fontSize: "12px", fontWeight: "bold" }}>
-                  {product.name}
+                  {product.manufacturorName}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                  {product.description}
+                  {product.productName}
                 </Typography>
                 <div style={{ display: "flex", marginTop: "4px" }}>
                   <div style={{ marginRight: "2px" }}>
@@ -213,15 +232,7 @@ const ProductCardHolder = ({
                   ></Labels>
                 </div>
                 <div style={{ fontSize: "12px", marginTop: "4px" }}>
-                  <TiStarFullOutline
-                    style={{ color: "rgb(245, 195, 69)" }}
-                  ></TiStarFullOutline>
-                  <TiStarFullOutline
-                    style={{ color: "rgb(245, 195, 69)" }}
-                  ></TiStarFullOutline>
-                  <TiStarOutline></TiStarOutline>
-                  <TiStarOutline></TiStarOutline>
-                  <TiStarOutline></TiStarOutline>
+                  {renderStars(product.starPoint)}
                 </div>
 
                 <Typography
@@ -246,28 +257,68 @@ const ProductCardHolder = ({
                 )}
               </CardContent>
               <CardActions>
-                <button
-                  style={{
-                    display: hoveredProductId === product.id ? "flex" : "none",
-                    height: "25px",
-                    position: "absolute",
-                    bottom: "5px",
-                    right: "5px",
-                    left: "5px",
+                {isItemAddedToCart(product) ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      height: "25px",
+                      position: "absolute",
+                      bottom: "5px",
+                      right: "5px",
+                      left: "5px",
+                    }}
+                  >
+                    <div style={{ width: "60%" }}>
+                      <IncrementDecrementButtonGroup
+                        counterWidth="500px"
+                        height="25"
+                        item={product}
+                        handleDecreaseAmount={handleDecreaseAmount}
+                        initialValue={getCartItemAmount(product.id)}
+                        handleIncreaseAmount={handleIncreaseAmount}
+                      ></IncrementDecrementButtonGroup>
+                    </div>
+                    <Typography
+                      style={{
+                        width: "40%",
+                        display: "flex",
+                        backgroundColor: "#2FB009",
+                        borderRadius: "3px",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        border: "none",
+                        color: "white",
+                        marginLeft: "10px",
+                      }}
+                    >
+                      Buy Now
+                    </Typography>
+                  </div>
+                ) : (
+                  <button
+                    style={{
+                      display:
+                        hoveredProductId === product.id ? "flex" : "none",
+                      height: "25px",
+                      position: "absolute",
+                      bottom: "5px",
+                      right: "5px",
+                      left: "5px",
 
-                    backgroundColor: "#2FB009",
-                    borderRadius: "3px",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    border: "none",
-                    color: "white",
-                  }}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleAddToCart(product)}
-                >
-                  Add to Cart
-                </button>
+                      backgroundColor: "#2FB009",
+                      borderRadius: "3px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      border: "none",
+                      color: "white",
+                    }}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleAddToCart(product)}
+                  >
+                    Add to Cart
+                  </button>
+                )}
               </CardActions>
             </Card>
           </Grid>
