@@ -9,27 +9,17 @@ import {
   ListItemText,
   Box,
   Button,
-<<<<<<< Updated upstream
-=======
   Radio,
   RadioGroup,
   FormControl,
   FormControlLabel,
   FormLabel,
->>>>>>> Stashed changes
 } from "@material-ui/core";
 import { FiPackage } from "react-icons/fi";
 
 import { useLocation } from "react-router-dom";
 import Labels from "./Labels";
 import IncrementDecrementButtonGroup from "./IncrementDecrementButtonGroup";
-<<<<<<< Updated upstream
-
-const productsInCart = [
-  {
-    id: 1,
-    manufacturorName: "Manufacturor name",
-=======
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { withStyles } from "@material-ui/core/styles";
 
@@ -58,7 +48,6 @@ const productsInCart = [
     id: 1,
     manufacturorName: "Manufacturor name 1",
     manufacturorId: 1,
->>>>>>> Stashed changes
     productName: "Product Name",
     price: 10.99,
     discountedPrice: null,
@@ -68,12 +57,8 @@ const productsInCart = [
   },
   {
     id: 2,
-<<<<<<< Updated upstream
-    manufacturorName: "Manufacturor name",
-=======
     manufacturorName: "Manufacturor name 2",
     manufacturorId: 2,
->>>>>>> Stashed changes
     productName: "Product Name",
     price: 19.99,
     discountedPrice: 10.99,
@@ -83,12 +68,8 @@ const productsInCart = [
   },
   {
     id: 3,
-<<<<<<< Updated upstream
-    manufacturorName: "Manufacturor name",
-=======
     manufacturorName: "Manufacturor name 2",
     manufacturorId: 2,
->>>>>>> Stashed changes
     productName: "Product Name",
     price: 19.99,
     discountedPrice: 10.99,
@@ -96,8 +77,6 @@ const productsInCart = [
     image:
       "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
   },
-<<<<<<< Updated upstream
-=======
   {
     id: 4,
     manufacturorName: "Manufacturor name 2",
@@ -118,116 +97,10 @@ const savedAdresses = [
     address:
       "Kohoutova 1550/11, 613 00, Brno/Czech Republic and much much longer address that you can't imagine. It is very long to hold it in a small box. So that's why I kept writing to fill this address area.",
   },
->>>>>>> Stashed changes
 ];
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
-<<<<<<< Updated upstream
-  useEffect(() => {
-    //get Cart Items HTTP request will be here
-    setCartItems(productsInCart);
-  }, []);
-
-  const handleIncreaseAmount = (productId) => {
-    const updatedItems = cartItems.map((item) =>
-      item.id === productId
-        ? { ...item, desiredAmount: item.desiredAmount + 1 }
-        : item
-    );
-    setCartItems(updatedItems);
-  };
-
-  const handleDecreaseAmount = (productId) => {
-    const updatedItems = cartItems.map((item) => {
-      if (item.id === productId) {
-        const newAmount = item.desiredAmount - 1;
-
-        if (newAmount <= 0) {
-          return null;
-        } else {
-          return { ...item, desiredAmount: newAmount };
-        }
-      } else {
-        return item;
-      }
-    });
-    const filteredItems = updatedItems.filter((item) => item !== null);
-    setCartItems(filteredItems);
-  };
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        marginLeft: "80px",
-        marginTop: "40px",
-      }}
-    >
-      <Card
-        style={{
-          width: "500px",
-        }}
-      >
-        <CardContent style={{ padding: 0 }}>
-          <Typography style={{ padding: "10px" }}>Title Section</Typography>
-
-          <Divider></Divider>
-          <List>
-            {cartItems.map((item, index) => {
-              return (
-                <div style={{ position: "relative" }}>
-                  <ListItem>
-                    <div>
-                      <img src={item.image} style={{ width: "130px" }}></img>
-                    </div>
-                    <div
-                      style={{ display: "grid", gap: "5px", marginLeft: "5px" }}
-                    >
-                      {item.productName}
-                      <Labels
-                        labelIcon={
-                          <FiPackage style={{ fontSize: "6px" }}></FiPackage>
-                        }
-                        labelName="Free Shipping"
-                      ></Labels>
-                      <Typography style={{ fontSize: "8px" }}>
-                        Will be delivered until 27th of July
-                      </Typography>
-                    </div>
-                    <IncrementDecrementButtonGroup
-                      height={"15"}
-                      initialValue={item.desiredAmount}
-                      item={item}
-                      handleDecreaseAmount={handleDecreaseAmount}
-                      handleIncreaseAmount={handleIncreaseAmount}
-                    />
-                    <Typography>
-                      {item.discountedPrice
-                        ? item.discountedPrice * item.desiredAmount
-                        : item.price * item.desiredAmount}
-                    </Typography>
-                    <Button
-                      onClick={() => {
-                        const afterDeleteCartItems = cartItems.filter(
-                          (product) => product.id !== item.id
-                        );
-                        setCartItems(afterDeleteCartItems);
-                        //TODO: set desired amount of that product as 0 by UPDATE request.
-                      }}
-                    >
-                      X
-                    </Button>
-                  </ListItem>
-                  {index !== cartItems.length - 1 && <Divider></Divider>}
-                </div>
-              );
-            })}
-          </List>
-        </CardContent>
-      </Card>
-    </div>
-=======
   const [totalItemPrice, setTotalItemPrice] = useState(0);
   const [shippingFee, setShippingFee] = useState(0);
   const [totalCartPrice, setTotalCartPrice] = useState(0);
@@ -571,7 +444,6 @@ const Cart = () => {
         </div>
       </div>
     </>
->>>>>>> Stashed changes
   );
 };
 

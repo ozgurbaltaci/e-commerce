@@ -98,9 +98,6 @@ const MainPage = () => {
         "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
     },
   ];
-<<<<<<< Updated upstream
-  const [cartItems, setCartItems] = useState([]);
-=======
   const favoritesOfUser = [
     {
       id: 1,
@@ -135,24 +132,17 @@ const MainPage = () => {
   ];
   const [cartItems, setCartItems] = useState([]);
   const [favoriteItems, setFavoriteItems] = useState([]);
->>>>>>> Stashed changes
 
   useEffect(() => {
     //TODO: getCartItems first with the GET method.
     setCartItems(productsInCart);
-<<<<<<< Updated upstream
-=======
     setFavoriteItems(favoritesOfUser);
->>>>>>> Stashed changes
   }, []);
 
   const currUserFavoriteProductsIds = [1, 2];
   return (
     <>
       {console.log("deneme")}
-<<<<<<< Updated upstream
-      <Button onClick={() => navigate("/cart")}>{cartItems.length}</Button>
-=======
       <Button onClick={() => navigate("/cart")}>
         cart: {cartItems.length}
       </Button>
@@ -160,7 +150,6 @@ const MainPage = () => {
         Favorites: {favoriteItems.length}
       </Button>
 
->>>>>>> Stashed changes
       <ProductCardHolder
         products={products}
         currUserFavoriteProductsIds={currUserFavoriteProductsIds}
