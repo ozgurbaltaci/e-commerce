@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import MainPage from "./MainPage";
 import Cart from "./Cart";
+import Favorites from "./Favorites";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route path="/" element={<MainPage />} />
 
       <Route path="/cart" element={<Cart />} />
+      <Route path="/favorites" element={<Favorites />} />
     </Routes>
   );
 }
