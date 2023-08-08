@@ -15,6 +15,23 @@ import {
   FormControlLabel,
   FormLabel,
 } from "@material-ui/core";
+
+import "./Cart.css";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import sehirler from "./json_files/sehir.json";
+import ilceler from "./json_files/ilce.json";
+import mahalleler from "./json_files/mahalle.json";
+import sokaklar_caddeler from "./json_files/sokak_cadde.json";
+
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+
 import { FiPackage } from "react-icons/fi";
 
 import { useLocation } from "react-router-dom";
@@ -90,24 +107,43 @@ const productsInCart = [
   },
 ];
 
-const savedAdresses = [
-  { addressId: 1, address: "Kohoutova 1550/11, 613 00, Brno/Czech Republic" },
-  {
-    addressId: 2,
-    address:
-      "Kohoutova 1550/11, 613 00, Brno/Czech Republic and much much longer address that you can't imagine. It is very long to hold it in a small box. So that's why I kept writing to fill this address area.",
-  },
-];
-
 const Cart = () => {
+  const [savedAdresses, setSavedAddresses] = useState([
+    { addressId: 1, address: "Kohoutova 1550/11, 613 00, Brno/Czech Republic" },
+    {
+      addressId: 2,
+      address:
+        "Kohoutova 1550/11, 613 00, Brno/Czech Republic and much much longer address that you can't imagine. It is very long to hold it in a small box. So that's why I kept writing to fill this address area.",
+    },
+  ]);
   const [cartItems, setCartItems] = useState([]);
   const [totalItemPrice, setTotalItemPrice] = useState(0);
   const [shippingFee, setShippingFee] = useState(0);
   const [totalCartPrice, setTotalCartPrice] = useState(0);
   const [selectedValue, setSelectedValue] = React.useState("a");
+  const [open, setOpen] = React.useState(false);
+  const [provinces, setProvinces] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [districts, setDistricts] = useState([]);
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [neighborhoods, setNeighborhoods] = useState([]);
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState("");
+  const [streets, setStreets] = useState([]);
+  const [selectedStreet, setSelectedStreet] = useState("");
+  const [selectedBuildingNumber, setSelectedBuildingNumber] = useState("");
+  const [selectedFloorNumber, setSelectedFloorNumber] = useState("");
+  const [selectedDoorNumber, setSelectedDoorNumber] = useState("");
 
-  const handleChange = (event) => {
-    setSelectedValue(event.target.value);
+  useEffect(() => {
+    setProvinces(sehirler[2].data);
+  }, []);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   const calculateTotalPrice = () => {
@@ -130,6 +166,71 @@ const Cart = () => {
     setShippingFee(tempShippingFee);
   }, [cartItems]);
 
+  const handleSelectProvince = (event) => {
+    const sehir_title = event.target.value;
+    setSelectedProvince(sehir_title);
+
+    const provinceObject = provinces.find(
+      (provinceObject) => provinceObject.sehir_title === sehir_title
+    );
+    const sehir_key = provinceObject.sehir_key;
+    const selectedProvinceDistricts = ilceler[2].data.filter(
+      (ilce) => ilce.ilce_sehirkey === sehir_key
+    );
+    setDistricts(selectedProvinceDistricts);
+    setSelectedDistrict("");
+    setSelectedNeighborhood("");
+    setSelectedStreet("");
+    setNeighborhoods([]);
+    setStreets([]);
+  };
+
+  const handleDistrictChange = (event) => {
+    const ilce_title = event.target.value;
+    setSelectedDistrict(ilce_title);
+
+    const districtObject = districts.find(
+      (districtObject) => districtObject.ilce_title === ilce_title
+    );
+    const ilce_key = districtObject.ilce_key;
+    const selectedDistrictNeigbourhoods = mahalleler[2].data.filter(
+      (mahalle) => mahalle.mahalle_ilcekey === ilce_key
+    );
+    setNeighborhoods(selectedDistrictNeigbourhoods);
+    setSelectedNeighborhood("");
+    setSelectedStreet("");
+    setStreets([]);
+  };
+
+  const handleNeighborChange = (event) => {
+    const mahalle_title = event.target.value;
+    setSelectedNeighborhood(mahalle_title);
+
+    const neighborhoodObject = neighborhoods.find(
+      (neighborhoodObject) => neighborhoodObject.mahalle_title === mahalle_title
+    );
+    const mahalle_key = neighborhoodObject.mahalle_key;
+    const selectedNeighborhoodsStreets = sokaklar_caddeler[2].data.filter(
+      (sokak) => sokak.sokak_cadde_mahallekey === mahalle_key
+    );
+    setStreets(selectedNeighborhoodsStreets);
+    setSelectedStreet("");
+  };
+  const handleStreetChange = (event) => {
+    const street_title = event.target.value;
+    setSelectedStreet(street_title);
+  };
+
+  const handleBuildingNumberChange = (event) => {
+    setSelectedBuildingNumber(event.target.value);
+  };
+
+  const handleFloorNumberChange = (event) => {
+    setSelectedFloorNumber(event.target.value);
+  };
+  const handleDoorNumberChange = (event) => {
+    setSelectedDoorNumber(event.target.value);
+  };
   const handleIncreaseAmount = (productId) => {
     const updatedItems = cartItems.map((item) =>
       item.id === productId
@@ -219,6 +320,160 @@ const Cart = () => {
 
   return (
     <>
+      {console.log("sehirler: ", provinces)}
+      {console.log("districts: ", districts)}
+
+      <Dialog open={open} onClose={handleClose} fullWidth={true}>
+        <DialogTitle>Add new address</DialogTitle>
+        <DialogContent>
+          <div className="DialogContent">
+            {" "}
+            <DialogContentText>
+              To add new address, please fill the form respectively.
+            </DialogContentText>
+            <Box sx={{ minWidth: 120 }}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Province</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={selectedProvince}
+                  label="Age"
+                  onChange={handleSelectProvince}
+                >
+                  {provinces.map((province, index) => {
+                    return (
+                      <MenuItem
+                        key={province.sehir_id}
+                        value={province.sehir_title}
+                      >
+                        {province.sehir_title}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Box>
+            <Box sx={{ minWidth: 120 }}>
+              <FormControl fullWidth>
+                <InputLabel id="districts">District</InputLabel>
+                <Select
+                  labelId="districts"
+                  id="districts"
+                  value={selectedDistrict}
+                  label="Districts"
+                  onChange={handleDistrictChange}
+                >
+                  {districts.map((district, index) => {
+                    return (
+                      <MenuItem
+                        key={district.ilce_id}
+                        value={district.ilce_title}
+                      >
+                        {district.ilce_title}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Box>
+            <Box sx={{ minWidth: 120 }}>
+              <FormControl fullWidth>
+                <InputLabel id="neighborhoods">Neighborhood</InputLabel>
+                <Select
+                  labelId="neighborhoods"
+                  id="neighborhoods"
+                  value={selectedNeighborhood}
+                  label="neighborhoods"
+                  onChange={handleNeighborChange}
+                >
+                  {neighborhoods.map((neighbor, index) => {
+                    return (
+                      <MenuItem
+                        key={neighbor.mahalle_id}
+                        value={neighbor.mahalle_title}
+                      >
+                        {neighbor.mahalle_title}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Box>
+            <Box sx={{ minWidth: 120 }}>
+              <FormControl fullWidth>
+                <InputLabel id="streets">Street</InputLabel>
+                <Select
+                  labelId="streets"
+                  id="streets"
+                  value={selectedStreet}
+                  label="streets"
+                  onChange={handleStreetChange}
+                >
+                  {streets.map((street, index) => {
+                    return (
+                      <MenuItem
+                        key={street.sokak_cadde_id}
+                        value={street.sokak_cadde_title}
+                      >
+                        {street.sokak_cadde_title}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Box>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "nowrap",
+                gap: "8px",
+                justifyContent: "space-between",
+                marginTop: "12px",
+              }}
+            >
+              <TextField
+                required
+                label="Building number"
+                value={selectedBuildingNumber}
+                onChange={handleBuildingNumberChange}
+              />
+              <TextField
+                required
+                label="Floor number"
+                value={selectedFloorNumber}
+                onChange={handleFloorNumberChange}
+              />
+              <TextField
+                required
+                label="Door number"
+                value={selectedDoorNumber}
+                onChange={handleDoorNumberChange}
+              />
+            </div>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button
+            onClick={() => {
+              handleClose();
+              setSavedAddresses([
+                ...savedAdresses,
+                {
+                  addressId: Math.random(1000),
+                  address: `${selectedProvince} province, ${selectedDistrict} district, ${selectedNeighborhood} neighborhood, ${selectedStreet} street, 
+                  building ${selectedBuildingNumber},
+                  floor ${selectedFloorNumber},
+                  door ${selectedDoorNumber}`,
+                },
+              ]);
+            }}
+          >
+            Add this address
+          </Button>
+        </DialogActions>
+      </Dialog>
       <div style={{ display: "flex", margin: "60px 80px" }}>
         <div
           style={{
@@ -330,7 +585,7 @@ const Cart = () => {
                               marginBottom: "-12px",
                               display: "flex",
                               alignItems: "center",
-                            }} // Adjust the margin here
+                            }}
                             value={item.paymentType}
                             control={<GreenRadio />}
                             label={
@@ -355,49 +610,75 @@ const Cart = () => {
                   </div>
                 </div>
                 <Divider></Divider>
-                <div style={{ padding: "2px 10px" }}>
+                <div
+                  style={{
+                    padding: "2px 10px",
+                  }}
+                >
                   <Typography
                     style={{ padding: "10px 0px", fontWeight: "bold" }}
                   >
                     Select Delivery Address
                   </Typography>
                   <Divider></Divider>
-                  <div style={{ padding: "8px 0px" }}>
-                    {" "}
-                    {savedAdresses.map((item, index) => (
-                      <div
-                        style={{
-                          border: "1px solid gray",
-                          borderRadius: "5px",
-                        }}
-                      >
-                        {item.address.length > 50
-                          ? item.address.substring(0, 50) + "..." // Display first 50 characters and add "..." at the end
-                          : item.address}
-                      </div>
-                    ))}
-                    <button
-                      style={{
-                        height: "25px",
-                        bottom: "5px",
-                        right: "5px",
-                        left: "5px",
 
-                        backgroundColor: "#2FB009",
-                        borderRadius: "3px",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        border: "none",
-                        color: "white",
-                      }}
-                      variant="contained"
-                      color="primary"
+                  <FormControl>
+                    <RadioGroup
+                      aria-labelledby="demo-radio-buttons-group-label"
+                      defaultValue="1"
+                      name="delivery-radio-group"
                     >
-                      Add new+
-                    </button>
-                  </div>
+                      {savedAdresses.map((item, index) => (
+                        <FormControlLabel
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginTop: "5px",
+                          }} // Adjust the margin here
+                          value={item.addressId.toString()}
+                          control={<GreenRadio />}
+                          label={
+                            <div
+                              style={{
+                                border: "1px solid gray",
+                                borderRadius: "5px",
+                              }}
+                            >
+                              {item.address.length > 50
+                                ? item.address.substring(0, 50) + "..." // Display first 50 characters and add "..." at the end
+                                : item.address}
+                            </div>
+                          }
+                        />
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+
+                  <button
+                    style={{
+                      width: "30%",
+                      height: "25px",
+                      bottom: "5px",
+                      right: "5px",
+                      left: "5px",
+                      marginTop: "5px",
+
+                      backgroundColor: "#2FB009",
+                      borderRadius: "3px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      border: "none",
+                      color: "white",
+                    }}
+                    onClick={handleClickOpen}
+                    variant="contained"
+                    color="primary"
+                  >
+                    Add new+
+                  </button>
                 </div>
                 <Divider></Divider>
+
                 <div style={{ padding: "2px 10px" }}>
                   <Typography
                     style={{ padding: "10px 0px", fontWeight: "bold" }}
