@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import {
   Grid,
   Card,
@@ -28,46 +27,6 @@ import { TiStarOutline } from "react-icons/ti";
 import { TiStarFullOutline, TiStarHalfOutline } from "react-icons/ti";
 
 import Labels from "./Labels";
-
-const theme = createMuiTheme({
-  typography: {
-    fontFamily: "Regular 400",
-    fontSize: 12,
-    fontWeightRegular: 400,
-    fontWeightMedium: 500,
-
-    h1: {
-      fontSize: 36,
-      fontWeight: 700,
-      lineHeight: 1.2,
-    },
-    h2: {
-      fontSize: 28,
-      fontWeight: 700,
-      lineHeight: 1.2,
-    },
-    h3: {
-      fontSize: 22,
-      fontWeight: 700,
-      lineHeight: 1.2,
-    },
-    h4: {
-      fontSize: 18,
-      fontWeight: 700,
-      lineHeight: 1.2,
-    },
-    h5: {
-      fontSize: 16,
-      fontWeight: 700,
-      lineHeight: 1.2,
-    },
-    h6: {
-      fontSize: 14,
-      fontWeight: 700,
-      lineHeight: 1.2,
-    },
-  },
-});
 
 const ProductCardHolder = ({
   products,
@@ -172,159 +131,153 @@ const ProductCardHolder = ({
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Grid container spacing={3} style={{ overflowX: "hidden" }}>
-        {products.map((product) => (
-          <Grid item key={product.id}>
-            <Card
+    <Grid container spacing={3} style={{ overflowX: "hidden" }}>
+      {products.map((product) => (
+        <Grid item key={product.id}>
+          <Card
+            style={{
+              width: 274,
+              height: 384,
+              position: "relative",
+              display: "flex",
+              flexDirection: "column",
+            }}
+            onMouseEnter={() => handleProductCardMouseEnter(product.id)}
+            onMouseLeave={handleProductCardMouseLeave}
+          >
+            <IconButton
               style={{
-                width: 274,
-                height: 384,
-                position: "relative",
-                display: "flex",
-                flexDirection: "column",
+                position: "absolute",
+                right: 5,
+                top: 5,
+                backgroundColor: "white",
+                padding: "5px",
               }}
-              onMouseEnter={() => handleProductCardMouseEnter(product.id)}
-              onMouseLeave={handleProductCardMouseLeave}
+              aria-label="Add to favorites"
+              onClick={() => handleAddToFavorites(product)}
             >
-              <IconButton
-                style={{
-                  position: "absolute",
-                  right: 5,
-                  top: 5,
-                  backgroundColor: "white",
-                  padding: "5px",
-                }}
-                aria-label="Add to favorites"
-                onClick={() => handleAddToFavorites(product)}
-              >
-                {isFavorite(product.id) ? (
-                  <Favorite color="secondary" style={{ fontSize: 16 }} />
-                ) : (
-                  <FavoriteBorder style={{ fontSize: 16 }} />
-                )}
-              </IconButton>
-              <CardMedia
-                component="img"
-                image={product.image}
-                style={{ width: 274, height: 224 }}
-              />
-              <CardContent style={{ paddingTop: "10px" }}>
-                <Typography style={{ fontSize: "12px", fontWeight: "bold" }}>
-                  {product.manufacturorName}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {product.productName}
-                </Typography>
-                <div style={{ display: "flex", marginTop: "4px" }}>
-                  <div style={{ marginRight: "2px" }}>
-                    <Labels
-                      labelIcon={
-                        <FiPackage style={{ fontSize: "6px" }}></FiPackage>
-                      }
-                      labelName="Free Shipping"
-                    ></Labels>
-                  </div>
-
+              {isFavorite(product.id) ? (
+                <Favorite color="secondary" style={{ fontSize: 16 }} />
+              ) : (
+                <FavoriteBorder style={{ fontSize: 16 }} />
+              )}
+            </IconButton>
+            <CardMedia
+              component="img"
+              image={product.image}
+              style={{ width: 274, height: 224 }}
+            />
+            <CardContent style={{ paddingTop: "10px" }}>
+              <Typography style={{ fontSize: "12px", fontWeight: "bold" }}>
+                {product.manufacturorName}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                {product.productName}
+              </Typography>
+              <div style={{ display: "flex", marginTop: "4px" }}>
+                <div style={{ marginRight: "2px" }}>
                   <Labels
-                    labelIcon={<GoTag style={{ fontSize: "6px" }}></GoTag>}
-                    labelName="1 get 1 free"
+                    labelIcon={
+                      <FiPackage style={{ fontSize: "6px" }}></FiPackage>
+                    }
+                    labelName="Free Shipping"
                   ></Labels>
                 </div>
-                <div style={{ fontSize: "12px", marginTop: "4px" }}>
-                  {renderStars(product.starPoint)}
-                </div>
 
-                <Typography
+                <Labels
+                  labelIcon={<GoTag style={{ fontSize: "6px" }}></GoTag>}
+                  labelName="1 get 1 free"
+                ></Labels>
+              </div>
+              <div style={{ fontSize: "12px", marginTop: "4px" }}>
+                {renderStars(product.starPoint)}
+              </div>
+
+              <Typography
+                style={{
+                  fontWeight: "bold",
+                  fontSize: product.discountedPrice === null ? "14px" : "12px",
+                  textDecoration:
+                    product.discountedPrice === null ? "none" : "line-through",
+                  color:
+                    product.discountedPrice === null ? "#00990F" : "#707070",
+                }}
+              >
+                {product.price}₺
+              </Typography>
+              {product.discountedPrice !== null && (
+                <Typography variant="h6" style={{ color: "#00990F" }}>
+                  {product.discountedPrice}₺
+                </Typography>
+              )}
+            </CardContent>
+            <CardActions>
+              {isItemAddedToCart(product) ? (
+                <div
                   style={{
-                    fontWeight: "bold",
-                    fontSize:
-                      product.discountedPrice === null ? "14px" : "12px",
-                    textDecoration:
-                      product.discountedPrice === null
-                        ? "none"
-                        : "line-through",
-                    color:
-                      product.discountedPrice === null ? "#00990F" : "#707070",
+                    display: "flex",
+                    height: "25px",
+                    position: "absolute",
+                    bottom: "5px",
+                    right: "5px",
+                    left: "5px",
                   }}
                 >
-                  {product.price}₺
-                </Typography>
-                {product.discountedPrice !== null && (
-                  <Typography variant="h6" style={{ color: "#00990F" }}>
-                    {product.discountedPrice}₺
-                  </Typography>
-                )}
-              </CardContent>
-              <CardActions>
-                {isItemAddedToCart(product) ? (
-                  <div
-                    style={{
-                      display: "flex",
-                      height: "25px",
-                      position: "absolute",
-                      bottom: "5px",
-                      right: "5px",
-                      left: "5px",
-                    }}
-                  >
-                    <div style={{ width: "60%" }}>
-                      <IncrementDecrementButtonGroup
-                        counterWidth="500px"
-                        height="25"
-                        item={product}
-                        handleDecreaseAmount={handleDecreaseAmount}
-                        initialValue={getCartItemAmount(product.id)}
-                        handleIncreaseAmount={handleIncreaseAmount}
-                      ></IncrementDecrementButtonGroup>
-                    </div>
-                    <Typography
-                      style={{
-                        width: "40%",
-                        display: "flex",
-                        backgroundColor: "#2FB009",
-                        borderRadius: "3px",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        border: "none",
-                        color: "white",
-                        marginLeft: "10px",
-                      }}
-                    >
-                      Buy Now
-                    </Typography>
+                  <div style={{ width: "60%" }}>
+                    <IncrementDecrementButtonGroup
+                      counterWidth="500px"
+                      height="25"
+                      item={product}
+                      handleDecreaseAmount={handleDecreaseAmount}
+                      initialValue={getCartItemAmount(product.id)}
+                      handleIncreaseAmount={handleIncreaseAmount}
+                    ></IncrementDecrementButtonGroup>
                   </div>
-                ) : (
-                  <button
+                  <Typography
                     style={{
-                      display:
-                        hoveredProductId === product.id ? "flex" : "none",
-                      height: "25px",
-                      position: "absolute",
-                      bottom: "5px",
-                      right: "5px",
-                      left: "5px",
-
+                      width: "40%",
+                      display: "flex",
                       backgroundColor: "#2FB009",
                       borderRadius: "3px",
                       justifyContent: "center",
                       alignItems: "center",
                       border: "none",
                       color: "white",
+                      marginLeft: "10px",
                     }}
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleAddToCart(product)}
                   >
-                    Add to Cart
-                  </button>
-                )}
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    </ThemeProvider>
+                    Buy Now
+                  </Typography>
+                </div>
+              ) : (
+                <button
+                  style={{
+                    display: hoveredProductId === product.id ? "flex" : "none",
+                    height: "25px",
+                    position: "absolute",
+                    bottom: "5px",
+                    right: "5px",
+                    left: "5px",
+
+                    backgroundColor: "#2FB009",
+                    borderRadius: "3px",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    border: "none",
+                    color: "white",
+                  }}
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleAddToCart(product)}
+                >
+                  Add to Cart
+                </button>
+              )}
+            </CardActions>
+          </Card>
+        </Grid>
+      ))}
+    </Grid>
   );
 };
 

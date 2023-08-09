@@ -15,7 +15,6 @@ import {
   FormControlLabel,
   FormLabel,
 } from "@material-ui/core";
-
 import "./Cart.css";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -37,7 +36,6 @@ import { FiPackage } from "react-icons/fi";
 import { useLocation } from "react-router-dom";
 import Labels from "./Labels";
 import IncrementDecrementButtonGroup from "./IncrementDecrementButtonGroup";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { withStyles } from "@material-ui/core/styles";
 
 const availablePaymentMethods = [
@@ -133,6 +131,13 @@ const Cart = () => {
   const [selectedBuildingNumber, setSelectedBuildingNumber] = useState("");
   const [selectedFloorNumber, setSelectedFloorNumber] = useState("");
   const [selectedDoorNumber, setSelectedDoorNumber] = useState("");
+  const [provinceError, setProvinceError] = useState(false);
+  const [districtError, setDistrictError] = useState(false);
+  const [neighborhoodError, setNeighborhoodError] = useState(false);
+  const [streetError, setStreetError] = useState(false);
+  const [buildingNumberError, setBuildingNumberError] = useState(false);
+  const [floorError, setFloorError] = useState(false);
+  const [doorNumberError, setDoorNumberError] = useState(false);
 
   useEffect(() => {
     setProvinces(sehirler[2].data);
@@ -178,6 +183,7 @@ const Cart = () => {
       (ilce) => ilce.ilce_sehirkey === sehir_key
     );
     setDistricts(selectedProvinceDistricts);
+    setProvinceError(false);
     setSelectedDistrict("");
     setSelectedNeighborhood("");
     setSelectedStreet("");
@@ -188,6 +194,7 @@ const Cart = () => {
   const handleDistrictChange = (event) => {
     const ilce_title = event.target.value;
     setSelectedDistrict(ilce_title);
+    setDistrictError(false);
 
     const districtObject = districts.find(
       (districtObject) => districtObject.ilce_title === ilce_title
@@ -205,6 +212,7 @@ const Cart = () => {
   const handleNeighborChange = (event) => {
     const mahalle_title = event.target.value;
     setSelectedNeighborhood(mahalle_title);
+    setNeighborhoodError(false);
 
     const neighborhoodObject = neighborhoods.find(
       (neighborhoodObject) => neighborhoodObject.mahalle_title === mahalle_title
@@ -219,17 +227,21 @@ const Cart = () => {
   const handleStreetChange = (event) => {
     const street_title = event.target.value;
     setSelectedStreet(street_title);
+    setStreetError(false);
   };
 
   const handleBuildingNumberChange = (event) => {
     setSelectedBuildingNumber(event.target.value);
+    setBuildingNumberError(false);
   };
 
   const handleFloorNumberChange = (event) => {
     setSelectedFloorNumber(event.target.value);
+    setFloorError(false);
   };
   const handleDoorNumberChange = (event) => {
     setSelectedDoorNumber(event.target.value);
+    setDoorNumberError(false);
   };
   const handleIncreaseAmount = (productId) => {
     const updatedItems = cartItems.map((item) =>
@@ -320,9 +332,6 @@ const Cart = () => {
 
   return (
     <>
-      {console.log("sehirler: ", provinces)}
-      {console.log("districts: ", districts)}
-
       <Dialog open={open} onClose={handleClose} fullWidth={true}>
         <DialogTitle>Add new address</DialogTitle>
         <DialogContent>
@@ -340,6 +349,7 @@ const Cart = () => {
                   value={selectedProvince}
                   label="Age"
                   onChange={handleSelectProvince}
+                  error={provinceError}
                 >
                   {provinces.map((province, index) => {
                     return (
@@ -363,6 +373,7 @@ const Cart = () => {
                   value={selectedDistrict}
                   label="Districts"
                   onChange={handleDistrictChange}
+                  error={districtError}
                 >
                   {districts.map((district, index) => {
                     return (
@@ -386,6 +397,7 @@ const Cart = () => {
                   value={selectedNeighborhood}
                   label="neighborhoods"
                   onChange={handleNeighborChange}
+                  error={neighborhoodError}
                 >
                   {neighborhoods.map((neighbor, index) => {
                     return (
@@ -409,6 +421,7 @@ const Cart = () => {
                   value={selectedStreet}
                   label="streets"
                   onChange={handleStreetChange}
+                  error={streetError}
                 >
                   {streets.map((street, index) => {
                     return (
@@ -437,37 +450,85 @@ const Cart = () => {
                 label="Building number"
                 value={selectedBuildingNumber}
                 onChange={handleBuildingNumberChange}
+                error={buildingNumberError}
               />
               <TextField
                 required
                 label="Floor number"
                 value={selectedFloorNumber}
                 onChange={handleFloorNumberChange}
+                error={floorError}
               />
               <TextField
                 required
                 label="Door number"
                 value={selectedDoorNumber}
                 onChange={handleDoorNumberChange}
+                error={doorNumberError}
               />
             </div>
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
           <Button
             onClick={() => {
               handleClose();
-              setSavedAddresses([
-                ...savedAdresses,
-                {
-                  addressId: Math.random(1000),
-                  address: `${selectedProvince} province, ${selectedDistrict} district, ${selectedNeighborhood} neighborhood, ${selectedStreet} street, 
-                  building ${selectedBuildingNumber},
-                  floor ${selectedFloorNumber},
-                  door ${selectedDoorNumber}`,
-                },
-              ]);
+              setProvinceError(false);
+              setDistrictError(false);
+              setNeighborhoodError(false);
+              setStreetError(false);
+              setBuildingNumberError(false);
+              setFloorError(false);
+              setDoorNumberError(false);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              if (
+                selectedProvince !== "" &&
+                selectedDistrict !== "" &&
+                selectedNeighborhood !== "" &&
+                selectedStreet !== "" &&
+                selectedBuildingNumber !== "" &&
+                selectedFloorNumber !== "" &&
+                selectedDoorNumber !== ""
+              ) {
+                setSavedAddresses([
+                  ...savedAdresses,
+                  {
+                    addressId: Math.random(1000),
+                    address: `${selectedProvince} province, ${selectedDistrict} district, ${selectedNeighborhood} neighborhood, ${selectedStreet} street, 
+                    building ${selectedBuildingNumber},
+                    floor ${selectedFloorNumber},
+                    door ${selectedDoorNumber}`,
+                  },
+                ]);
+                handleClose();
+              } else {
+                if (selectedProvince === "") {
+                  setProvinceError(true);
+                }
+                if (selectedDistrict === "") {
+                  setDistrictError(true);
+                }
+                if (selectedNeighborhood === "") {
+                  setNeighborhoodError(true);
+                }
+                if (selectedStreet === "") {
+                  setStreetError(true);
+                }
+                if (selectedBuildingNumber === "") {
+                  setBuildingNumberError(true);
+                }
+                if (selectedFloorNumber === "") {
+                  setFloorError(true);
+                }
+                if (selectedDoorNumber === "") {
+                  setDoorNumberError(true);
+                }
+              }
             }}
           >
             Add this address
@@ -640,8 +701,9 @@ const Cart = () => {
                           label={
                             <div
                               style={{
-                                border: "1px solid gray",
                                 borderRadius: "5px",
+                                backgroundColor: "#F3F3F3",
+                                padding: "5px",
                               }}
                             >
                               {item.address.length > 50
