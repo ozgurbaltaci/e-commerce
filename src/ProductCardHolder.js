@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import MyButton from "./components/MyButton";
 
 import {
   Grid,
@@ -250,28 +251,12 @@ const ProductCardHolder = ({
                   </Typography>
                 </div>
               ) : (
-                <button
-                  style={{
-                    display: hoveredProductId === product.id ? "flex" : "none",
-                    height: "25px",
-                    position: "absolute",
-                    bottom: "5px",
-                    right: "5px",
-                    left: "5px",
-
-                    backgroundColor: "#2FB009",
-                    borderRadius: "3px",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    border: "none",
-                    color: "white",
-                  }}
-                  variant="contained"
-                  color="primary"
+                <MyButton
+                  hoveredProductId={hoveredProductId}
+                  productId={product.id}
+                  buttonText={"Add to Cart"}
                   onClick={() => handleAddToCart(product)}
-                >
-                  Add to Cart
-                </button>
+                ></MyButton>
               )}
             </CardActions>
           </Card>

@@ -37,6 +37,7 @@ import { useLocation } from "react-router-dom";
 import Labels from "./Labels";
 import IncrementDecrementButtonGroup from "./IncrementDecrementButtonGroup";
 import { withStyles } from "@material-ui/core/styles";
+import MyButton from "./components/MyButton";
 
 const availablePaymentMethods = [
   {
@@ -715,29 +716,14 @@ const Cart = () => {
                       ))}
                     </RadioGroup>
                   </FormControl>
-
-                  <button
-                    style={{
-                      width: "30%",
-                      height: "25px",
-                      bottom: "5px",
-                      right: "5px",
-                      left: "5px",
-                      marginTop: "5px",
-
-                      backgroundColor: "#2FB009",
-                      borderRadius: "3px",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      border: "none",
-                      color: "white",
-                    }}
-                    onClick={handleClickOpen}
-                    variant="contained"
-                    color="primary"
-                  >
-                    Add new+
-                  </button>
+                  <div style={{ margin: "5px 0px" }}>
+                    <MyButton
+                      buttonText={"Add New+"}
+                      onClick={() => handleClickOpen()}
+                      width="30%"
+                      height="20px"
+                    ></MyButton>
+                  </div>
                 </div>
                 <Divider></Divider>
 
