@@ -16,6 +16,7 @@ import {
   FormLabel,
 } from "@material-ui/core";
 import "./Cart.css";
+import CartItems from "./CartItems";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -140,6 +141,21 @@ const Cart = () => {
   const [floorError, setFloorError] = useState(false);
   const [doorNumberError, setDoorNumberError] = useState(false);
 
+  const [selectedProducts, setSelectedProducts] = useState([]);
+
+  const handleProductSelection = (productId, isSelected) => {
+    setSelectedProducts((prevSelectedProducts) => {
+      const updatedSet = new Set(prevSelectedProducts);
+
+      if (isSelected) {
+        updatedSet.add(productId);
+      } else {
+        updatedSet.delete(productId);
+      }
+
+      return Array.from(updatedSet);
+    });
+  };
   useEffect(() => {
     setProvinces(sehirler[2].data);
   }, []);
@@ -155,22 +171,29 @@ const Cart = () => {
   const calculateTotalPrice = () => {
     let totalPrice = 0;
 
-    for (const item of cartItems) {
-      totalPrice += item.discountedPrice
-        ? item.discountedPrice * item.desiredAmount
-        : item.price * item.desiredAmount;
+    for (const productId of selectedProducts) {
+      const selectedItem = cartItems.find((item) => item.id === productId);
+
+      if (selectedItem) {
+        totalPrice += selectedItem.discountedPrice
+          ? selectedItem.discountedPrice * selectedItem.desiredAmount
+          : selectedItem.price * selectedItem.desiredAmount;
+      }
     }
+
     return totalPrice;
   };
 
   useEffect(() => {
     //get Cart Items HTTP request will be here
     setCartItems(productsInCart);
+  }, []);
+  useEffect(() => {
     const totalPrice = calculateTotalPrice();
     setTotalItemPrice(totalPrice);
     const tempShippingFee = totalPrice > 100 ? 0 : 9;
     setShippingFee(tempShippingFee);
-  }, [cartItems]);
+  }, [cartItems, selectedProducts]);
 
   const handleSelectProvince = (event) => {
     const sehir_title = event.target.value;
@@ -333,6 +356,7 @@ const Cart = () => {
 
   return (
     <>
+      {console.log("selected: ", selectedProducts)}
       <Dialog open={open} onClose={handleClose} fullWidth={true}>
         <DialogTitle>Add new address</DialogTitle>
         <DialogContent>
@@ -547,78 +571,18 @@ const Cart = () => {
             const manufacturerId = element[0];
             const items = element[1];
             return (
-              <Card
-                key={manufacturerId}
-                style={{ marginTop: index !== 0 && "20px" }}
-              >
-                <CardContent style={{ padding: 0 }}>
-                  <Typography style={{ padding: "10px" }}>
-                    {items[index].manufacturorName}
-                  </Typography>
-                  <Divider></Divider>
-                  <List>
-                    {items.map((item, index) => {
-                      return (
-                        <div style={{ position: "relative" }} key={item.id}>
-                          <ListItem>
-                            <div>
-                              <img
-                                src={item.image}
-                                style={{ width: "130px" }}
-                                alt={item.productName}
-                              ></img>
-                            </div>
-                            <div
-                              style={{
-                                display: "grid",
-                                gap: "5px",
-                                marginLeft: "5px",
-                              }}
-                            >
-                              {item.productName}
-                              <Labels
-                                labelIcon={
-                                  <FiPackage
-                                    style={{ fontSize: "6px" }}
-                                  ></FiPackage>
-                                }
-                                labelName="Free Shipping"
-                              ></Labels>
-                              <Typography style={{ fontSize: "8px" }}>
-                                Will be delivered until 27th of July
-                              </Typography>
-                            </div>
-                            <IncrementDecrementButtonGroup
-                              height={"15"}
-                              initialValue={item.desiredAmount}
-                              item={item}
-                              handleDecreaseAmount={handleDecreaseAmount}
-                              handleIncreaseAmount={handleIncreaseAmount}
-                            />
-                            <Typography>
-                              {item.discountedPrice
-                                ? item.discountedPrice * item.desiredAmount
-                                : item.price * item.desiredAmount}
-                            </Typography>
-                            <Button
-                              onClick={() => {
-                                const afterDeleteCartItems = cartItems.filter(
-                                  (product) => product.id !== item.id
-                                );
-                                setCartItems(afterDeleteCartItems);
-                                //TODO: set desired amount of that product as 0 by UPDATE request.
-                              }}
-                            >
-                              X
-                            </Button>
-                          </ListItem>
-                          {index !== items.length - 1 && <Divider></Divider>}
-                        </div>
-                      );
-                    })}
-                  </List>
-                </CardContent>
-              </Card>
+              <CartItems
+                groupedItems={groupedItems}
+                handleDecreaseAmount={handleDecreaseAmount}
+                handleIncreaseAmount={handleIncreaseAmount}
+                cartItems={cartItems}
+                setCartItems={setCartItems}
+                manufacturerId={manufacturerId}
+                index={index}
+                items={items}
+                selectedProducts={selectedProducts}
+                onProductSelection={handleProductSelection}
+              ></CartItems>
             );
           })}
         </div>
