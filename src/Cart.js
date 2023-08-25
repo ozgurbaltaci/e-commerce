@@ -65,7 +65,8 @@ const productsInCart = [
     id: 1,
     manufacturorName: "Manufacturor name 1",
     manufacturorId: 1,
-    productName: "Product Name",
+    productName:
+      "Product Name uzun uzun uzunsssljhllklkjhlkjhlkjhlkjhkuznunzunzunzunzunzuznun",
     price: 10.99,
     discountedPrice: null,
     desiredAmount: 1,
@@ -356,7 +357,6 @@ const Cart = () => {
 
   return (
     <>
-      {console.log("selected: ", selectedProducts)}
       <Dialog open={open} onClose={handleClose} fullWidth={true}>
         <DialogTitle>Add new address</DialogTitle>
         <DialogContent>

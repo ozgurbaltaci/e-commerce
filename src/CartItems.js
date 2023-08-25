@@ -105,18 +105,27 @@ const CartItems = ({
                             marginLeft: "5px",
                           }}
                         >
-                          {item.productName}
-                          <Labels
-                            labelIcon={
-                              <FiPackage
-                                style={{ fontSize: "6px" }}
-                              ></FiPackage>
-                            }
-                            labelName="Free Shipping"
-                          ></Labels>
-                          <Typography style={{ fontSize: "8px" }}>
-                            Will be delivered until 27th of July
-                          </Typography>
+                          <div
+                            style={{
+                              width: "10vw",
+                              wordWrap: "break-word", // Break words that exceed the width
+                            }}
+                          >
+                            {item.productName.length > 35
+                              ? item.productName.substring(0, 35) + "..."
+                              : item.productName}
+                            <Labels
+                              labelIcon={
+                                <FiPackage
+                                  style={{ fontSize: "6px" }}
+                                ></FiPackage>
+                              }
+                              labelName="Free Shipping"
+                            ></Labels>
+                            <Typography style={{ fontSize: "8px" }}>
+                              Will be delivered until 27th of July
+                            </Typography>
+                          </div>
                         </div>
                         <IncrementDecrementButtonGroup
                           height={"15"}
