@@ -15,6 +15,7 @@ import {
   FormControlLabel,
   FormLabel,
 } from "@material-ui/core";
+import PaymentForm from "./PaymentForm";
 import "./Cart.css";
 import CartItems from "./CartItems";
 import TextField from "@mui/material/TextField";
@@ -41,13 +42,7 @@ import { withStyles } from "@material-ui/core/styles";
 import MyButton from "./components/MyButton";
 
 const availablePaymentMethods = [
-  {
-    paymentId: 1,
-    paymentType: "Visa, MasterCard",
-    representativeImage:
-      "https://www.vipbt.com.tr/wp-content/uploads/2021/01/mastercard-ve-visa-nedir-arasindaki-farklar-nelerdir1.jpg",
-  },
-  {
+  /**  {
     paymentId: 2,
     paymentType: "Apple Pay",
     representativeImage:
@@ -58,6 +53,16 @@ const availablePaymentMethods = [
     paymentType: "Google Pay",
     representativeImage:
       "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/1200px-Google_Pay_Logo.svg.png",
+  }, */
+  {
+    paymentId: 4,
+    paymentType: "Pay in the door",
+  },
+  {
+    paymentId: 1,
+    paymentType: "Visa, MasterCard",
+    representativeImage:
+      "https://www.vipbt.com.tr/wp-content/uploads/2021/01/mastercard-ve-visa-nedir-arasindaki-farklar-nelerdir1.jpg",
   },
 ];
 const productsInCart = [
@@ -141,8 +146,15 @@ const Cart = () => {
   const [buildingNumberError, setBuildingNumberError] = useState(false);
   const [floorError, setFloorError] = useState(false);
   const [doorNumberError, setDoorNumberError] = useState(false);
+  const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState("1");
+  const [payInDoorFee, setPayInDoorFee] = useState(0);
 
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardExpirationDate, setCardExpirationDate] = useState("");
+  const [cardCVV, setCardCVV] = useState("");
+
+  const [isCardValid, setIsCardValid] = useState(true);
 
   const handleProductSelection = (productId, isSelected) => {
     setSelectedProducts((prevSelectedProducts) => {
@@ -186,13 +198,20 @@ const Cart = () => {
   };
 
   useEffect(() => {
+    if (selectedPaymentMethodId === "4") {
+      setPayInDoorFee(10);
+    } else {
+      setPayInDoorFee(0);
+    }
+  }, [selectedPaymentMethodId]);
+  useEffect(() => {
     //get Cart Items HTTP request will be here
     setCartItems(productsInCart);
   }, []);
   useEffect(() => {
     const totalPrice = calculateTotalPrice();
     setTotalItemPrice(totalPrice);
-    const tempShippingFee = totalPrice > 100 ? 0 : 9;
+    const tempShippingFee = totalPrice > 100 || totalPrice === 0 ? 0 : 9;
     setShippingFee(tempShippingFee);
   }, [cartItems, selectedProducts]);
 
@@ -330,7 +349,6 @@ const Cart = () => {
     console.log(age); // Output: 30
      */
   }
-  console.log(groupedItems);
 
   const GreenRadio = withStyles({
     root: {
@@ -354,6 +372,62 @@ const Cart = () => {
       {...props}
     />
   ));
+
+  const handleCheckout = async () => {
+    // Ödeme oluşturma isteği burada oluşturulmalı
+    /**
+     * price
+     * paidPrice
+     * paymentCard: {
+        cardHolderName: "John Doe",
+        cardNumber: "4127111111111113",
+        expireMonth: "12",
+        expireYear: "2030",
+        cvc: "123",
+        registerCard: "0",
+      },
+       shippingAddress: {
+        contactName: "Jane Doe",
+        city: "Istanbul",
+        country: "Turkey",
+        address: "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1",
+        zipCode: "34742",
+      },
+
+     */
+    try {
+      const payment = await fetch(`http://localhost:3002/createPayment`, {
+        method: "POST",
+        body: JSON.stringify({
+          price: (totalItemPrice + shippingFee + payInDoorFee).toFixed(2),
+          paidPrice: (totalItemPrice + shippingFee + payInDoorFee).toFixed(2),
+          paymentCard: {
+            cardHolderName: "John Doe",
+            cardNumber: cardNumber.replace(/\s+/g, ""),
+            expireMonth: "12",
+            expireYear: "2030",
+            cvc: cardCVV,
+            registerCard: "0",
+          },
+          shippingAddress: {
+            contactName: "Jane Doe",
+            city: "Istanbul",
+            country: "Turkey",
+            address: "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1",
+            zipCode: "34742",
+          },
+        }),
+        headers: { "Content-Type": "application/json" },
+      }).then((res) => {
+        console.log(res); // Log the entire response
+        if (res.status === 200) {
+          alert(`Payment is successful.`);
+        } else {
+          alert(`Error: Payment failed.`);
+        }
+      });
+    } catch (err) {}
+  };
 
   return (
     <>
@@ -560,6 +634,7 @@ const Cart = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
       <div style={{ display: "flex", margin: "60px 80px" }}>
         <div
           style={{
@@ -602,37 +677,53 @@ const Cart = () => {
                     <FormControl>
                       <RadioGroup
                         aria-labelledby="demo-radio-buttons-group-label"
-                        defaultValue="pay in the door"
+                        defaultValue="1"
                         name="radio-buttons-group"
+                        onChange={(event) =>
+                          setSelectedPaymentMethodId(event.target.value)
+                        }
                       >
                         {availablePaymentMethods.map((item, index) => (
                           <FormControlLabel
                             style={{
-                              marginBottom: "-12px",
+                              marginBottom:
+                                index !== availablePaymentMethods.length - 1
+                                  ? "-12px"
+                                  : "0px",
                               display: "flex",
                               alignItems: "center",
                             }}
-                            value={item.paymentType}
+                            value={item.paymentId.toString()}
                             control={<GreenRadio />}
                             label={
-                              <img
-                                src={item.representativeImage}
-                                style={{ width: "40px", marginTop: "7px" }}
-                              ></img>
+                              item.representativeImage ? (
+                                <img
+                                  src={item.representativeImage}
+                                  style={{ width: "40px", marginTop: "7px" }}
+                                ></img>
+                              ) : (
+                                `${item.paymentType} (it will cost extra 10TL)`
+                              )
                             }
                           />
                         ))}
-                        <FormControlLabel
-                          value={"pay in the door"}
-                          control={<GreenRadio />}
-                          label={
-                            <span style={{ fontSize: "14px" }}>
-                              Pay in the door (It will cost 2€ more)
-                            </span>
-                          }
-                        />
                       </RadioGroup>
                     </FormControl>
+                    <div>
+                      {" "}
+                      {selectedPaymentMethodId === "1" && (
+                        <PaymentForm
+                          cardNumber={cardNumber}
+                          setCardNumber={setCardNumber}
+                          cardExpirationDate={cardExpirationDate}
+                          setCardExpirationDate={setCardExpirationDate}
+                          cardCVV={cardCVV}
+                          setCardCVV={setCardCVV}
+                          isCardValid={isCardValid}
+                          setIsCardValid={setIsCardValid}
+                        ></PaymentForm>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <Divider></Divider>
@@ -723,13 +814,38 @@ const Cart = () => {
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
+                      }}
+                    >
+                      {selectedPaymentMethodId === "4" && (
+                        <>
+                          <div>Pay in the door</div>{" "}
+                          <div>{payInDoorFee.toFixed(2)} TL</div>
+                        </>
+                      )}
+                    </div>
+
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
                         fontWeight: "bold",
                       }}
                     >
                       <div>Cart total</div>
-                      <div>{(totalItemPrice + shippingFee).toFixed(2)} TL</div>
+                      <div>
+                        {(totalItemPrice + shippingFee + payInDoorFee).toFixed(
+                          2
+                        )}{" "}
+                        TL
+                      </div>
                     </div>
                   </div>
+                  <MyButton
+                    buttonText={"Proceed to Checkout"}
+                    onClick={handleCheckout}
+                    width="100%"
+                    height="25px"
+                  ></MyButton>
                 </div>
               </CardContent>
             </Card>
