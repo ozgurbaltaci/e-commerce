@@ -156,14 +156,15 @@ const Cart = () => {
 
   const [isCardValid, setIsCardValid] = useState(true);
 
-  const handleProductSelection = (productId, isSelected) => {
+  const handleProductSelection = (product, isSelected) => {
+    const productId = product.id;
     setSelectedProducts((prevSelectedProducts) => {
       const updatedSet = new Set(prevSelectedProducts);
 
       if (isSelected) {
-        updatedSet.add(productId);
+        updatedSet.add(product);
       } else {
-        updatedSet.delete(productId);
+        updatedSet.delete(product);
       }
 
       return Array.from(updatedSet);
@@ -184,26 +185,17 @@ const Cart = () => {
   const calculateTotalPrice = () => {
     let totalPrice = 0;
 
-    for (const productId of selectedProducts) {
-      const selectedItem = cartItems.find((item) => item.id === productId);
-
-      if (selectedItem) {
-        totalPrice += selectedItem.discountedPrice
-          ? selectedItem.discountedPrice * selectedItem.desiredAmount
-          : selectedItem.price * selectedItem.desiredAmount;
+    for (const item of selectedProducts) {
+      if (item) {
+        totalPrice += item.discountedPrice
+          ? item.discountedPrice * item.desiredAmount
+          : item.price * item.desiredAmount;
       }
     }
 
     return totalPrice;
   };
 
-  useEffect(() => {
-    if (selectedPaymentMethodId === "4") {
-      setPayInDoorFee(10);
-    } else {
-      setPayInDoorFee(0);
-    }
-  }, [selectedPaymentMethodId]);
   useEffect(() => {
     //get Cart Items HTTP request will be here
     setCartItems(productsInCart);
@@ -213,7 +205,13 @@ const Cart = () => {
     setTotalItemPrice(totalPrice);
     const tempShippingFee = totalPrice > 100 || totalPrice === 0 ? 0 : 9;
     setShippingFee(tempShippingFee);
-  }, [cartItems, selectedProducts]);
+    if (selectedPaymentMethodId === "4" && totalPrice > 0) {
+      setPayInDoorFee(10);
+    } else {
+      setPayInDoorFee(0);
+    }
+    console.log(selectedProducts);
+  }, [cartItems, selectedProducts, selectedPaymentMethodId]);
 
   const handleSelectProvince = (event) => {
     const sehir_title = event.target.value;
@@ -409,6 +407,46 @@ const Cart = () => {
             cvc: cardCVV,
             registerCard: "0",
           },
+          basketItems: [
+            ...selectedProducts.map((item) => ({
+              id: item.id,
+              name: item.productName,
+              category1: "Collectibles", // Replace with your actual category1
+              category2: "Accessories", // Replace with your actual category2
+              itemType: "PHYSICAL", // Replace with your actual itemType
+              price:
+                item.discountedPrice !== null
+                  ? item.discountedPrice.toFixed(2)
+                  : item.price.toFixed(2), // Format the price to two decimal places
+            })),
+            // Add shipping fee item if it's non-zero
+            ...(shippingFee > 0
+              ? [
+                  {
+                    id: 10,
+                    name: "Shipping Fee",
+                    category1: "Collectibles", // Replace with your actual category1
+                    category2: "Accessories", // Replace with your actual category2
+                    itemType: "PHYSICAL", // Replace with your actual itemType
+                    price: shippingFee.toFixed(2),
+                  },
+                ]
+              : []),
+            // Add PayInDoor fee item if it's non-zero
+            ...(payInDoorFee > 0
+              ? [
+                  {
+                    id: 11,
+                    name: "PayInDoor Fee",
+                    category1: "Collectibles", // Replace with your actual category1
+                    category2: "Accessories", // Replace with your actual category2
+                    itemType: "PHYSICAL", // Replace with your actual itemType
+
+                    price: payInDoorFee.toFixed(2),
+                  },
+                ]
+              : []),
+          ],
           shippingAddress: {
             contactName: "Jane Doe",
             city: "Istanbul",
@@ -647,7 +685,6 @@ const Cart = () => {
             const items = element[1];
             return (
               <CartItems
-                groupedItems={groupedItems}
                 handleDecreaseAmount={handleDecreaseAmount}
                 handleIncreaseAmount={handleIncreaseAmount}
                 cartItems={cartItems}
@@ -655,7 +692,6 @@ const Cart = () => {
                 manufacturerId={manufacturerId}
                 index={index}
                 items={items}
-                selectedProducts={selectedProducts}
                 onProductSelection={handleProductSelection}
               ></CartItems>
             );

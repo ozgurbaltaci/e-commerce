@@ -21,7 +21,6 @@ const CartItems = ({
   manufacturerId,
   index,
   items,
-  selectedProducts,
   onProductSelection,
 }) => {
   const [checkedParent, setCheckedParent] = useState(false);
@@ -37,9 +36,8 @@ const CartItems = ({
     );
 
     items.map((item) => {
-      const productId = item.id;
       const isSelected = newCheckedParent;
-      onProductSelection(productId, isSelected);
+      onProductSelection(item, isSelected);
     });
   };
 
@@ -49,9 +47,9 @@ const CartItems = ({
     setCheckedChildren(newCheckedChildren);
     setCheckedParent(newCheckedChildren.every((child) => child));
 
-    const productId = items[index].id;
+    const product = items[index];
     const isSelected = newCheckedChildren[index];
-    onProductSelection(productId, isSelected);
+    onProductSelection(product, isSelected);
   };
   return (
     <FormGroup>
