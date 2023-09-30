@@ -21,6 +21,8 @@ function isValidLuhnNumber(number) {
   return sum % 10 === 0;
 }
 function PaymentForm({
+  cardHolder,
+  setCardHolder,
   cardNumber,
   setCardNumber,
   cardExpirationDate,
@@ -30,6 +32,13 @@ function PaymentForm({
   isCardValid,
   setIsCardValid,
 }) {
+  const handleCardHolderChange = (event) => {
+    // Remove non-numeric characters from the input
+    const enteredCardHolderName = event.target.value;
+
+    setCardHolder(enteredCardHolderName);
+  };
+
   const handleCardNumberChange = (event) => {
     // Remove non-numeric characters from the input
     const enteredCardNumber = event.target.value.replace(/\D/g, "");
@@ -69,6 +78,18 @@ function PaymentForm({
   return (
     <div style={{ padding: "5px 0px " }}>
       <TextField
+        required
+        id="cardName"
+        label="Name on card"
+        size="small"
+        variant="outlined"
+        fullWidth
+        autoComplete="cc-name"
+        value={cardHolder}
+        onChange={handleCardHolderChange}
+      />
+      <TextField
+        required
         label="Card Number"
         variant="outlined"
         size="small"
@@ -76,12 +97,14 @@ function PaymentForm({
         color=""
         fullWidth
         value={cardNumber}
+        autoComplete="cc-number"
         onChange={handleCardNumberChange}
         inputProps={{
           inputMode: "numeric", // Ensure numeric keyboard on mobile
           pattern: "[0-9]*", // Only allow numeric input
           maxLength: 19,
         }}
+        style={{ marginTop: "10px" }}
       />
       <div
         style={{
@@ -92,6 +115,7 @@ function PaymentForm({
         }}
       >
         <TextField
+          required
           label="Expiration Date"
           variant="outlined"
           fullWidth
@@ -99,6 +123,7 @@ function PaymentForm({
           value={cardExpirationDate}
           onChange={handleExpirationDateChange}
           placeholder="MM/YY"
+          autoComplete="cc-exp"
           inputProps={{
             inputMode: "numeric", // Ensure numeric keyboard on mobile
             pattern: "[0-9]*", // Only allow numeric input
@@ -108,12 +133,14 @@ function PaymentForm({
         />
 
         <TextField
+          required
           label="CVV"
           variant="outlined"
           fullWidth
           size="small"
           value={cardCVV}
           onChange={handleCardCVVChange}
+          autoComplete="cc-csc"
           inputProps={{
             inputMode: "numeric", // Ensure numeric keyboard on mobile
             pattern: "[0-9]*", // Only allow numeric input

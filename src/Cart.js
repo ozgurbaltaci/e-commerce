@@ -150,6 +150,8 @@ const Cart = () => {
   const [payInDoorFee, setPayInDoorFee] = useState(0);
 
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [cardHolder, setCardHolder] = useState("");
+
   const [cardNumber, setCardNumber] = useState("");
   const [cardExpirationDate, setCardExpirationDate] = useState("");
   const [cardCVV, setCardCVV] = useState("");
@@ -460,6 +462,8 @@ const Cart = () => {
         console.log(res); // Log the entire response
         if (res.status === 200) {
           alert(`Payment is successful.`);
+        } else if (res.status === 201) {
+          alert("You are not authorized");
         } else {
           alert(`Error: Payment failed.`);
         }
@@ -749,6 +753,8 @@ const Cart = () => {
                       {" "}
                       {selectedPaymentMethodId === "1" && (
                         <PaymentForm
+                          cardHolder={cardHolder}
+                          setCardHolder={setCardHolder}
                           cardNumber={cardNumber}
                           setCardNumber={setCardNumber}
                           cardExpirationDate={cardExpirationDate}

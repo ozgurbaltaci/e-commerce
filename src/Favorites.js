@@ -11,6 +11,8 @@ import {
   Button,
 } from "@material-ui/core";
 
+import Register from "./Register";
+
 const favoritesOfUser = [
   {
     id: 1,
@@ -52,44 +54,51 @@ const Favorites = () => {
   }, []);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        marginLeft: "80px",
-        marginTop: "40px",
-      }}
-    >
-      <Card
+    <>
+      <Register></Register>
+      <div
         style={{
-          width: "500px",
+          display: "flex",
+          marginLeft: "80px",
+          marginTop: "40px",
         }}
       >
-        <CardContent style={{ padding: 0 }}>
-          <Typography style={{ padding: "10px" }}>Title Section</Typography>
+        <Card
+          style={{
+            width: "500px",
+          }}
+        >
+          <CardContent style={{ padding: 0 }}>
+            <Typography style={{ padding: "10px" }}>Title Section</Typography>
 
-          <Divider></Divider>
-          <List>
-            {favoriteItems.map((item, index) => {
-              return (
-                <div style={{ position: "relative" }}>
-                  <ListItem>
-                    <div>
-                      <img src={item.image} style={{ width: "130px" }}></img>
-                    </div>
-                    <div
-                      style={{ display: "grid", gap: "5px", marginLeft: "5px" }}
-                    >
-                      {item.productName}
-                    </div>
-                  </ListItem>
-                  {index !== favoriteItems.length - 1 && <Divider></Divider>}
-                </div>
-              );
-            })}
-          </List>
-        </CardContent>
-      </Card>
-    </div>
+            <Divider></Divider>
+            <List>
+              {favoriteItems.map((item, index) => {
+                return (
+                  <div style={{ position: "relative" }}>
+                    <ListItem>
+                      <div>
+                        <img src={item.image} style={{ width: "130px" }}></img>
+                      </div>
+                      <div
+                        style={{
+                          display: "grid",
+                          gap: "5px",
+                          marginLeft: "5px",
+                        }}
+                      >
+                        {item.productName}
+                      </div>
+                    </ListItem>
+                    {index !== favoriteItems.length - 1 && <Divider></Divider>}
+                  </div>
+                );
+              })}
+            </List>
+          </CardContent>
+        </Card>
+      </div>
+    </>
   );
 };
 
