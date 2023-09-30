@@ -13,7 +13,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import React, { useState } from "react";
 import { Paper } from "@material-ui/core";
 import axios from "axios";
-
+import { Navigate, useNavigate } from "react-router-dom";
+import Toast, { successToast, errorToast } from "./Toaster";
 function isValidEmail(email) {
   // Basic email validation regex
   const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -42,6 +43,7 @@ function isValidPassword(password) {
 const defaultTheme = createTheme();
 
 export default function SignUp() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     user_name: "",
     user_surname: "",
@@ -177,152 +179,158 @@ export default function SignUp() {
         );
 
         if (response.status === 201) {
-          alert("Registration is successfull.");
+          successToast("Registration is successfull.");
+          setTimeout(() => navigate("/mainPage"), 1000);
         } else {
-          alert("A server error happened.");
+          errorToast("A server error happened.");
         }
       } catch (error) {
         if (error.response.status === 409) {
           newErrors.user_mail = "Enter a new e-mail address";
           setErrors(newErrors);
 
-          alert("This email is already registered");
+          errorToast("This email is already registered");
         }
       }
     }
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 5,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>some avatar</Avatar>
-          <Typography component="h1" variant="h5">
-            Sign up
-          </Typography>
+    <div>
+      <Toast />
+      <ThemeProvider theme={defaultTheme}>
+        <Container component="main" maxWidth="xs">
+          <CssBaseline />
           <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{ mt: 3 }}
+            sx={{
+              marginTop: 5,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
           >
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="user_name"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  value={formData.user_name}
-                  onChange={handleChange}
-                  autoFocus
-                  error={!!errors.user_name}
-                  helperText={errors.user_name}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="user_surname"
-                  value={formData.user_surname}
-                  onChange={handleChange}
-                  autoComplete="family-name"
-                  error={!!errors.user_surname}
-                  helperText={errors.user_surname}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="user_mail"
-                  value={formData.user_mail}
-                  onChange={handleChange}
-                  autoComplete="email"
-                  error={!!errors.user_mail}
-                  helperText={errors.user_mail}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="phoneNumber"
-                  label="Phone Number"
-                  name="user_phone"
-                  value={formData.user_phone}
-                  onChange={handleChange}
-                  inputProps={{
-                    inputMode: "numeric", // Ensure numeric keyboard on mobile
-                    pattern: "[0-9]*", // Only allow numeric input
-                  }}
-                  error={!!errors.user_phone}
-                  helperText={errors.user_phone}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="user_password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                  value={formData.user_password}
-                  onChange={handleChange}
-                  error={!!errors.user_password}
-                  helperText={errors.user_password}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="confirm_password"
-                  value={formData.confirm_password}
-                  onChange={handleChange}
-                  label="Confirm Password"
-                  type="password"
-                  id="confirmPassword"
-                  error={!!errors.confirm_password}
-                  helperText={errors.confirm_password}
-                />
-              </Grid>
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+              some avatar
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign up
+            </Typography>
+            <Box
+              component="form"
+              noValidate
+              onSubmit={handleSubmit}
+              sx={{ mt: 3 }}
             >
-              Sign Up
-            </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link href="#" variant="body2">
-                  Already have an account? Sign in
-                </Link>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    autoComplete="given-name"
+                    name="user_name"
+                    required
+                    fullWidth
+                    id="firstName"
+                    label="First Name"
+                    value={formData.user_name}
+                    onChange={handleChange}
+                    autoFocus
+                    error={!!errors.user_name}
+                    helperText={errors.user_name}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="lastName"
+                    label="Last Name"
+                    name="user_surname"
+                    value={formData.user_surname}
+                    onChange={handleChange}
+                    autoComplete="family-name"
+                    error={!!errors.user_surname}
+                    helperText={errors.user_surname}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="user_mail"
+                    value={formData.user_mail}
+                    onChange={handleChange}
+                    autoComplete="email"
+                    error={!!errors.user_mail}
+                    helperText={errors.user_mail}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="phoneNumber"
+                    label="Phone Number"
+                    name="user_phone"
+                    value={formData.user_phone}
+                    onChange={handleChange}
+                    inputProps={{
+                      inputMode: "numeric", // Ensure numeric keyboard on mobile
+                      pattern: "[0-9]*", // Only allow numeric input
+                    }}
+                    error={!!errors.user_phone}
+                    helperText={errors.user_phone}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    name="user_password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    autoComplete="new-password"
+                    value={formData.user_password}
+                    onChange={handleChange}
+                    error={!!errors.user_password}
+                    helperText={errors.user_password}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    name="confirm_password"
+                    value={formData.confirm_password}
+                    onChange={handleChange}
+                    label="Confirm Password"
+                    type="password"
+                    id="confirmPassword"
+                    error={!!errors.confirm_password}
+                    helperText={errors.confirm_password}
+                  />
+                </Grid>
               </Grid>
-            </Grid>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign Up
+              </Button>
+              <Grid container justifyContent="flex-end">
+                <Grid item>
+                  <Link href="#" variant="body2">
+                    Already have an account? Sign in
+                  </Link>
+                </Grid>
+              </Grid>
+            </Box>
           </Box>
-        </Box>
-      </Container>
-    </ThemeProvider>
+        </Container>
+      </ThemeProvider>
+    </div>
   );
 }
