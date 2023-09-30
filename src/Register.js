@@ -175,15 +175,19 @@ export default function SignUp() {
           "http://localhost:3002/register",
           formData
         );
+
         if (response.status === 201) {
           alert("Registration is successfull.");
         } else {
           alert("A server error happened.");
         }
-
-        console.log(response.data); // Show or process the successful registration message from the API
       } catch (error) {
-        console.error(error);
+        if (error.response.status === 409) {
+          newErrors.user_mail = "Enter a new e-mail address";
+          setErrors(newErrors);
+
+          alert("This email is already registered");
+        }
       }
     }
   };
