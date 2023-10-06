@@ -457,7 +457,10 @@ const Cart = () => {
             zipCode: "34742",
           },
         }),
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          "Content-Type": "application/json",
+        },
       }).then((res) => {
         console.log(res); // Log the entire response
         if (res.status === 200) {

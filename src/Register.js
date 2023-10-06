@@ -180,7 +180,7 @@ export default function SignUp() {
 
         if (response.status === 201) {
           successToast("Registration is successfull.");
-          setTimeout(() => navigate("/mainPage"), 1000);
+          setTimeout(() => navigate("/login"), 1000);
         } else {
           errorToast("A server error happened.");
         }
@@ -322,7 +322,7 @@ export default function SignUp() {
               </Button>
               <Grid container justifyContent="flex-end">
                 <Grid item>
-                  <Link href="#" variant="body2">
+                  <Link href="/login" variant="body2">
                     Already have an account? Sign in
                   </Link>
                 </Grid>
