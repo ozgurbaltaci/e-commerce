@@ -22,8 +22,6 @@ import {
 
 import IncrementDecrementButtonGroup from "./IncrementDecrementButtonGroup";
 
-import { FiPackage } from "react-icons/fi";
-import { GoTag } from "react-icons/go";
 import { TiStarOutline } from "react-icons/ti";
 import { TiStarFullOutline, TiStarHalfOutline } from "react-icons/ti";
 
@@ -170,44 +168,58 @@ const ProductCardHolder = ({
             />
             <CardContent style={{ paddingTop: "10px" }}>
               <Typography style={{ fontSize: "12px", fontWeight: "bold" }}>
-                {product.manufacturorName}
+                {product.manufacturerName}
               </Typography>
               <Typography variant="body2" color="textSecondary">
                 {product.productName}
               </Typography>
               <div style={{ display: "flex", marginTop: "4px" }}>
-                <div style={{ marginRight: "2px" }}>
-                  <Labels
-                    labelIcon={
-                      <FiPackage style={{ fontSize: "6px" }}></FiPackage>
-                    }
-                    labelName="Free Shipping"
-                  ></Labels>
-                </div>
-
-                <Labels
-                  labelIcon={<GoTag style={{ fontSize: "6px" }}></GoTag>}
-                  labelName="1 get 1 free"
-                ></Labels>
+                {product.campaigns &&
+                  product.campaigns.map((item, index) => {
+                    return (
+                      <div style={{ marginRight: "2px" }}>
+                        <Labels labelName={item}></Labels>
+                      </div>
+                    );
+                  })}
               </div>
-              <div style={{ fontSize: "12px", marginTop: "4px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  fontSize: "12px",
+                  marginTop: "4px",
+                  alignItems: "center",
+                }}
+              >
                 {renderStars(product.starPoint)}
+                <span
+                  style={{
+                    marginLeft: "2px",
+                    fontSize: "10px",
+                  }}
+                >{`(${product.ratingsCount})`}</span>
               </div>
 
               <Typography
                 style={{
                   fontWeight: "bold",
-                  fontSize: product.discountedPrice === null ? "14px" : "12px",
+                  fontSize: product.discountedPrice === "NaN" ? "14px" : "12px",
                   textDecoration:
-                    product.discountedPrice === null ? "none" : "line-through",
+                    product.discountedPrice === "NaN" ? "none" : "line-through",
                   color:
-                    product.discountedPrice === null ? "#00990F" : "#707070",
+                    product.discountedPrice === "NaN" ? "#00990F" : "#707070",
                 }}
               >
                 {product.price}₺
               </Typography>
-              {product.discountedPrice !== null && (
-                <Typography variant="h6" style={{ color: "#00990F" }}>
+              {product.discountedPrice !== "NaN" && (
+                <Typography
+                  style={{
+                    color: "#00990F",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                  }}
+                >
                   {product.discountedPrice}₺
                 </Typography>
               )}
