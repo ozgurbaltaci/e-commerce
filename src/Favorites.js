@@ -11,8 +11,7 @@ import {
   Button,
 } from "@material-ui/core";
 
-import Register from "./Register";
-
+import AddProduct from "./AddProduct";
 const favoritesOfUser = [
   {
     id: 1,
@@ -55,7 +54,7 @@ const Favorites = () => {
 
   return (
     <>
-      <Register></Register>
+      <AddProduct></AddProduct>
       <div
         style={{
           display: "flex",
