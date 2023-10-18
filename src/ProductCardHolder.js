@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import MyButton from "./components/MyButton";
+import axios from "axios";
+import Toast, { successToast, errorToast } from "./Toaster";
 
 import {
   Grid,
@@ -37,6 +39,7 @@ const ProductCardHolder = ({
   const [favorites, setFavorites] = useState(currUserFavoriteProductsIds);
   const [hoveredProductId, setHoveredProductId] = useState(null);
   const [addedProductId, setAddedProductId] = useState(null);
+  const currentUserId = localStorage.getItem("user_id");
 
   const handleAddToCart = (product) => {
     setCartItems([...cartItems, { ...product, desiredAmount: 1 }]);
@@ -73,16 +76,34 @@ const ProductCardHolder = ({
     setCartItems(filteredItems);
   };
 
-  const handleAddToFavorites = (product) => {
+  const handleAddToFavorites = async (product) => {
     const index = favorites.indexOf(product.id);
     if (index !== -1) {
       // If it exists, remove it from the favorites array
 
-      setFavorites((prevFavorites) =>
-        prevFavorites.filter((id) => id !== product.id)
-      );
+      try {
+        const response = await axios.delete(
+          `http://localhost:3002/removeFromFavorite/${currentUserId}/${product.id}`
+        );
+
+        if (response.status === 200) {
+          setFavorites((prevFavorites) =>
+            prevFavorites.filter((id) => id !== product.id)
+          );
+        }
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       // If it doesn't exist, add it to the favorites array
+      try {
+        const response = await axios.post(
+          `http://localhost:3002/addToFavorite/${currentUserId}`,
+          { product_id: product.id }
+        );
+      } catch (error) {
+        console.log(error);
+      }
       setFavorites((prevFavorites) => [...prevFavorites, product.id]);
     }
   };
@@ -132,6 +153,7 @@ const ProductCardHolder = ({
 
   return (
     <Grid container spacing={3} style={{ overflowX: "hidden" }}>
+      <Toast></Toast>
       {products.map((product) => (
         <>
           <Grid item key={product.id}>

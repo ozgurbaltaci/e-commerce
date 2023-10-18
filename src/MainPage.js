@@ -38,6 +38,8 @@ const MainPage = () => {
 
   const [cartItems, setCartItems] = useState([]);
   const [products, setProducts] = useState([]);
+  const [currUserFavoriteProductsIds, setCurrUserFavoriteProductsIds] =
+    useState([]);
 
   useEffect(() => {
     //TODO: getCartItems first with the GET method.
@@ -61,7 +63,18 @@ const MainPage = () => {
     setCartItems(productsInCart);
   }, []); // The empty array as the second argument makes this useEffect run once on component mount
 
-  const currUserFavoriteProductsIds = [1, 2];
+  useEffect(() => {
+    const user_id = localStorage.getItem("user_id");
+    axios
+      .get(`http://localhost:3002/getFavoritesIdsOfUser/${user_id}`) // Make a GET request with Axios, including the product_id as a parameter in the URL
+      .then((response) => {
+        setCurrUserFavoriteProductsIds(response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
+
   return (
     <>
       {console.log("deneme")}

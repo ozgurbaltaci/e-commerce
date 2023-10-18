@@ -22,8 +22,8 @@ const ProductCardSkeleton = () => {
           <Skeleton width={100} height={12} />
           <Skeleton width={200} height={16} />
           <div style={{ display: "flex", marginTop: "4px" }}>
-            <Skeleton width={60} height={20} style={{ marginRight: "2px" }} />
-            <Skeleton width={60} height={20} style={{ marginRight: "2px" }} />
+            <Skeleton width={55} height={14} style={{ marginRight: "2px" }} />
+            <Skeleton width={55} height={14} style={{ marginRight: "2px" }} />
           </div>
           <div
             style={{
@@ -33,8 +33,7 @@ const ProductCardSkeleton = () => {
               alignItems: "center",
             }}
           >
-            <Skeleton width={60} height={12} style={{ marginRight: "2px" }} />
-            <Skeleton width={40} height={10} />
+            <Skeleton width={83} height={12} style={{ marginRight: "2px" }} />
           </div>
           <Skeleton width={60} height={12} style={{ marginTop: "4px" }} />
           <Skeleton width={60} height={12} style={{ marginTop: "4px" }} />
