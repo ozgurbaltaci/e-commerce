@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+
 import {
   Card,
   CardContent,
@@ -12,49 +14,23 @@ import {
 } from "@material-ui/core";
 
 import AddProduct from "./AddProduct";
-const favoritesOfUser = [
-  {
-    id: 1,
-    manufacturorName: "Manufacturor name",
-    productName: "Product Name",
-    price: 10.99,
-    discountedPrice: null,
-    desiredAmount: 1,
-    image:
-      "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
-  },
-  {
-    id: 2,
-    manufacturorName: "Manufacturor name",
-    productName: "Product Name",
-    price: 19.99,
-    discountedPrice: 10.99,
-    desiredAmount: 1,
-    image:
-      "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
-  },
-  {
-    id: 3,
-    manufacturorName: "Manufacturor name",
-    productName: "Product Name",
-    price: 19.99,
-    discountedPrice: 10.99,
-    desiredAmount: 1,
-    image:
-      "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
-  },
-];
 
 const Favorites = () => {
   const [favoriteItems, setFavoriteItems] = useState([]);
   useEffect(() => {
-    //get Favorite Items HTTP request will be here
-    setFavoriteItems(favoritesOfUser);
+    const user_id = localStorage.getItem("user_id");
+    axios
+      .get(`http://localhost:3002/getFavoritesOfUser/${user_id}`) // Make a GET request with Axios, including the product_id as a parameter in the URL
+      .then((response) => {
+        setFavoriteItems(response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   }, []);
 
   return (
     <>
-      <AddProduct></AddProduct>
       <div
         style={{
           display: "flex",
@@ -68,7 +44,9 @@ const Favorites = () => {
           }}
         >
           <CardContent style={{ padding: 0 }}>
-            <Typography style={{ padding: "10px" }}>Title Section</Typography>
+            <Typography style={{ padding: "10px" }}>
+              Favorites of {localStorage.getItem("userFullName")}
+            </Typography>
 
             <Divider></Divider>
             <List>
@@ -86,8 +64,12 @@ const Favorites = () => {
                           marginLeft: "5px",
                         }}
                       >
-                        {item.productName}
+                        {item.manufacturer_name}
                       </div>
+                      {item.product_name}
+                      {item.price}
+                      {item.discounted_price !== "NaN" && item.discounted_price}
+                      {/**TODO: Change CSS manufacturerName, productName, price, discountedPrice */}
                     </ListItem>
                     {index !== favoriteItems.length - 1 && <Divider></Divider>}
                   </div>

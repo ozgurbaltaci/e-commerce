@@ -98,6 +98,7 @@ export default function SignIn() {
             localStorage.setItem("user_id", response_data.user_id);
             localStorage.setItem("user_name", response_data.user_name);
             localStorage.setItem("accessToken", response_data.accessToken);
+            localStorage.setItem("userFullName", response_data.userFullName);
 
             successToast(`Welcome back ${response_data.user_name}`);
             setTimeout(() => navigate("/mainPage"), 1000);
