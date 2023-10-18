@@ -24,6 +24,7 @@ import IncrementDecrementButtonGroup from "./IncrementDecrementButtonGroup";
 
 import { TiStarOutline } from "react-icons/ti";
 import { TiStarFullOutline, TiStarHalfOutline } from "react-icons/ti";
+import Skeleton from "react-loading-skeleton";
 
 import Labels from "./Labels";
 
@@ -132,100 +133,101 @@ const ProductCardHolder = ({
   return (
     <Grid container spacing={3} style={{ overflowX: "hidden" }}>
       {products.map((product) => (
-        <Grid item key={product.id}>
-          <Card
-            style={{
-              width: 274,
-              height: 384,
-              position: "relative",
-              display: "flex",
-              flexDirection: "column",
-            }}
-            onMouseEnter={() => handleProductCardMouseEnter(product.id)}
-            onMouseLeave={handleProductCardMouseLeave}
-          >
-            <IconButton
+        <>
+          <Grid item key={product.id}>
+            <Card
               style={{
-                position: "absolute",
-                right: 5,
-                top: 5,
-                backgroundColor: "white",
-                padding: "5px",
+                width: 260,
+                height: 384,
+                position: "relative",
               }}
-              aria-label="Add to favorites"
-              onClick={() => handleAddToFavorites(product)}
+              onMouseEnter={() => handleProductCardMouseEnter(product.id)}
+              onMouseLeave={handleProductCardMouseLeave}
             >
-              {isFavorite(product.id) ? (
-                <Favorite color="secondary" style={{ fontSize: 16 }} />
-              ) : (
-                <FavoriteBorder style={{ fontSize: 16 }} />
-              )}
-            </IconButton>
-            <CardMedia
-              component="img"
-              image={product.image}
-              style={{ width: 274, height: 224 }}
-            />
-            <CardContent style={{ paddingTop: "10px" }}>
-              <Typography style={{ fontSize: "12px", fontWeight: "bold" }}>
-                {product.manufacturerName}
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                {product.productName}
-              </Typography>
-              <div style={{ display: "flex", marginTop: "4px" }}>
-                {product.campaigns &&
-                  product.campaigns.map((item, index) => {
-                    return (
-                      <div style={{ marginRight: "2px" }}>
-                        <Labels labelName={item}></Labels>
-                      </div>
-                    );
-                  })}
-              </div>
-              <div
+              <IconButton
                 style={{
-                  display: "flex",
-                  fontSize: "12px",
-                  marginTop: "4px",
-                  alignItems: "center",
+                  position: "absolute",
+                  right: 5,
+                  top: 5,
+                  backgroundColor: "white",
+                  padding: "5px",
                 }}
+                aria-label="Add to favorites"
+                onClick={() => handleAddToFavorites(product)}
               >
-                {renderStars(product.starPoint)}
-                <span
+                {isFavorite(product.id) ? (
+                  <Favorite color="secondary" style={{ fontSize: 16 }} />
+                ) : (
+                  <FavoriteBorder style={{ fontSize: 16 }} />
+                )}
+              </IconButton>
+              <CardMedia
+                component="img"
+                image={product.image}
+                style={{ width: 274, height: 224 }}
+              />
+              <CardContent style={{ paddingTop: "10px" }}>
+                <Typography style={{ fontSize: "12px", fontWeight: "bold" }}>
+                  {product.manufacturerName}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {product.productName}
+                </Typography>
+                <div style={{ display: "flex", marginTop: "4px" }}>
+                  {product.campaigns &&
+                    product.campaigns.map((item, index) => {
+                      return (
+                        <div style={{ marginRight: "2px" }}>
+                          <Labels labelName={item}></Labels>
+                        </div>
+                      );
+                    })}
+                </div>
+                <div
                   style={{
-                    marginLeft: "2px",
-                    fontSize: "10px",
-                  }}
-                >{`(${product.ratingsCount})`}</span>
-              </div>
-
-              <Typography
-                style={{
-                  fontWeight: "bold",
-                  fontSize: product.discountedPrice === "NaN" ? "14px" : "12px",
-                  textDecoration:
-                    product.discountedPrice === "NaN" ? "none" : "line-through",
-                  color:
-                    product.discountedPrice === "NaN" ? "#00990F" : "#707070",
-                }}
-              >
-                {product.price}₺
-              </Typography>
-              {product.discountedPrice !== "NaN" && (
-                <Typography
-                  style={{
-                    color: "#00990F",
-                    fontSize: "14px",
-                    fontWeight: "bold",
+                    display: "flex",
+                    fontSize: "12px",
+                    marginTop: "4px",
+                    alignItems: "center",
                   }}
                 >
-                  {product.discountedPrice}₺
+                  {renderStars(product.starPoint)}
+                  <span
+                    style={{
+                      marginLeft: "2px",
+                      fontSize: "10px",
+                    }}
+                  >{`(${product.ratingsCount})`}</span>
+                </div>
+
+                <Typography
+                  style={{
+                    fontWeight: "bold",
+                    fontSize:
+                      product.discountedPrice === "NaN" ? "14px" : "12px",
+                    textDecoration:
+                      product.discountedPrice === "NaN"
+                        ? "none"
+                        : "line-through",
+                    color:
+                      product.discountedPrice === "NaN" ? "#00990F" : "#707070",
+                  }}
+                >
+                  {product.price}₺
                 </Typography>
-              )}
-            </CardContent>
-            <CardActions>
-              {isItemAddedToCart(product) ? (
+                {product.discountedPrice !== "NaN" && (
+                  <Typography
+                    style={{
+                      color: "#00990F",
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {product.discountedPrice}₺
+                  </Typography>
+                )}
+              </CardContent>
+              <CardActions>
                 <div
                   style={{
                     display: "flex",
@@ -236,43 +238,47 @@ const ProductCardHolder = ({
                     left: "5px",
                   }}
                 >
-                  <div style={{ width: "60%" }}>
-                    <IncrementDecrementButtonGroup
-                      counterWidth="500px"
-                      height="25"
-                      item={product}
-                      handleDecreaseAmount={handleDecreaseAmount}
-                      initialValue={getCartItemAmount(product.id)}
-                      handleIncreaseAmount={handleIncreaseAmount}
-                    ></IncrementDecrementButtonGroup>
-                  </div>
-                  <Typography
-                    style={{
-                      width: "40%",
-                      display: "flex",
-                      backgroundColor: "#2FB009",
-                      borderRadius: "3px",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      border: "none",
-                      color: "white",
-                      marginLeft: "10px",
-                    }}
-                  >
-                    Buy Now
-                  </Typography>
+                  {isItemAddedToCart(product) ? (
+                    <>
+                      <div style={{ width: "60%" }}>
+                        <IncrementDecrementButtonGroup
+                          counterWidth="500px"
+                          height="25"
+                          item={product}
+                          handleDecreaseAmount={handleDecreaseAmount}
+                          initialValue={getCartItemAmount(product.id)}
+                          handleIncreaseAmount={handleIncreaseAmount}
+                        ></IncrementDecrementButtonGroup>
+                      </div>
+                      <Typography
+                        style={{
+                          width: "40%",
+                          display: "flex",
+                          backgroundColor: "#2FB009",
+                          borderRadius: "3px",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          border: "none",
+                          color: "white",
+                          marginLeft: "10px",
+                        }}
+                      >
+                        Buy Now
+                      </Typography>
+                    </>
+                  ) : (
+                    <MyButton
+                      hoveredProductId={hoveredProductId}
+                      productId={product.id}
+                      buttonText={"Add to Cart"}
+                      onClick={() => handleAddToCart(product)}
+                    ></MyButton>
+                  )}
                 </div>
-              ) : (
-                <MyButton
-                  hoveredProductId={hoveredProductId}
-                  productId={product.id}
-                  buttonText={"Add to Cart"}
-                  onClick={() => handleAddToCart(product)}
-                ></MyButton>
-              )}
-            </CardActions>
-          </Card>
-        </Grid>
+              </CardActions>
+            </Card>
+          </Grid>
+        </>
       ))}
     </Grid>
   );
