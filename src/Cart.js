@@ -15,6 +15,8 @@ import {
   FormControlLabel,
   FormLabel,
 } from "@material-ui/core";
+import axios from "axios";
+
 import PaymentForm from "./PaymentForm";
 import "./Cart.css";
 import CartItems from "./CartItems";
@@ -63,53 +65,6 @@ const availablePaymentMethods = [
     paymentType: "Visa, MasterCard",
     representativeImage:
       "https://www.vipbt.com.tr/wp-content/uploads/2021/01/mastercard-ve-visa-nedir-arasindaki-farklar-nelerdir1.jpg",
-  },
-];
-const productsInCart = [
-  {
-    id: 1,
-    manufacturorName: "Manufacturor name 1",
-    manufacturorId: 1,
-    productName:
-      "Product Name uzun uzun uzunsssljhllklkjhlkjhlkjhlkjhkuznunzunzunzunzunzuznun",
-    price: 10.99,
-    discountedPrice: null,
-    desiredAmount: 1,
-    image:
-      "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
-  },
-  {
-    id: 2,
-    manufacturorName: "Manufacturor name 2",
-    manufacturorId: 2,
-    productName: "Product Name",
-    price: 19.99,
-    discountedPrice: 10.99,
-    desiredAmount: 1,
-    image:
-      "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
-  },
-  {
-    id: 3,
-    manufacturorName: "Manufacturor name 2",
-    manufacturorId: 2,
-    productName: "Product Name",
-    price: 19.99,
-    discountedPrice: 10.99,
-    desiredAmount: 1,
-    image:
-      "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
-  },
-  {
-    id: 4,
-    manufacturorName: "Manufacturor name 2",
-    manufacturorId: 2,
-    productName: "Product Name",
-    price: 19.99,
-    discountedPrice: 100.99,
-    desiredAmount: 1,
-    image:
-      "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
   },
 ];
 
@@ -200,7 +155,15 @@ const Cart = () => {
 
   useEffect(() => {
     //get Cart Items HTTP request will be here
-    setCartItems(productsInCart);
+    const user_id = localStorage.getItem("user_id");
+    axios
+      .get(`http://localhost:3002/getCart/${user_id}`) // Make a GET request with Axios, including the product_id as a parameter in the URL
+      .then((response) => {
+        setCartItems(response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   }, []);
   useEffect(() => {
     const totalPrice = calculateTotalPrice();
@@ -318,14 +281,14 @@ const Cart = () => {
 
   for (const item of cartItems) {
     //Object destructing deniyormuş bu işleme
-    const { manufacturorId } = item; //It means const x = item.manufacturorId. Don't be confused. And we need curly braces to do this.
-    if (groupedItems.hasOwnProperty(manufacturorId)) {
-      groupedItems[manufacturorId].push(item);
+    const { manufacturerId } = item; //It means const x = item.manufacturerId. Don't be confused. And we need curly braces to do this.
+    if (groupedItems.hasOwnProperty(manufacturerId)) {
+      groupedItems[manufacturerId].push(item);
     } else {
-      groupedItems[manufacturorId] = [item];
+      groupedItems[manufacturerId] = [item];
     }
     /** Yukardaki kod ile bu kod tamamı ile aynı
-    const x = item.manufacturorId;
+    const x = item.manufacturerId;
     if (groupedItems.hasOwnProperty(x)) {
       groupedItems[x].push(item);
     } else {

@@ -6,6 +6,7 @@ import Cart from "./Cart";
 import Favorites from "./Favorites";
 import Register from "./Register";
 import Login from "./Login";
+import AddProduct from "./AddProduct";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 
 const theme = createMuiTheme({
@@ -58,6 +59,7 @@ function App() {
         <Route path="/register" element={<Register />} />
 
         <Route path="/mainPage" element={<MainPage />} />
+        <Route path="/addProduct" element={<AddProduct />} />
 
         <Route path="/cart" element={<Cart />} />
         <Route path="/favorites" element={<Favorites />} />

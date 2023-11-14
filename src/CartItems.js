@@ -68,7 +68,7 @@ const CartItems = ({
             }
             label={
               <Typography style={{ padding: "10px" }}>
-                {items[index].manufacturorName}
+                {items[index].manufacturer_name}
               </Typography>
             }
           ></FormControlLabel>
@@ -127,7 +127,7 @@ const CartItems = ({
                         </div>
                         <IncrementDecrementButtonGroup
                           height={"15"}
-                          initialValue={item.desiredAmount}
+                          initialValue={item.desired_amount}
                           item={item}
                           handleDecreaseAmount={() =>
                             handleDecreaseAmount(item.id)
@@ -138,8 +138,8 @@ const CartItems = ({
                         />
                         <Typography>
                           {item.discountedPrice
-                            ? item.discountedPrice * item.desiredAmount
-                            : item.price * item.desiredAmount}
+                            ? item.discountedPrice * item.desired_amount
+                            : item.price * item.desired_amount}
                         </Typography>
                         <Button
                           onClick={() => {
