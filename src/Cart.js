@@ -16,6 +16,8 @@ import {
   FormLabel,
 } from "@material-ui/core";
 import axios from "axios";
+import CircularProgress from "@mui/material/CircularProgress";
+import Backdrop from "@mui/material/Backdrop";
 
 import PaymentForm from "./PaymentForm";
 import "./Cart.css";
@@ -112,6 +114,8 @@ const Cart = () => {
   const [cardCVV, setCardCVV] = useState("");
 
   const [isCardValid, setIsCardValid] = useState(true);
+
+  const [isThereUpdateOperation, setIsThereUpdateOperation] = useState(false);
 
   const handleProductSelection = (product, isSelected) => {
     const productId = product.id;
@@ -253,6 +257,8 @@ const Cart = () => {
   };
 
   const handleUpdateDesiredAmount = async (productId, newAmount) => {
+    setIsThereUpdateOperation(true);
+
     try {
       // Make an Axios request to update the desired amount on the server
       const user_id = localStorage.getItem("user_id");
@@ -272,6 +278,7 @@ const Cart = () => {
             : item
         );
         setCartItems(updatedItems);
+        setIsThereUpdateOperation(false);
       } else {
         console.error("Failed to update desired amount.");
       }
@@ -442,6 +449,16 @@ const Cart = () => {
 
   return (
     <>
+      <Backdrop
+        sx={{
+          color: "#fff",
+          backgroundColor: "rgba(0, 0, 0, 0.2)",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
+        open={isThereUpdateOperation}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Dialog open={open} onClose={handleClose} fullWidth={true}>
         <DialogTitle>Add new address</DialogTitle>
         <DialogContent>
