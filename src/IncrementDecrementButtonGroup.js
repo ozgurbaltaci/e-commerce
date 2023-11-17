@@ -1,33 +1,40 @@
+// IncrementDecrementButtonGroup.js
 import React, { useEffect, useState } from "react";
 import { Button, ButtonGroup } from "@material-ui/core";
 
 const IncrementDecrementButtonGroup = ({
   initialValue = 0,
   item,
-  handleIncreaseAmount,
-  handleDecreaseAmount,
+  handleUpdateDesiredAmount,
   height,
   counterWidth = "30px",
 }) => {
-  const [counter, setCounter] = useState([]);
+  const [counter, setCounter] = useState(initialValue);
 
   useEffect(() => {
     setCounter(initialValue);
-  });
+  }, [initialValue]);
+
+  const handleDecrease = () => {
+    if (counter > 0) {
+      setCounter(counter - 1);
+      handleUpdateDesiredAmount(item.productId, counter - 1);
+    }
+  };
+
+  const handleIncrease = () => {
+    setCounter(counter + 1);
+    handleUpdateDesiredAmount(item.productId, counter + 1);
+  };
 
   return (
     <ButtonGroup
       style={{ height: height ? `${height}px` : "30px", width: "100%" }}
     >
       <Button
-        disabled={counter === 0 ? true : false}
-        style={{
-          fontSize: `${height / 2}px`,
-        }}
-        onClick={() => {
-          setCounter(counter - 1);
-          handleDecreaseAmount(item.id);
-        }}
+        disabled={counter === 0}
+        style={{ fontSize: `${height / 2}px` }}
+        onClick={handleDecrease}
       >
         -
       </Button>
@@ -42,15 +49,8 @@ const IncrementDecrementButtonGroup = ({
       >
         {counter}
       </Button>
-      <Button
-        style={{
-          fontSize: `${height / 2}px`,
-        }}
-        onClick={() => {
-          setCounter(counter + 1);
-          handleIncreaseAmount(item.id);
-        }}
-      >
+
+      <Button style={{ fontSize: `${height / 2}px` }} onClick={handleIncrease}>
         +
       </Button>
     </ButtonGroup>

@@ -119,14 +119,15 @@ const Cart = () => {
       const updatedSet = new Set(prevSelectedProducts);
 
       if (isSelected) {
-        updatedSet.add(product);
+        updatedSet.add(productId);
       } else {
-        updatedSet.delete(product);
+        updatedSet.delete(productId);
       }
 
       return Array.from(updatedSet);
     });
   };
+
   useEffect(() => {
     setProvinces(sehirler[2].data);
   }, []);
@@ -141,12 +142,13 @@ const Cart = () => {
 
   const calculateTotalPrice = () => {
     let totalPrice = 0;
+    for (const productId of selectedProducts) {
+      const selectedProduct = cartItems.find((item) => item.id === productId);
 
-    for (const item of selectedProducts) {
-      if (item) {
-        totalPrice += item.discountedPrice
-          ? item.discountedPrice * item.desiredAmount
-          : item.price * item.desiredAmount;
+      if (selectedProduct) {
+        totalPrice += selectedProduct.discountedPrice
+          ? selectedProduct.discountedPrice * selectedProduct.desired_amount
+          : selectedProduct.price * selectedProduct.desired_amount;
       }
     }
 
@@ -175,7 +177,6 @@ const Cart = () => {
     } else {
       setPayInDoorFee(0);
     }
-    console.log(selectedProducts);
   }, [cartItems, selectedProducts, selectedPaymentMethodId]);
 
   const handleSelectProvince = (event) => {
@@ -250,31 +251,33 @@ const Cart = () => {
     setSelectedDoorNumber(event.target.value);
     setDoorNumberError(false);
   };
-  const handleIncreaseAmount = (productId) => {
-    const updatedItems = cartItems.map((item) =>
-      item.id === productId
-        ? { ...item, desiredAmount: item.desiredAmount + 1 }
-        : item
-    );
-    setCartItems(updatedItems);
-  };
 
-  const handleDecreaseAmount = (productId) => {
-    const updatedItems = cartItems.map((item) => {
-      if (item.id === productId) {
-        const newAmount = item.desiredAmount - 1;
-
-        if (newAmount <= 0) {
-          return null;
-        } else {
-          return { ...item, desiredAmount: newAmount };
+  const handleUpdateDesiredAmount = async (productId, newAmount) => {
+    try {
+      // Make an Axios request to update the desired amount on the server
+      const user_id = localStorage.getItem("user_id");
+      const response = await axios.put(
+        `http://localhost:3002/updateDesiredAmount/${user_id}/${productId}`,
+        {
+          desiredAmount: newAmount,
         }
+      );
+
+      // Check if the update was successful
+      if (response.status === 200) {
+        // If successful, update the state locally using the callback function
+        const updatedItems = cartItems.map((item) =>
+          item.productId === productId
+            ? { ...item, desired_amount: newAmount } // Make sure it's 'desired_amount'
+            : item
+        );
+        setCartItems(updatedItems);
       } else {
-        return item;
+        console.error("Failed to update desired amount.");
       }
-    });
-    const filteredItems = updatedItems.filter((item) => item !== null);
-    setCartItems(filteredItems);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const groupedItems = {};
@@ -652,16 +655,15 @@ const Cart = () => {
         >
           {Object.entries(groupedItems).map((element, index) => {
             const manufacturerId = element[0];
-            const items = element[1];
+            const itemsInManufacturer = element[1];
             return (
               <CartItems
-                handleDecreaseAmount={handleDecreaseAmount}
-                handleIncreaseAmount={handleIncreaseAmount}
+                handleUpdateDesiredAmount={handleUpdateDesiredAmount}
                 cartItems={cartItems}
                 setCartItems={setCartItems}
                 manufacturerId={manufacturerId}
                 index={index}
-                items={items}
+                itemsInManufacturer={itemsInManufacturer}
                 onProductSelection={handleProductSelection}
               ></CartItems>
             );

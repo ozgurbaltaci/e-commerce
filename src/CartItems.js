@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -14,28 +14,29 @@ import Labels from "./Labels";
 import { FiPackage } from "react-icons/fi";
 import IncrementDecrementButtonGroup from "./IncrementDecrementButtonGroup";
 const CartItems = ({
-  handleDecreaseAmount,
-  handleIncreaseAmount,
+  handleUpdateDesiredAmount,
   cartItems,
   setCartItems,
   manufacturerId,
   index,
-  items,
+  itemsInManufacturer,
   onProductSelection,
 }) => {
   const [checkedParent, setCheckedParent] = useState(false);
   const [checkedChildren, setCheckedChildren] = useState(
-    items.map((item) => false)
+    itemsInManufacturer.map((item) => false)
   );
 
   const handleParentChange = () => {
     const newCheckedParent = !checkedParent;
     setCheckedParent(newCheckedParent);
     setCheckedChildren(
-      newCheckedParent ? items.map(() => true) : items.map(() => false)
+      newCheckedParent
+        ? itemsInManufacturer.map(() => true)
+        : itemsInManufacturer.map(() => false)
     );
 
-    items.map((item) => {
+    itemsInManufacturer.map((item) => {
       const isSelected = newCheckedParent;
       onProductSelection(item, isSelected);
     });
@@ -47,12 +48,13 @@ const CartItems = ({
     setCheckedChildren(newCheckedChildren);
     setCheckedParent(newCheckedChildren.every((child) => child));
 
-    const product = items[index];
+    const product = itemsInManufacturer[index];
     const isSelected = newCheckedChildren[index];
     onProductSelection(product, isSelected);
   };
   return (
     <FormGroup>
+      {console.log("aksjdhjklshd: ", itemsInManufacturer)}
       <Card key={manufacturerId} style={{ marginTop: index !== 0 && "20px" }}>
         <CardContent style={{ padding: 0 }}>
           <FormControlLabel
@@ -68,18 +70,18 @@ const CartItems = ({
             }
             label={
               <Typography style={{ padding: "10px" }}>
-                {items[index].manufacturer_name}
+                {itemsInManufacturer[0].manufacturer_name}
               </Typography>
             }
           ></FormControlLabel>
 
           <Divider></Divider>
 
-          {items.map((item, childIndex) => {
+          {itemsInManufacturer.map((item, childIndex) => {
             return (
               <>
                 <FormControlLabel
-                  key={item.id}
+                  key={item.productId}
                   control={
                     <Checkbox
                       checked={checkedChildren[childIndex]}
@@ -87,7 +89,7 @@ const CartItems = ({
                     />
                   }
                   label={
-                    <div style={{ position: "relative" }} key={item.id}>
+                    <div style={{ position: "relative" }} key={item.productId}>
                       <ListItem>
                         <div>
                           <img
@@ -129,12 +131,7 @@ const CartItems = ({
                           height={"15"}
                           initialValue={item.desired_amount}
                           item={item}
-                          handleDecreaseAmount={() =>
-                            handleDecreaseAmount(item.id)
-                          }
-                          handleIncreaseAmount={() =>
-                            handleIncreaseAmount(item.id)
-                          }
+                          handleUpdateDesiredAmount={handleUpdateDesiredAmount}
                         />
                         <Typography>
                           {item.discountedPrice
@@ -156,7 +153,9 @@ const CartItems = ({
                     </div>
                   }
                 />
-                {childIndex !== items.length - 1 && <Divider></Divider>}
+                {childIndex !== itemsInManufacturer.length - 1 && (
+                  <Divider></Divider>
+                )}
               </>
             );
           })}
