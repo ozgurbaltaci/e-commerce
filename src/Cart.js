@@ -16,8 +16,6 @@ import {
   FormLabel,
 } from "@material-ui/core";
 import axios from "axios";
-import CircularProgress from "@mui/material/CircularProgress";
-import Backdrop from "@mui/material/Backdrop";
 
 import PaymentForm from "./PaymentForm";
 import "./Cart.css";
@@ -36,6 +34,7 @@ import sokaklar_caddeler from "./json_files/sokak_cadde.json";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import LoaderInBackdrop from "./components/LoaderInBackdrop";
 
 import { FiPackage } from "react-icons/fi";
 
@@ -449,16 +448,9 @@ const Cart = () => {
 
   return (
     <>
-      <Backdrop
-        sx={{
-          color: "#fff",
-          backgroundColor: "rgba(0, 0, 0, 0.2)",
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-        }}
-        open={isThereUpdateOperation}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <LoaderInBackdrop
+        isThereUpdateOperation={isThereUpdateOperation}
+      ></LoaderInBackdrop>
       <Dialog open={open} onClose={handleClose} fullWidth={true}>
         <DialogTitle>Add new address</DialogTitle>
         <DialogContent>
