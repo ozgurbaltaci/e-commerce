@@ -4,7 +4,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 const ProductCardSkeleton = () => {
   return (
-    <div style={{ width: 260, height: 384 }}>
+    <div style={{ width: "100%", height: 384 }}>
       <div style={{ position: "relative" }}>
         <div
           style={{
@@ -17,7 +17,7 @@ const ProductCardSkeleton = () => {
         >
           <Skeleton width={16} height={16} />
         </div>
-        <Skeleton width={274} height={224} />
+        <Skeleton width={"100%"} height={224} />
         <div style={{ padding: "10px" }}>
           <Skeleton width={100} height={12} />
           <Skeleton width={200} height={16} />

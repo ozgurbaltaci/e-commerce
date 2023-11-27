@@ -156,11 +156,11 @@ const ProductCardHolder = ({
       <Toast></Toast>
       {products.map((product) => (
         <>
-          <Grid item key={product.id}>
+          <Grid item key={product.id} xs={12} sm={4} md={3} lg={3}>
             <Card
               style={{
-                width: 260,
-                height: 384,
+                width: "100%",
+                height: "100%",
                 position: "relative",
               }}
               onMouseEnter={() => handleProductCardMouseEnter(product.id)}
@@ -186,7 +186,7 @@ const ProductCardHolder = ({
               <CardMedia
                 component="img"
                 image={product.image}
-                style={{ width: 274, height: 224 }}
+                style={{ width: "100%", height: 224 }}
               />
               <CardContent style={{ paddingTop: "10px" }}>
                 <Typography style={{ fontSize: "12px", fontWeight: "bold" }}>
