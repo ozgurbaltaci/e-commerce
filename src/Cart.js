@@ -359,6 +359,7 @@ const Cart = () => {
   ));
 
   const handleCheckout = async () => {
+    console.log("sss", selectedProducts);
     // Ödeme oluşturma isteği burada oluşturulmalı
     /**
      * price
@@ -396,7 +397,7 @@ const Cart = () => {
           },
           basketItems: [
             ...selectedProducts.map((item) => ({
-              id: item.id,
+              id: item.productId,
               name: item.productName,
               category1: "Collectibles", // Replace with your actual category1
               category2: "Accessories", // Replace with your actual category2
@@ -441,7 +442,15 @@ const Cart = () => {
             address: "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1",
             zipCode: "34742",
           },
+          buyerInfo: {
+            user_id: localStorage.getItem("user_id"),
+            user_name: localStorage.getItem("user_name"),
+            user_surname: localStorage.getItem("user_surname"),
+            user_phone: localStorage.getItem("user_phone"),
+            user_mail: localStorage.getItem("user_mail"),
+          },
         }),
+
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           "Content-Type": "application/json",

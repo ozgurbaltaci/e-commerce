@@ -54,7 +54,7 @@ const CartItems = ({
   };
   return (
     <FormGroup>
-      {console.log("aksjdhjklshd: ", itemsInManufacturer)}
+      {console.log("itemsınManfuacturer: ", itemsInManufacturer)}
       <Card key={manufacturerId} style={{ marginTop: index !== 0 && "20px" }}>
         <CardContent style={{ padding: 0 }}>
           <FormControlLabel
