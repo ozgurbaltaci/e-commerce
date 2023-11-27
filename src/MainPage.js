@@ -8,6 +8,8 @@ import Skeleton from "react-loading-skeleton";
 
 import { Grid } from "@material-ui/core";
 import ProductCardSkeleton from "./ProductCardSkeleton";
+import Carousel from "./components/Carousel";
+import CategoryBox from "./components/CategoryBox";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -77,27 +79,67 @@ const MainPage = () => {
 
   return (
     <>
-      {console.log("deneme")}
       <Button onClick={() => navigate("/cart")}>
         cart: {cartItems.length}
       </Button>
       <Button onClick={() => navigate("/favorites")}>Favorites</Button>
-      {isProductsLoading ? (
-        <Grid container spacing={3} style={{ overflowX: "hidden" }}>
-          {Array.from({ length: 8 }).map((_, index) => (
-            <Grid item key={index}>
-              <ProductCardSkeleton />
+      <div style={{ padding: "20px 70px" }}>
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "space-between",
+            marginBottom: "20px",
+          }}
+        >
+          <Grid container>
+            <Grid item xs={12} sm={8} md={8} lg={8}>
+              <Carousel></Carousel>
             </Grid>
-          ))}
-        </Grid>
-      ) : (
-        <ProductCardHolder
-          products={products}
-          currUserFavoriteProductsIds={currUserFavoriteProductsIds}
-          setCartItems={setCartItems}
-          cartItems={cartItems}
-        />
-      )}
+            <Grid item xs={12} sm={4} md={4} lg={4}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                  gap: "20px",
+                }}
+              >
+                <CategoryBox
+                  imagePath={require("./Organics.png")}
+                  label={"deneme"}
+                ></CategoryBox>
+                <CategoryBox
+                  imagePath={require("./Handmades.png")}
+                  label={"deneme"}
+                ></CategoryBox>
+              </div>
+            </Grid>
+          </Grid>
+        </div>
+        {console.log("deneme")}
+        <div
+          style={{ fontWeight: "bold", fontSize: "17px", marginBottom: "12px" }}
+        >
+          Best Sellers of Emekçi Dükkanı
+        </div>
+        {isProductsLoading ? (
+          <Grid container spacing={3} style={{ overflowX: "hidden" }}>
+            {Array.from({ length: 8 }).map((_, index) => (
+              <Grid item key={index} xs={12} sm={4} md={3} lg={3}>
+                <ProductCardSkeleton />
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <ProductCardHolder
+            products={products}
+            currUserFavoriteProductsIds={currUserFavoriteProductsIds}
+            setCartItems={setCartItems}
+            cartItems={cartItems}
+          />
+        )}
+      </div>
     </>
   );
 };
