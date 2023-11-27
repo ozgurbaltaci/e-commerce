@@ -117,14 +117,19 @@ const Cart = () => {
   const [isThereUpdateOperation, setIsThereUpdateOperation] = useState(false);
 
   const handleProductSelection = (product, isSelected) => {
-    const productId = product.id;
     setSelectedProducts((prevSelectedProducts) => {
       const updatedSet = new Set(prevSelectedProducts);
 
       if (isSelected) {
-        updatedSet.add(productId);
+        updatedSet.add(product);
       } else {
-        updatedSet.delete(productId);
+        // Find and remove the specific product from the set
+        for (const p of updatedSet) {
+          if (p.id === product.id) {
+            updatedSet.delete(p);
+            break;
+          }
+        }
       }
 
       return Array.from(updatedSet);
@@ -145,8 +150,8 @@ const Cart = () => {
 
   const calculateTotalPrice = () => {
     let totalPrice = 0;
-    for (const productId of selectedProducts) {
-      const selectedProduct = cartItems.find((item) => item.id === productId);
+    for (const product of selectedProducts) {
+      const selectedProduct = cartItems.find((item) => item.id === product.id);
 
       if (selectedProduct) {
         totalPrice += selectedProduct.discountedPrice
@@ -276,6 +281,14 @@ const Cart = () => {
             ? { ...item, desired_amount: newAmount } // Make sure it's 'desired_amount'
             : item
         );
+
+        const updatedSelectedProducts = selectedProducts.map((item) =>
+          item.productId === productId
+            ? { ...item, desired_amount: newAmount } // Make sure it's 'desired_amount'
+            : item
+        );
+        console.log("updatedSelectedProducts: ", updatedSelectedProducts);
+        setSelectedProducts(updatedSelectedProducts);
         setCartItems(updatedItems);
         setIsThereUpdateOperation(false);
       } else {
@@ -390,8 +403,8 @@ const Cart = () => {
               itemType: "PHYSICAL", // Replace with your actual itemType
               price:
                 item.discountedPrice !== null
-                  ? item.discountedPrice.toFixed(2)
-                  : item.price.toFixed(2), // Format the price to two decimal places
+                  ? item.discountedPrice.toFixed(2) * item.desired_amount
+                  : item.price.toFixed(2) * item.desired_amount, // Format the price to two decimal places
             })),
             // Add shipping fee item if it's non-zero
             ...(shippingFee > 0
@@ -443,7 +456,9 @@ const Cart = () => {
           alert(`Error: Payment failed.`);
         }
       });
-    } catch (err) {}
+    } catch (err) {
+      alert(err);
+    }
   };
 
   return (
