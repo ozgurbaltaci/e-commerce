@@ -78,15 +78,7 @@ const Favorites = () => {
   return (
     <>
       <h2>My Favorites</h2>
-      {!favoriteItems.length > 0 && (
-        <>
-          <p>
-            Your favorite items will appear here! Currently, you haven't added
-            any favorite products. Get started by choosing the items you like
-            and adding them to your favorites.
-          </p>
-        </>
-      )}
+
       {isProductsLoading ? (
         <Grid container spacing={3} style={{ overflowX: "hidden" }}>
           {Array.from({ length: 8 }).map((_, index) => (
@@ -95,6 +87,14 @@ const Favorites = () => {
             </Grid>
           ))}
         </Grid>
+      ) : !favoriteItems.length > 0 ? (
+        <>
+          <p>
+            Your favorite items will appear here! Currently, you haven't added
+            any favorite products. Get started by choosing the items you like
+            and adding them to your favorites.
+          </p>
+        </>
       ) : (
         <ProductCardHolder
           products={favoriteItems}

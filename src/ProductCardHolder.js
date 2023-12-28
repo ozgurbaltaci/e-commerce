@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import MyButton from "./components/MyButton";
 import axios from "axios";
 import Toast, { successToast, errorToast } from "./Toaster";
+import LoaderInBackdrop from "./components/LoaderInBackdrop";
 
 import {
   Grid,
@@ -35,11 +36,14 @@ const ProductCardHolder = ({
   currUserFavoriteProductsIds,
   setCartItems,
   cartItems,
+  parentComponent,
 }) => {
   const [favorites, setFavorites] = useState(currUserFavoriteProductsIds);
   const [hoveredProductId, setHoveredProductId] = useState(null);
   const [addedProductId, setAddedProductId] = useState(null);
   const currentUserId = localStorage.getItem("user_id");
+  const [isThereFavoritesUpdateOperation, setIsThereFavoritesUpdateOperation] =
+    useState(false);
 
   const handleAddToCart = (product) => {
     setCartItems([...cartItems, { ...product, desiredAmount: 1 }]);
@@ -77,6 +81,7 @@ const ProductCardHolder = ({
   };
 
   const handleAddToFavorites = async (product) => {
+    setIsThereFavoritesUpdateOperation(true);
     const index = favorites.indexOf(product.id);
     if (index !== -1) {
       // If it exists, remove it from the favorites array
@@ -90,6 +95,7 @@ const ProductCardHolder = ({
           setFavorites((prevFavorites) =>
             prevFavorites.filter((id) => id !== product.id)
           );
+          setIsThereFavoritesUpdateOperation(false);
         }
       } catch (error) {
         console.log(error);
@@ -98,17 +104,18 @@ const ProductCardHolder = ({
       // If it doesn't exist, add it to the favorites array
       try {
         const response = await axios.post(
-          `http://localhost:3002/addToFavorite/${currentUserId}`,
-          { product_id: product.id }
+          `http://localhost:3002/addToFavorite/${currentUserId}/${product.id}`
         );
       } catch (error) {
         console.log(error);
       }
       setFavorites((prevFavorites) => [...prevFavorites, product.id]);
+      setIsThereFavoritesUpdateOperation(false);
     }
   };
 
   const isFavorite = (productId) => {
+    console.log("gelen product id: ", productId);
     return favorites.some((favId) => favId === productId);
   };
 
@@ -153,9 +160,18 @@ const ProductCardHolder = ({
 
   return (
     <Grid container spacing={3} style={{ overflowX: "hidden" }}>
+      <LoaderInBackdrop
+        isThereUpdateOperation={isThereFavoritesUpdateOperation}
+      ></LoaderInBackdrop>
       <Toast></Toast>
       {products.map((product) => (
         <>
+          {console.log("render edilen productlar ", products)}
+          {console.log(
+            "currUserFavoriteProductsIds: ",
+            currUserFavoriteProductsIds
+          )}
+
           <Grid item key={product.id} xs={12} sm={4} md={3} lg={3}>
             <Card
               style={{
