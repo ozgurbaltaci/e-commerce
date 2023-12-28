@@ -242,18 +242,18 @@ const ProductCardHolder = ({
                   style={{
                     fontWeight: "bold",
                     fontSize:
-                      product.discountedPrice === "NaN" ? "14px" : "12px",
+                      product.discountedPrice === null ? "14px" : "12px",
                     textDecoration:
-                      product.discountedPrice === "NaN"
+                      product.discountedPrice === null
                         ? "none"
                         : "line-through",
                     color:
-                      product.discountedPrice === "NaN" ? "#00990F" : "#707070",
+                      product.discountedPrice === null ? "#00990F" : "#707070",
                   }}
                 >
                   {product.price}₺
                 </Typography>
-                {product.discountedPrice !== "NaN" && (
+                {product.discountedPrice !== null && (
                   <Typography
                     style={{
                       color: "#00990F",
