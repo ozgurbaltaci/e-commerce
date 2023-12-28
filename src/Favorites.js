@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Grid } from "@material-ui/core";
+import ProductCardHolder from "./ProductCardHolder";
+import ProductCardSkeleton from "./ProductCardSkeleton";
 
 import {
   Card,
@@ -17,12 +20,55 @@ import AddProduct from "./AddProduct";
 
 const Favorites = () => {
   const [favoriteItems, setFavoriteItems] = useState([]);
+  const [currUserFavoriteProductsIds, setCurrUserFavoriteProductsIds] =
+    useState([]);
+  const [isProductsLoading, setIsProductsLoading] = useState(true);
+
+  const productsInCart = [
+    {
+      id: 1,
+      manufacturorName: "Manufacturor name",
+      productName: "Product Name",
+      price: 10.99,
+      discountedPrice: null,
+      desiredAmount: 1,
+      image:
+        "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
+    },
+    {
+      id: 2,
+      manufacturorName: "Manufacturor name",
+      productName: "Product Name",
+      price: 19.99,
+      discountedPrice: 10.99,
+      desiredAmount: 1,
+      image:
+        "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
+    },
+  ];
+
+  const [cartItems, setCartItems] = useState(productsInCart);
+
   useEffect(() => {
     const user_id = localStorage.getItem("user_id");
     axios
       .get(`http://localhost:3002/getFavoritesOfUser/${user_id}`) // Make a GET request with Axios, including the product_id as a parameter in the URL
       .then((response) => {
         setFavoriteItems(response.data);
+        setIsProductsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, [favoriteItems]);
+
+  useEffect(() => {
+    const user_id = localStorage.getItem("user_id");
+    axios
+      .get(`http://localhost:3002/getFavoritesIdsOfUser/${user_id}`) // Make a GET request with Axios, including the product_id as a parameter in the URL
+      .then((response) => {
+        setCurrUserFavoriteProductsIds(response.data);
+        console.log("idssss: ", response.data);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -31,54 +77,32 @@ const Favorites = () => {
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          marginLeft: "80px",
-          marginTop: "40px",
-        }}
-      >
-        <Card
-          style={{
-            width: "500px",
-          }}
-        >
-          <CardContent style={{ padding: 0 }}>
-            <Typography style={{ padding: "10px" }}>
-              Favorites of {localStorage.getItem("userFullName")}
-            </Typography>
-
-            <Divider></Divider>
-            <List>
-              {favoriteItems.map((item, index) => {
-                return (
-                  <div style={{ position: "relative" }}>
-                    <ListItem>
-                      <div>
-                        <img src={item.image} style={{ width: "130px" }}></img>
-                      </div>
-                      <div
-                        style={{
-                          display: "grid",
-                          gap: "5px",
-                          marginLeft: "5px",
-                        }}
-                      >
-                        {item.manufacturer_name}
-                      </div>
-                      {item.product_name}
-                      {item.price}
-                      {item.discounted_price !== "NaN" && item.discounted_price}
-                      {/**TODO: Change CSS manufacturerName, productName, price, discountedPrice */}
-                    </ListItem>
-                    {index !== favoriteItems.length - 1 && <Divider></Divider>}
-                  </div>
-                );
-              })}
-            </List>
-          </CardContent>
-        </Card>
-      </div>
+      <h2>My Favorites</h2>
+      {!favoriteItems.length > 0 && (
+        <>
+          <p>
+            Your favorite items will appear here! Currently, you haven't added
+            any favorite products. Get started by choosing the items you like
+            and adding them to your favorites.
+          </p>
+        </>
+      )}
+      {isProductsLoading ? (
+        <Grid container spacing={3} style={{ overflowX: "hidden" }}>
+          {Array.from({ length: 8 }).map((_, index) => (
+            <Grid item key={index} xs={12} sm={4} md={3} lg={3}>
+              <ProductCardSkeleton />
+            </Grid>
+          ))}
+        </Grid>
+      ) : (
+        <ProductCardHolder
+          products={favoriteItems}
+          currUserFavoriteProductsIds={currUserFavoriteProductsIds}
+          setCartItems={setCartItems}
+          cartItems={cartItems}
+        />
+      )}
     </>
   );
 };
