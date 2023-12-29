@@ -260,14 +260,14 @@ const Cart = () => {
     setDoorNumberError(false);
   };
 
-  const handleUpdateDesiredAmount = async (productId, newAmount) => {
+  const handleUpdateDesiredAmount = async (id, newAmount) => {
     setIsThereUpdateOperation(true);
 
     try {
       // Make an Axios request to update the desired amount on the server
       const user_id = localStorage.getItem("user_id");
       const response = await axios.put(
-        `http://localhost:3002/updateDesiredAmount/${user_id}/${productId}`,
+        `http://localhost:3002/updateDesiredAmount/${user_id}/${id}`,
         {
           desiredAmount: newAmount,
         }
@@ -277,13 +277,13 @@ const Cart = () => {
       if (response.status === 200) {
         // If successful, update the state locally using the callback function
         const updatedItems = cartItems.map((item) =>
-          item.productId === productId
+          item.id === id
             ? { ...item, desired_amount: newAmount } // Make sure it's 'desired_amount'
             : item
         );
 
         const updatedSelectedProducts = selectedProducts.map((item) =>
-          item.productId === productId
+          item.id === id
             ? { ...item, desired_amount: newAmount } // Make sure it's 'desired_amount'
             : item
         );
@@ -397,7 +397,7 @@ const Cart = () => {
           },
           basketItems: [
             ...selectedProducts.map((item) => ({
-              id: item.productId,
+              id: item.id,
               name: item.productName,
               category1: "Collectibles", // Replace with your actual category1
               category2: "Accessories", // Replace with your actual category2

@@ -2,7 +2,7 @@ import React from "react";
 
 const button = (props) => {
   const lastHoveredProductId = props.hoveredProductId;
-  const currentHoveredProductId = props.productId;
+  const currentHoveredProductId = props.id;
   return (
     <button
       style={{

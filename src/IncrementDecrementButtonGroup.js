@@ -18,42 +18,48 @@ const IncrementDecrementButtonGroup = ({
   const handleDecrease = () => {
     if (counter > 0) {
       setCounter(counter - 1);
-      handleUpdateDesiredAmount(item.productId, counter - 1);
+      handleUpdateDesiredAmount(item.id, counter - 1);
     }
   };
 
   const handleIncrease = () => {
     setCounter(counter + 1);
-    handleUpdateDesiredAmount(item.productId, counter + 1);
+    handleUpdateDesiredAmount(item.id, counter + 1);
   };
 
   return (
-    <ButtonGroup
-      style={{ height: height ? `${height}px` : "30px", width: "100%" }}
-    >
-      <Button
-        disabled={counter === 0}
-        style={{ fontSize: `${height / 2}px` }}
-        onClick={handleDecrease}
+    <>
+      {console.log("initialValue: ", initialValue, " item: ", item)}
+      <ButtonGroup
+        style={{ height: height ? `${height}px` : "30px", width: "100%" }}
       >
-        -
-      </Button>
+        <Button
+          disabled={counter === 0}
+          style={{ fontSize: `${height / 2}px` }}
+          onClick={handleDecrease}
+        >
+          -
+        </Button>
 
-      <Button
-        disabled
-        style={{
-          color: "black",
-          width: counterWidth,
-          fontSize: `${height / 2}px`,
-        }}
-      >
-        {counter}
-      </Button>
+        <Button
+          disabled
+          style={{
+            color: "black",
+            width: counterWidth,
+            fontSize: `${height / 2}px`,
+          }}
+        >
+          {counter}
+        </Button>
 
-      <Button style={{ fontSize: `${height / 2}px` }} onClick={handleIncrease}>
-        +
-      </Button>
-    </ButtonGroup>
+        <Button
+          style={{ fontSize: `${height / 2}px` }}
+          onClick={handleIncrease}
+        >
+          +
+        </Button>
+      </ButtonGroup>
+    </>
   );
 };
 

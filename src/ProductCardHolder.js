@@ -37,6 +37,7 @@ const ProductCardHolder = ({
   setCartItems,
   cartItems,
   parentComponent,
+  handleUpdateDesiredAmount,
 }) => {
   const [favorites, setFavorites] = useState(currUserFavoriteProductsIds);
   const [hoveredProductId, setHoveredProductId] = useState(null);
@@ -49,23 +50,21 @@ const ProductCardHolder = ({
     setCartItems([...cartItems, { ...product, desiredAmount: 1 }]);
   };
 
-  const handleRemoveFromCart = (productId) => {
-    const updatedItems = cartItems.filter((item) => item.id !== productId);
+  const handleRemoveFromCart = (id) => {
+    const updatedItems = cartItems.filter((item) => item.id !== id);
     setCartItems(updatedItems);
   };
 
-  const handleIncreaseAmount = (productId) => {
+  const handleIncreaseAmount = (id) => {
     const updatedItems = cartItems.map((item) =>
-      item.id === productId
-        ? { ...item, desiredAmount: item.desiredAmount + 1 }
-        : item
+      item.id === id ? { ...item, desiredAmount: item.desiredAmount + 1 } : item
     );
     setCartItems(updatedItems);
   };
 
-  const handleDecreaseAmount = (productId) => {
+  const handleDecreaseAmount = (id) => {
     const updatedItems = cartItems.map((item) => {
-      if (item.id === productId) {
+      if (item.id === id) {
         const newAmount = item.desiredAmount - 1;
         if (newAmount <= 0) {
           return null;
@@ -114,13 +113,13 @@ const ProductCardHolder = ({
     }
   };
 
-  const isFavorite = (productId) => {
-    console.log("gelen product id: ", productId);
-    return favorites.some((favId) => favId === productId);
+  const isFavorite = (id) => {
+    console.log("gelen product id: ", id);
+    return favorites.some((favId) => favId === id);
   };
 
-  const handleProductCardMouseEnter = (productId) => {
-    setHoveredProductId(productId);
+  const handleProductCardMouseEnter = (id) => {
+    setHoveredProductId(id);
   };
 
   const handleProductCardMouseLeave = () => {
@@ -128,12 +127,14 @@ const ProductCardHolder = ({
   };
 
   const isItemAddedToCart = (product) => {
+    console.log("gelen", product);
     return cartItems.some((item) => item.id === product.id);
   };
 
-  const getCartItemAmount = (productId) => {
-    const cartItem = cartItems.find((item) => item.id === productId);
-    return cartItem ? cartItem.desiredAmount : 0;
+  const getCartItemAmount = (id) => {
+    console.log("ajajjaj", cartItems);
+    const cartItem = cartItems.find((item) => item.id === id);
+    return cartItem ? cartItem.desired_amount : 0;
   };
 
   const renderStars = (starPoint) => {
@@ -282,11 +283,10 @@ const ProductCardHolder = ({
                         <IncrementDecrementButtonGroup
                           counterWidth="500px"
                           height="25"
-                          item={product}
-                          handleDecreaseAmount={handleDecreaseAmount}
                           initialValue={getCartItemAmount(product.id)}
-                          handleIncreaseAmount={handleIncreaseAmount}
-                        ></IncrementDecrementButtonGroup>
+                          item={product}
+                          handleUpdateDesiredAmount={handleUpdateDesiredAmount}
+                        />
                       </div>
                       <Typography
                         style={{
@@ -307,7 +307,7 @@ const ProductCardHolder = ({
                   ) : (
                     <MyButton
                       hoveredProductId={hoveredProductId}
-                      productId={product.id}
+                      id={product.id}
                       buttonText={"Add to Cart"}
                       onClick={() => handleAddToCart(product)}
                     ></MyButton>

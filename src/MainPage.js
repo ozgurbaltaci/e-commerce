@@ -10,10 +10,12 @@ import { Grid } from "@material-ui/core";
 import ProductCardSkeleton from "./ProductCardSkeleton";
 import Carousel from "./components/Carousel";
 import CategoryBox from "./components/CategoryBox";
+import LoaderInBackdrop from "./components/LoaderInBackdrop";
 
 const MainPage = () => {
   const navigate = useNavigate();
   const [isProductsLoading, setIsProductsLoading] = useState(true);
+  const [isThereUpdateOperation, setIsThereUpdateOperation] = useState(false);
 
   const productsInCart = [
     {
@@ -61,9 +63,20 @@ const MainPage = () => {
         // Handle any errors that occurred during the request
         alert("Error fetching data:", error);
       });
-
-    setCartItems(productsInCart);
   }, []); // The empty array as the second argument makes this useEffect run once on component mount
+
+  useEffect(() => {
+    //get Cart Items HTTP request will be here
+    const user_id = localStorage.getItem("user_id");
+    axios
+      .get(`http://localhost:3002/getCart/${user_id}`) // Make a GET request with Axios, including the product_id as a parameter in the URL
+      .then((response) => {
+        setCartItems(response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
 
   useEffect(() => {
     const user_id = localStorage.getItem("user_id");
@@ -77,8 +90,42 @@ const MainPage = () => {
       });
   }, []);
 
+  const handleUpdateDesiredAmount = async (id, newAmount) => {
+    setIsThereUpdateOperation(true);
+    try {
+      // Make an Axios request to update the desired amount on the server
+      const user_id = localStorage.getItem("user_id");
+      const response = await axios.put(
+        `http://localhost:3002/updateDesiredAmount/${user_id}/${id}`,
+        {
+          desiredAmount: newAmount,
+        }
+      );
+
+      // Check if the update was successful
+      if (response.status === 200) {
+        // If successful, update the state locally using the callback function
+        const updatedItems = products.map((item) =>
+          item.id === id
+            ? { ...item, desired_amount: newAmount } // Make sure it's 'desired_amount'
+            : item
+        );
+
+        setProducts(updatedItems);
+        setIsThereUpdateOperation(false);
+      } else {
+        console.error("Failed to update desired amount.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <>
+      <LoaderInBackdrop
+        isThereUpdateOperation={isThereUpdateOperation}
+      ></LoaderInBackdrop>
       <Button onClick={() => navigate("/cart")}>
         cart: {cartItems.length}
       </Button>
@@ -137,6 +184,7 @@ const MainPage = () => {
             currUserFavoriteProductsIds={currUserFavoriteProductsIds}
             setCartItems={setCartItems}
             cartItems={cartItems}
+            handleUpdateDesiredAmount={handleUpdateDesiredAmount}
           />
         )}
       </div>

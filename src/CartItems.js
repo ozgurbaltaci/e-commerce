@@ -81,7 +81,7 @@ const CartItems = ({
             return (
               <>
                 <FormControlLabel
-                  key={item.productId}
+                  key={item.id}
                   control={
                     <Checkbox
                       checked={checkedChildren[childIndex]}
@@ -89,7 +89,7 @@ const CartItems = ({
                     />
                   }
                   label={
-                    <div style={{ position: "relative" }} key={item.productId}>
+                    <div style={{ position: "relative" }} key={item.id}>
                       <ListItem>
                         <div>
                           <img
@@ -135,8 +135,10 @@ const CartItems = ({
                         />
                         <Typography>
                           {item.discountedPrice
-                            ? item.discountedPrice * item.desired_amount
-                            : item.price * item.desired_amount}
+                            ? (
+                                item.discountedPrice * item.desired_amount
+                              ).toFixed(2)
+                            : (item.price * item.desired_amount).toFixed(2)}
                         </Typography>
                         <Button
                           onClick={() => {
