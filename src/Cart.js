@@ -125,7 +125,7 @@ const Cart = () => {
       } else {
         // Find and remove the specific product from the set
         for (const p of updatedSet) {
-          if (p.id === product.id) {
+          if (p.product_id === product.product_id) {
             updatedSet.delete(p);
             break;
           }
@@ -151,7 +151,9 @@ const Cart = () => {
   const calculateTotalPrice = () => {
     let totalPrice = 0;
     for (const product of selectedProducts) {
-      const selectedProduct = cartItems.find((item) => item.id === product.id);
+      const selectedProduct = cartItems.find(
+        (item) => item.product_id === product.product_id
+      );
 
       if (selectedProduct) {
         totalPrice += selectedProduct.discountedPrice
@@ -260,16 +262,28 @@ const Cart = () => {
     setDoorNumberError(false);
   };
 
-  const handleUpdateDesiredAmount = async (id, newAmount) => {
+  const handleUpdateDesiredAmount = async (product_id, newAmount) => {
     setIsThereUpdateOperation(true);
 
     try {
       // Make an Axios request to update the desired amount on the server
       const user_id = localStorage.getItem("user_id");
+      if (newAmount === 0) {
+        const updatedItems = cartItems.filter(
+          (item) => item.product_id !== product_id
+        );
+        setCartItems(updatedItems);
+        await axios.delete(
+          `http://localhost:3002/removeFromCart/${user_id}/${product_id}`
+        );
+        setIsThereUpdateOperation(false);
+        return; // Exit the function early if removeFromCart is called
+      }
+
       const response = await axios.put(
-        `http://localhost:3002/updateDesiredAmount/${user_id}/${id}`,
+        `http://localhost:3002/updateDesiredAmount/${user_id}/${product_id}`,
         {
-          desiredAmount: newAmount,
+          desired_amount: newAmount,
         }
       );
 
@@ -277,13 +291,13 @@ const Cart = () => {
       if (response.status === 200) {
         // If successful, update the state locally using the callback function
         const updatedItems = cartItems.map((item) =>
-          item.id === id
+          item.product_id === product_id
             ? { ...item, desired_amount: newAmount } // Make sure it's 'desired_amount'
             : item
         );
 
         const updatedSelectedProducts = selectedProducts.map((item) =>
-          item.id === id
+          item.product_id === product_id
             ? { ...item, desired_amount: newAmount } // Make sure it's 'desired_amount'
             : item
         );
@@ -303,11 +317,11 @@ const Cart = () => {
 
   for (const item of cartItems) {
     //Object destructing deniyormuş bu işleme
-    const { manufacturerId } = item; //It means const x = item.manufacturerId. Don't be confused. And we need curly braces to do this.
-    if (groupedItems.hasOwnProperty(manufacturerId)) {
-      groupedItems[manufacturerId].push(item);
+    const { manufacturer_id } = item; //It means const x = item.manufacturerId. Don't be confused. And we need curly braces to do this.
+    if (groupedItems.hasOwnProperty(manufacturer_id)) {
+      groupedItems[manufacturer_id].push(item);
     } else {
-      groupedItems[manufacturerId] = [item];
+      groupedItems[manufacturer_id] = [item];
     }
     /** Yukardaki kod ile bu kod tamamı ile aynı
     const x = item.manufacturerId;
@@ -397,7 +411,7 @@ const Cart = () => {
           },
           basketItems: [
             ...selectedProducts.map((item) => ({
-              id: item.id,
+              id: item.product_id,
               name: item.productName,
               category1: "Collectibles", // Replace with your actual category1
               category2: "Accessories", // Replace with your actual category2

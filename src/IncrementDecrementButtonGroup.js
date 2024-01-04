@@ -18,13 +18,13 @@ const IncrementDecrementButtonGroup = ({
   const handleDecrease = () => {
     if (counter > 0) {
       setCounter(counter - 1);
-      handleUpdateDesiredAmount(item.id, counter - 1);
+      handleUpdateDesiredAmount(item.product_id, counter - 1);
     }
   };
 
   const handleIncrease = () => {
     setCounter(counter + 1);
-    handleUpdateDesiredAmount(item.id, counter + 1);
+    handleUpdateDesiredAmount(item.product_id, counter + 1);
   };
 
   return (

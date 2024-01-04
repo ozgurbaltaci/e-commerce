@@ -54,7 +54,7 @@ const CartItems = ({
   };
   return (
     <FormGroup>
-      {console.log("itemsınManfuacturer: ", itemsInManufacturer)}
+      {console.log("cartItems in component: ", cartItems)}
       <Card key={manufacturerId} style={{ marginTop: index !== 0 && "20px" }}>
         <CardContent style={{ padding: 0 }}>
           <FormControlLabel
@@ -81,7 +81,7 @@ const CartItems = ({
             return (
               <>
                 <FormControlLabel
-                  key={item.id}
+                  key={item.product_id}
                   control={
                     <Checkbox
                       checked={checkedChildren[childIndex]}
@@ -89,13 +89,13 @@ const CartItems = ({
                     />
                   }
                   label={
-                    <div style={{ position: "relative" }} key={item.id}>
+                    <div style={{ position: "relative" }} key={item.product_id}>
                       <ListItem>
                         <div>
                           <img
                             src={item.image}
                             style={{ width: "130px" }}
-                            alt={item.productName}
+                            alt={item.product_name}
                           ></img>
                         </div>
                         <div
@@ -111,9 +111,9 @@ const CartItems = ({
                               wordWrap: "break-word", // Break words that exceed the width
                             }}
                           >
-                            {item.productName.length > 35
-                              ? item.productName.substring(0, 35) + "..."
-                              : item.productName}
+                            {item.product_name.length > 35
+                              ? item.product_name.substring(0, 35) + "..."
+                              : item.product_name}
                             <Labels
                               labelIcon={
                                 <FiPackage
@@ -134,16 +134,17 @@ const CartItems = ({
                           handleUpdateDesiredAmount={handleUpdateDesiredAmount}
                         />
                         <Typography>
-                          {item.discountedPrice
+                          {item.discounted_price
                             ? (
-                                item.discountedPrice * item.desired_amount
+                                item.discounted_price * item.desired_amount
                               ).toFixed(2)
                             : (item.price * item.desired_amount).toFixed(2)}
                         </Typography>
                         <Button
                           onClick={() => {
                             const afterDeleteCartItems = cartItems.filter(
-                              (product) => product.id !== item.id
+                              (product) =>
+                                product.product_id !== item.product_id
                             );
                             setCartItems(afterDeleteCartItems);
                             //TODO: set desired amount of that product as 0 by UPDATE request.

@@ -31,7 +31,7 @@ const Favorites = () => {
       productName: "Product Name",
       price: 10.99,
       discountedPrice: null,
-      desiredAmount: 1,
+      desired_amount: 1,
       image:
         "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
     },
@@ -41,7 +41,7 @@ const Favorites = () => {
       productName: "Product Name",
       price: 19.99,
       discountedPrice: 10.99,
-      desiredAmount: 1,
+      desired_amount: 1,
       image:
         "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
     },

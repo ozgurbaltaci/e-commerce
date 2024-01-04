@@ -45,54 +45,49 @@ const ProductCardHolder = ({
   const currentUserId = localStorage.getItem("user_id");
   const [isThereFavoritesUpdateOperation, setIsThereFavoritesUpdateOperation] =
     useState(false);
+  const [isThereAddToCartOperation, setIsThereAddToCartOperation] =
+    useState(false);
 
-  const handleAddToCart = (product) => {
-    setCartItems([...cartItems, { ...product, desiredAmount: 1 }]);
-  };
+  const handleAddToCart = async (product) => {
+    setIsThereAddToCartOperation(true);
+    const price_on_add =
+      product.discountedPrice !== null
+        ? product.discountedPrice
+        : product.price;
 
-  const handleRemoveFromCart = (id) => {
-    const updatedItems = cartItems.filter((item) => item.id !== id);
-    setCartItems(updatedItems);
-  };
+    try {
+      const response = await axios.post(
+        `http://localhost:3002/addToCart/${currentUserId}/${product.product_id}/${price_on_add}`
+      );
 
-  const handleIncreaseAmount = (id) => {
-    const updatedItems = cartItems.map((item) =>
-      item.id === id ? { ...item, desiredAmount: item.desiredAmount + 1 } : item
-    );
-    setCartItems(updatedItems);
-  };
-
-  const handleDecreaseAmount = (id) => {
-    const updatedItems = cartItems.map((item) => {
-      if (item.id === id) {
-        const newAmount = item.desiredAmount - 1;
-        if (newAmount <= 0) {
-          return null;
-        } else {
-          return { ...item, desiredAmount: newAmount };
-        }
-      } else {
-        return item;
+      if (response.status === 201) {
+        setIsThereAddToCartOperation(false);
+        const insertedRow = response.data;
+        setCartItems([...cartItems, insertedRow]);
       }
-    });
-    const filteredItems = updatedItems.filter((item) => item !== null);
-    setCartItems(filteredItems);
+    } catch (error) {
+      setIsThereAddToCartOperation(false);
+      alert("Product could not be added to your cart");
+      console.log(error);
+    }
   };
 
   const handleAddToFavorites = async (product) => {
     setIsThereFavoritesUpdateOperation(true);
-    const index = favorites.indexOf(product.id);
+    const index = favorites.indexOf(product.product_id);
     if (index !== -1) {
       // If it exists, remove it from the favorites array
 
       try {
         const response = await axios.delete(
-          `http://localhost:3002/removeFromFavorite/${currentUserId}/${product.id}`
+          `http://localhost:3002/removeFromFavorite/${currentUserId}/${product.product_id}`
         );
 
         if (response.status === 200) {
           setFavorites((prevFavorites) =>
-            prevFavorites.filter((id) => id !== product.id)
+            prevFavorites.filter(
+              (product_id) => product_id !== product.product_id
+            )
           );
           setIsThereFavoritesUpdateOperation(false);
         }
@@ -103,23 +98,23 @@ const ProductCardHolder = ({
       // If it doesn't exist, add it to the favorites array
       try {
         const response = await axios.post(
-          `http://localhost:3002/addToFavorite/${currentUserId}/${product.id}`
+          `http://localhost:3002/addToFavorite/${currentUserId}/${product.product_id}`
         );
       } catch (error) {
         console.log(error);
       }
-      setFavorites((prevFavorites) => [...prevFavorites, product.id]);
+      setFavorites((prevFavorites) => [...prevFavorites, product.product_id]);
       setIsThereFavoritesUpdateOperation(false);
     }
   };
 
-  const isFavorite = (id) => {
-    console.log("gelen product id: ", id);
-    return favorites.some((favId) => favId === id);
+  const isFavorite = (product_id) => {
+    console.log("gelen product product_id: ", product_id);
+    return favorites.some((favId) => favId === product_id);
   };
 
-  const handleProductCardMouseEnter = (id) => {
-    setHoveredProductId(id);
+  const handleProductCardMouseEnter = (product_id) => {
+    setHoveredProductId(product_id);
   };
 
   const handleProductCardMouseLeave = () => {
@@ -127,13 +122,14 @@ const ProductCardHolder = ({
   };
 
   const isItemAddedToCart = (product) => {
-    console.log("gelen", product);
-    return cartItems.some((item) => item.id === product.id);
+    console.log("cartItems", cartItems);
+    return cartItems.some((item) => item.product_id === product.product_id);
   };
 
-  const getCartItemAmount = (id) => {
-    console.log("ajajjaj", cartItems);
-    const cartItem = cartItems.find((item) => item.id === id);
+  const getCartItemAmount = (product_id) => {
+    console.log("ajajjaj", cartItems, " ve product_id: ", product_id);
+
+    const cartItem = cartItems.find((item) => item.product_id === product_id);
     return cartItem ? cartItem.desired_amount : 0;
   };
 
@@ -162,7 +158,9 @@ const ProductCardHolder = ({
   return (
     <Grid container spacing={3} style={{ overflowX: "hidden" }}>
       <LoaderInBackdrop
-        isThereUpdateOperation={isThereFavoritesUpdateOperation}
+        isThereUpdateOperation={
+          isThereFavoritesUpdateOperation || isThereAddToCartOperation
+        }
       ></LoaderInBackdrop>
       <Toast></Toast>
       {products.map((product) => (
@@ -180,7 +178,9 @@ const ProductCardHolder = ({
                 height: "100%",
                 position: "relative",
               }}
-              onMouseEnter={() => handleProductCardMouseEnter(product.id)}
+              onMouseEnter={() =>
+                handleProductCardMouseEnter(product.product_id)
+              }
               onMouseLeave={handleProductCardMouseLeave}
             >
               <IconButton
@@ -194,7 +194,7 @@ const ProductCardHolder = ({
                 aria-label="Add to favorites"
                 onClick={() => handleAddToFavorites(product)}
               >
-                {isFavorite(product.id) ? (
+                {isFavorite(product.product_id) ? (
                   <Favorite color="secondary" style={{ fontSize: 16 }} />
                 ) : (
                   <FavoriteBorder style={{ fontSize: 16 }} />
@@ -283,7 +283,7 @@ const ProductCardHolder = ({
                         <IncrementDecrementButtonGroup
                           counterWidth="500px"
                           height="25"
-                          initialValue={getCartItemAmount(product.id)}
+                          initialValue={getCartItemAmount(product.product_id)}
                           item={product}
                           handleUpdateDesiredAmount={handleUpdateDesiredAmount}
                         />
@@ -307,7 +307,7 @@ const ProductCardHolder = ({
                   ) : (
                     <MyButton
                       hoveredProductId={hoveredProductId}
-                      id={product.id}
+                      id={product.product_id}
                       buttonText={"Add to Cart"}
                       onClick={() => handleAddToCart(product)}
                     ></MyButton>
