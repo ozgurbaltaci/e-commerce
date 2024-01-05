@@ -8,6 +8,7 @@ import Register from "./Register";
 import Login from "./Login";
 import AddProduct from "./AddProduct";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import NavBar from "./NavBar";
 
 const theme = createMuiTheme({
   typography: {
@@ -52,18 +53,21 @@ const theme = createMuiTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <Routes>
-        <Route path="*" element={<Navigate to="/" />} />
+      <div style={{ padding: "0px 70px 0px 70px" }}>
+        <NavBar></NavBar>
+        <Routes>
+          <Route path="*" element={<Navigate to="/" />} />
 
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        <Route path="/mainPage" element={<MainPage />} />
-        <Route path="/addProduct" element={<AddProduct />} />
+          <Route path="/mainPage" element={<MainPage />} />
+          <Route path="/addProduct" element={<AddProduct />} />
 
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/favorites" element={<Favorites />} />
-      </Routes>
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/favorites" element={<Favorites />} />
+        </Routes>
+      </div>
     </ThemeProvider>
   );
 }

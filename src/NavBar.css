@@ -1,0 +1,7 @@
+.navBar .MuiOutlinedInput-notchedOutline {
+  border: 1px solid #f7f7f7 !important;
+  border-radius: 5px !important;
+  background-color: #f7f7f7;
+  color: black;
+  z-index: -1;
+}

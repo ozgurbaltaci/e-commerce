@@ -693,7 +693,7 @@ const Cart = () => {
         </DialogActions>
       </Dialog>
 
-      <div style={{ display: "flex", margin: "60px 80px" }}>
+      <div style={{ display: "flex" }}>
         <div
           style={{
             display: "block",

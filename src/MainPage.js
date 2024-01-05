@@ -109,11 +109,8 @@ const MainPage = () => {
       <LoaderInBackdrop
         isThereUpdateOperation={isThereUpdateOperation}
       ></LoaderInBackdrop>
-      <Button onClick={() => navigate("/cart")}>
-        cart: {cartItems.length}
-      </Button>
-      <Button onClick={() => navigate("/favorites")}>Favorites</Button>
-      <div style={{ padding: "20px 70px" }}>
+
+      <div>
         <div
           style={{
             display: "flex",
