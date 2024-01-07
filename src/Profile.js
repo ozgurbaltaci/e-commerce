@@ -19,9 +19,14 @@ const sideBarOptions = [
   },
   { group: "Logout", options: ["Log out"] },
 ];
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+};
 
 const Profile = () => {
   const [selectedOption, setSelectedOption] = useState("My Orders");
+  const userName = localStorage.getItem("user_name");
+  const userSurname = localStorage.getItem("user_surname");
 
   const handleOptionClick = (option) => {
     setSelectedOption(option);
@@ -53,7 +58,8 @@ const Profile = () => {
                 fontSize: "24px",
               }}
             >
-              ÖB{" "}
+              {userName.charAt(0).toUpperCase()}
+              {userSurname.charAt(0).toUpperCase()}
             </Avatar>
           </div>
           <Grid
@@ -65,7 +71,9 @@ const Profile = () => {
             }}
             item
           >
-            Özgür Baltacı
+            {capitalizeFirstLetter(userName)}
+            &nbsp;&nbsp;
+            {capitalizeFirstLetter(userSurname)}
           </Grid>
         </Grid>
         <Grid>
