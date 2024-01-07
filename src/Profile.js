@@ -72,7 +72,7 @@ const Profile = () => {
             item
           >
             {capitalizeFirstLetter(userName)}
-            &nbsp;&nbsp;
+            &nbsp;
             {capitalizeFirstLetter(userSurname)}
           </Grid>
         </Grid>
