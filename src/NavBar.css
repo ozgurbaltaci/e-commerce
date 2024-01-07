@@ -5,3 +5,7 @@
   color: black;
   z-index: -1;
 }
+
+.navBar .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #2fb009 !important;
+}

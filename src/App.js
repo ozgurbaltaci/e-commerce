@@ -7,6 +7,7 @@ import Favorites from "./Favorites";
 import Register from "./Register";
 import Login from "./Login";
 import AddProduct from "./AddProduct";
+import Profile from "./Profile";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import NavBar from "./NavBar";
 
@@ -60,6 +61,7 @@ function App() {
 
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<Profile />} />
 
           <Route path="/mainPage" element={<MainPage />} />
           <Route path="/addProduct" element={<AddProduct />} />

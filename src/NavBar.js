@@ -67,24 +67,23 @@ const NavBar = () => {
             }}
           />
         </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={1}
-          md={1}
-          lg={1}
-          style={{
-            textAlign: "right",
-            fontSize: "12px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <PersonOutlineOutlinedIcon
-            style={{ fontSize: "18px" }}
-          ></PersonOutlineOutlinedIcon>
-          Profile
+        <Grid item xs={12} sm={1} md={1} lg={1}>
+          <div
+            style={{
+              textAlign: "right",
+              fontSize: "12px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              cursor: "pointer",
+            }}
+            onClick={() => navigate("/profile")}
+          >
+            <PersonOutlineOutlinedIcon
+              style={{ fontSize: "18px" }}
+            ></PersonOutlineOutlinedIcon>
+            Profile
+          </div>
         </Grid>{" "}
         <Grid item xs={12} sm={1} md={1} lg={1}>
           <div
