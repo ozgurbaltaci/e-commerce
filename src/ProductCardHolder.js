@@ -48,6 +48,8 @@ const ProductCardHolder = ({
   const [isThereAddToCartOperation, setIsThereAddToCartOperation] =
     useState(false);
 
+  const navigate = useNavigate();
+
   const handleAddToCart = async (product) => {
     setIsThereAddToCartOperation(true);
     const price_on_add =
@@ -299,7 +301,9 @@ const ProductCardHolder = ({
                           border: "none",
                           color: "white",
                           marginLeft: "10px",
+                          cursor: "pointer",
                         }}
+                        onClick={() => navigate("/cart")}
                       >
                         Buy Now
                       </Typography>

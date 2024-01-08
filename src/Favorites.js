@@ -4,19 +4,7 @@ import { Grid } from "@material-ui/core";
 import ProductCardHolder from "./ProductCardHolder";
 import ProductCardSkeleton from "./ProductCardSkeleton";
 
-import {
-  Card,
-  CardContent,
-  Divider,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Box,
-  Button,
-} from "@material-ui/core";
-
-import AddProduct from "./AddProduct";
+import LoaderInBackdrop from "./components/LoaderInBackdrop";
 
 const Favorites = () => {
   const [favoriteItems, setFavoriteItems] = useState([]);
@@ -24,30 +12,21 @@ const Favorites = () => {
     useState([]);
   const [isProductsLoading, setIsProductsLoading] = useState(true);
 
-  const productsInCart = [
-    {
-      id: 1,
-      manufacturorName: "Manufacturor name",
-      productName: "Product Name",
-      price: 10.99,
-      discountedPrice: null,
-      desired_amount: 1,
-      image:
-        "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
-    },
-    {
-      id: 2,
-      manufacturorName: "Manufacturor name",
-      productName: "Product Name",
-      price: 19.99,
-      discountedPrice: 10.99,
-      desired_amount: 1,
-      image:
-        "https://www.southernliving.com/thmb/Jvr-IldH7yuDqqcv7PU8tPDdOBQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1206682746-2000-ff74cd1cde3546a5be6fec30fee23cc7.jpg",
-    },
-  ];
+  const [cartItems, setCartItems] = useState([]);
+  const [isThereUpdateOperation, setIsThereUpdateOperation] = useState(false);
 
-  const [cartItems, setCartItems] = useState(productsInCart);
+  useEffect(() => {
+    //get Cart Items HTTP request will be here
+    const user_id = localStorage.getItem("user_id");
+    axios
+      .get(`http://localhost:3002/getCart/${user_id}`) // Make a GET request with Axios, including the product_id as a parameter in the URL
+      .then((response) => {
+        setCartItems(response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
 
   useEffect(() => {
     const user_id = localStorage.getItem("user_id");
@@ -75,8 +54,48 @@ const Favorites = () => {
       });
   }, []);
 
+  const handleUpdateDesiredAmount = async (product_id, newAmount) => {
+    setIsThereUpdateOperation(true);
+    try {
+      const user_id = localStorage.getItem("user_id");
+
+      // Check if the newAmount is 0 and call removeFromCart endpoint
+      if (newAmount === 0) {
+        const updatedItems = cartItems.filter(
+          (item) => item.product_id !== product_id
+        );
+        setCartItems(updatedItems);
+        await axios.delete(
+          `http://localhost:3002/removeFromCart/${user_id}/${product_id}`
+        );
+        setIsThereUpdateOperation(false);
+        return; // Exit the function early if removeFromCart is called
+      }
+
+      const response = await axios.put(
+        `http://localhost:3002/updateDesiredAmount/${user_id}/${product_id}`,
+        {
+          desired_amount: newAmount,
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Cart items: ", cartItems);
+
+        setIsThereUpdateOperation(false);
+      } else {
+        console.error("Failed to update desired amount.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <>
+      <LoaderInBackdrop
+        isThereUpdateOperation={isThereUpdateOperation}
+      ></LoaderInBackdrop>
       <h2>My Favorites</h2>
 
       {isProductsLoading ? (
@@ -101,6 +120,7 @@ const Favorites = () => {
           currUserFavoriteProductsIds={currUserFavoriteProductsIds}
           setCartItems={setCartItems}
           cartItems={cartItems}
+          handleUpdateDesiredAmount={handleUpdateDesiredAmount}
         />
       )}
     </>
