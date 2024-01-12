@@ -120,8 +120,24 @@ const Cart = () => {
     setSelectedProducts((prevSelectedProducts) => {
       const updatedSet = new Set(prevSelectedProducts);
 
+      const selectedProductsArr = {
+        product_id: product.product_id,
+        product_name: product.product_name,
+        currPrice:
+          product.discounted_price !== null
+            ? product.discounted_price
+            : product.price,
+        desired_amount: product.desired_amount,
+      };
+      console.log(
+        "produccct:",
+        product,
+        " selectedProducts: ",
+        selectedProductsArr
+      );
+
       if (isSelected) {
-        updatedSet.add(product);
+        updatedSet.add(selectedProductsArr);
       } else {
         // Find and remove the specific product from the set
         for (const p of updatedSet) {
@@ -151,14 +167,13 @@ const Cart = () => {
   const calculateTotalPrice = () => {
     let totalPrice = 0;
     for (const product of selectedProducts) {
-      const selectedProduct = cartItems.find(
+      const selectedProduct = selectedProducts.find(
         (item) => item.product_id === product.product_id
       );
 
       if (selectedProduct) {
-        totalPrice += selectedProduct.discountedPrice
-          ? selectedProduct.discountedPrice * selectedProduct.desired_amount
-          : selectedProduct.price * selectedProduct.desired_amount;
+        totalPrice +=
+          selectedProduct.currPrice * selectedProduct.desired_amount;
       }
     }
 
@@ -298,7 +313,11 @@ const Cart = () => {
 
         const updatedSelectedProducts = selectedProducts.map((item) =>
           item.product_id === product_id
-            ? { ...item, desired_amount: newAmount } // Make sure it's 'desired_amount'
+            ? {
+                ...item,
+
+                desired_amount: newAmount,
+              } // Make sure it's 'desired_amount'
             : item
         );
         console.log("updatedSelectedProducts: ", updatedSelectedProducts);
@@ -371,6 +390,31 @@ const Cart = () => {
       {...props}
     />
   ));
+  const saveOrder = async () => {
+    try {
+      const saveOrderResponse = await fetch(
+        `http://localhost:3002/saveOrder/${localStorage.getItem("user_id")}`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            selectedProducts: selectedProducts,
+          }),
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (saveOrderResponse.status === 200) {
+        alert(`Order saved successfully.`);
+      } else {
+        alert(`Error: Failed to save the order.`);
+      }
+    } catch (err) {
+      alert(err);
+    }
+  };
 
   const handleCheckout = async () => {
     console.log("sss", selectedProducts);
@@ -412,14 +456,11 @@ const Cart = () => {
           basketItems: [
             ...selectedProducts.map((item) => ({
               id: item.product_id,
-              name: item.productName,
+              name: item.product_name,
               category1: "Collectibles", // Replace with your actual category1
               category2: "Accessories", // Replace with your actual category2
               itemType: "PHYSICAL", // Replace with your actual itemType
-              price:
-                item.discountedPrice !== null
-                  ? item.discountedPrice.toFixed(2) * item.desired_amount
-                  : item.price.toFixed(2) * item.desired_amount, // Format the price to two decimal places
+              price: item.currPrice.toFixed(2) * item.desired_amount,
             })),
             // Add shipping fee item if it's non-zero
             ...(shippingFee > 0
@@ -469,16 +510,15 @@ const Cart = () => {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           "Content-Type": "application/json",
         },
-      }).then((res) => {
-        console.log(res); // Log the entire response
-        if (res.status === 200) {
-          alert(`Payment is successful.`);
-        } else if (res.status === 201) {
-          alert("You are not authorized");
-        } else {
-          alert(`Error: Payment failed.`);
-        }
       });
+      if (payment.status === 200) {
+        alert(`Payment is successful.`);
+        await saveOrder();
+      } else if (payment.status === 201) {
+        alert("You are not authorized");
+      } else {
+        alert(`Error: Payment failed.`);
+      }
     } catch (err) {
       alert(err);
     }
