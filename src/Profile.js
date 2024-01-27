@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import MyOrders from "./MyOrders";
 import {
   Card,
   Grid,
@@ -37,12 +38,12 @@ const Profile = () => {
   }, [selectedOption]);
 
   const renderSideBar = () => (
-    <Card style={{ maxWidth: "fit-content", padding: "15px" }}>
+    <Card style={{ padding: "15px", width: "200px" }}>
       <Grid container direction="column" spacing={1}>
         <Grid item>
           <div
             style={{
-              width: "200px",
+              width: "100%",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -107,10 +108,21 @@ const Profile = () => {
   );
 
   const renderSelectedOption = () => (
-    <Box style={{ marginLeft: "20px" }}>
-      <Typography variant="h2"> {selectedOption}</Typography>
+    <Box style={{ display: "block", marginLeft: "20px", width: "100%" }}>
+      <Typography variant="h2">{selectedOption}</Typography>
+      {(() => {
+        switch (selectedOption) {
+          case "My Orders":
+            return <MyOrders />;
+            break;
+          default:
+            // Your code for other cases
+            break;
+        }
+      })()}
     </Box>
   );
+
   return (
     <>
       <div style={{ display: "flex" }}>
