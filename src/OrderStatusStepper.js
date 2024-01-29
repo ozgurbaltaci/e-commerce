@@ -20,82 +20,9 @@ import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
 
-const QontoConnector = styled(StepConnector)(({ theme }) => ({
-  [`&.${stepConnectorClasses.alternativeLabel}`]: {
-    top: 10,
-    left: "calc(-50% + 16px)",
-    right: "calc(50% + 16px)",
-  },
-  [`&.${stepConnectorClasses.active}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      borderColor: "#784af4",
-    },
-  },
-  [`&.${stepConnectorClasses.completed}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      borderColor: "#784af4",
-    },
-  },
-  [`& .${stepConnectorClasses.line}`]: {
-    borderColor:
-      theme.palette.mode === "dark" ? theme.palette.grey[800] : "#eaeaf0",
-    borderTopWidth: 3,
-    borderRadius: 1,
-  },
-}));
-
-const QontoStepIconRoot = styled("div")(({ theme, ownerState }) => ({
-  color: theme.palette.mode === "dark" ? theme.palette.grey[700] : "#eaeaf0",
-  display: "flex",
-  height: 22,
-  alignItems: "center",
-  ...(ownerState.active && {
-    color: "#784af4",
-  }),
-  "& .QontoStepIcon-completedIcon": {
-    color: "#784af4",
-    zIndex: 1,
-    fontSize: 18,
-  },
-  "& .QontoStepIcon-circle": {
-    width: 8,
-    height: 8,
-    borderRadius: "50%",
-    backgroundColor: "currentColor",
-  },
-}));
-
-function QontoStepIcon(props) {
-  const { active, completed, className } = props;
-
-  return (
-    <QontoStepIconRoot ownerState={{ active }} className={className}>
-      {completed ? (
-        <Check className="QontoStepIcon-completedIcon" />
-      ) : (
-        <div className="QontoStepIcon-circle" />
-      )}
-    </QontoStepIconRoot>
-  );
-}
-
-QontoStepIcon.propTypes = {
-  /**
-   * Whether this step is active.
-   * @default false
-   */
-  active: PropTypes.bool,
-  className: PropTypes.string,
-  /**
-   * Mark the step as completed. Is passed to child components.
-   * @default false
-   */
-  completed: PropTypes.bool,
-};
-
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
-    top: 22,
+    top: 9,
   },
   [`&.${stepConnectorClasses.active}`]: {
     [`& .${stepConnectorClasses.line}`]: {
@@ -110,7 +37,7 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
     },
   },
   [`& .${stepConnectorClasses.line}`]: {
-    height: 3,
+    height: 2,
     border: 0,
     backgroundColor:
       theme.palette.mode === "dark" ? theme.palette.grey[800] : "#eaeaf0",
@@ -123,8 +50,8 @@ const ColorlibStepIconRoot = styled("div")(({ theme, ownerState }) => ({
     theme.palette.mode === "dark" ? theme.palette.grey[700] : "#ccc",
   zIndex: 1,
   color: "#fff",
-  width: 50,
-  height: 50,
+  width: 20,
+  height: 20,
   display: "flex",
   borderRadius: "50%",
   justifyContent: "center",
@@ -145,11 +72,11 @@ function ColorlibStepIcon(props) {
   const { active, completed, className } = props;
 
   const icons = {
-    1: <PendingActionsIcon />,
-    2: <AutoAwesomeIcon />,
-    3: <LocalShippingIcon />,
-    4: <BeenhereIcon />,
-    5: <CheckIcon />,
+    1: <PendingActionsIcon style={{ fontSize: "10px" }} />,
+    2: <AutoAwesomeIcon style={{ fontSize: "10px" }} />,
+    3: <LocalShippingIcon style={{ fontSize: "10px" }} />,
+    4: <BeenhereIcon style={{ fontSize: "10px" }} />,
+    5: <CheckIcon style={{ fontSize: "10px" }} />,
   };
 
   return (
@@ -157,7 +84,7 @@ function ColorlibStepIcon(props) {
       ownerState={{ completed, active }}
       className={className}
     >
-      {icons[String(props.icon)]}
+      <div>{icons[String(props.icon)]}</div>
     </ColorlibStepIconRoot>
   );
 }
@@ -182,31 +109,26 @@ ColorlibStepIcon.propTypes = {
 
 const steps = [
   "Order Received",
-  "Your order is being prepared",
+  "Order is being prepared",
   "Order is on the way",
   "Order has arrived",
   "Order completed",
 ];
 
-export default function CustomizedSteppers() {
+export default function CustomizedSteppers({ activeStep }) {
   return (
     <Stack sx={{ width: "100%" }} spacing={4}>
-      <Stepper alternativeLabel activeStep={2} connector={<QontoConnector />}>
-        {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel StepIconComponent={QontoStepIcon}>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
       <Stepper
         alternativeLabel
-        activeStep={4}
+        activeStep={activeStep - 1}
         connector={<ColorlibConnector />}
       >
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel StepIconComponent={ColorlibStepIcon}>
-              <div style={{ fontFamily: "Cabin" }}>{label}</div>
+              <div style={{ fontFamily: "Cabin", fontSize: "6px" }}>
+                {label}
+              </div>
             </StepLabel>
           </Step>
         ))}

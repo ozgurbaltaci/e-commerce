@@ -10,6 +10,7 @@ import Typography from "@mui/material/Typography";
 import { Card } from "@mui/material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import classes from "./MyOrders.module.css";
+import OrderStatusStepper from "./OrderStatusStepper";
 
 const MyOrders = () => {
   const [orders, setOrders] = useState({ orders: [] });
@@ -168,10 +169,23 @@ const MyOrders = () => {
               >
                 <div>
                   <strong>Order ID: {order.order_id}</strong>
-                  <div>17th December 2023</div>
-                </div>
 
-                <div style={{ color: "#00990F" }}>{order.total_price}₺</div>
+                  <div>{order.order_date}</div>
+                </div>
+                <div style={{ width: "500px" }}>
+                  <OrderStatusStepper
+                    activeStep={order.order_status_id}
+                  ></OrderStatusStepper>
+                </div>
+                <div
+                  style={{
+                    color: "#00990F",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {order.total_price}₺
+                </div>
               </div>
             </div>
           </AccordionSummary>
