@@ -7,10 +7,11 @@ import Divider from "@mui/material/Divider";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
-import { Card } from "@mui/material";
+import { Card, Grid, Paper } from "@mui/material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import classes from "./MyOrders.module.css";
 import OrderStatusStepper from "./OrderStatusStepper";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const MyOrders = () => {
   const [orders, setOrders] = useState({ orders: [] });
@@ -45,8 +46,10 @@ const MyOrders = () => {
           <div>
             <Accordion defaultExpanded={true}>
               <AccordionSummary
-                expandIcon={<ArrowDownwardIcon />}
-                style={{ height: "10px" }} // Set the desired height
+                expandIcon={
+                  <KeyboardArrowDownIcon style={{ fontSize: "12px" }} />
+                }
+                style={{ minHeight: "30px", maxHeight: "30px" }} // Set the desired height
               >
                 <div
                   style={{
@@ -61,58 +64,108 @@ const MyOrders = () => {
                 <>
                   {" "}
                   <Divider />
-                  <AccordionDetails>
-                    <div style={{ display: "flex" }}>
-                      <img
-                        key={index}
-                        src={product.image}
-                        style={{
-                          width: "70px",
-                          height: "70px",
-                          boxShadow: "0 0 5px 2px rgba(0,0,0,0.01)",
-                          borderRadius: "2px",
-                        }}
-                        alt={product.product_name}
-                      />
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <div style={{ display: "block" }}>
-                          <div>{product.product_name}</div>
-                          <div>{product.price_on_add}₺</div>
+                  <AccordionDetails style={{ display: "flex" }}>
+                    <img
+                      key={index}
+                      src={product.image}
+                      style={{
+                        display: "flex",
+                        width: "50px",
+                        height: "50px",
+                        boxShadow: "0 0 5px 2px rgba(0,0,0,0.01)",
+                        borderRadius: "2px",
+                        marginRight: "15px",
+                      }}
+                      alt={product.product_name}
+                    />
+                    <Grid
+                      container
+                      spacing={5}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Grid item xs={12} sm={3} md={3}>
+                        <div
+                          style={{
+                            display: "block",
+                            fontSize: "11px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "block",
+                              whiteSpace: "nowrap", // Prevent text wrapping
+                              overflow: "hidden",
+                              textOverflow: "ellipsis", // Display ellipsis for overflow
+                            }}
+                          >
+                            {" "}
+                            {product.product_name}
+                          </div>
+                          <div style={{ color: "#00990F", fontWeight: "bold" }}>
+                            {product.price_on_add}₺
+                          </div>
                         </div>
-                        <div style={{ display: "block" }}>
+                      </Grid>
+                      <Grid item xs={12} sm={3} md={3}>
+                        <div style={{ display: "block", fontSize: "11px" }}>
                           <div>Desired Amount:</div>
-                          <div> {product.desired_amount}</div>
+                          <div style={{ color: "#00990F", fontWeight: "bold" }}>
+                            {" "}
+                            {product.desired_amount}
+                          </div>
                         </div>
-                        <div style={{ display: "block" }}>
+                      </Grid>
+                      <Grid item xs={12} sm={2} md={2}>
+                        <div style={{ display: "block", fontSize: "11px" }}>
                           <div>Total Price:</div>
-                          <div> {product.total_price_for_product}</div>
+                          <div style={{ color: "#00990F", fontWeight: "bold" }}>
+                            {" "}
+                            {product.total_price_for_product}
+                          </div>
                         </div>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        sm={4}
+                        md={4}
+                        style={{ display: "flex", justifyContent: "flex-end" }}
+                      >
                         <button
                           style={{
-                            width: "84px",
+                            width: "80px",
                             height: "24px",
-                            fontSize: "10px",
+                            fontSize: "9px",
+                            fontWeight: "bold",
+                            backgroundColor: "rgba(173,176,9,0.16)",
+                            border: "none",
+                            color: "rgba(173,176,9)",
+                            borderRadius: "2px",
+                            marginRight: "9px",
                           }}
                         >
                           Review Order
                         </button>
+
                         <button
                           style={{
-                            width: "84px",
+                            width: "80px",
                             height: "24px",
-                            fontSize: "10px",
+                            fontSize: "9px",
+                            fontWeight: "bold",
+                            backgroundColor: "rgba(47,176,9,0.16)",
+                            border: "none",
+                            color: "rgba(47,176,9)",
+                            borderRadius: "2px",
                           }}
                         >
                           Buy Again
                         </button>
-                      </div>
-                    </div>
+                      </Grid>
+                    </Grid>
                   </AccordionDetails>
                 </>
               ))}
@@ -131,35 +184,44 @@ const MyOrders = () => {
             expandIcon={<ArrowDownwardIcon />}
             aria-controls={`panel-${order.order_id}-content`}
             id={`panel-${order.order_id}-header`}
+            style={{ display: "flex", alignItems: "center" }}
           >
             <div style={{ display: "flex" }}>
-              {order.products.slice(0, 2).map((product, index) => (
-                <Avatar
-                  className={classes.imgAvatar}
-                  key={index}
-                  alt={product.product_name}
-                  src={product.image}
-                  sx={{
-                    width: "38px",
-                    height: "38px",
-                    boxShadow: "0 0 5px 2px rgba(0,0,0,0.08)",
-                  }}
-                />
-              ))}
-              {order.products.length > 2 && (
-                <Avatar
-                  sx={{
-                    width: "38px",
-                    height: "38px",
-                    backgroundColor: "#EDEDED",
-                    fontSize: "12px",
-                    color: "black",
-                    marginLeft: "-15px",
-                  }}
-                >
-                  +{order.products.length - 2}
-                </Avatar>
-              )}
+              <div
+                style={{
+                  display: "flex",
+                  width: "84px",
+                  justifyContent: "center",
+                }}
+              >
+                {order.products.slice(0, 2).map((product, index) => (
+                  <Avatar
+                    className={classes.imgAvatar}
+                    key={index}
+                    alt={product.product_name}
+                    src={product.image}
+                    sx={{
+                      width: "38px",
+                      height: "38px",
+                      boxShadow: "0 0 5px 2px rgba(0,0,0,0.08)",
+                    }}
+                  />
+                ))}
+                {order.products.length > 2 && (
+                  <Avatar
+                    sx={{
+                      width: "38px",
+                      height: "38px",
+                      backgroundColor: "#EDEDED",
+                      fontSize: "12px",
+                      color: "black",
+                      marginLeft: "-15px",
+                    }}
+                  >
+                    +{order.products.length - 2}
+                  </Avatar>
+                )}
+              </div>
               <div
                 style={{
                   display: "flex",
@@ -167,7 +229,7 @@ const MyOrders = () => {
                   alignItems: "center",
                 }}
               >
-                <div>
+                <div style={{ width: "90px" }}>
                   <strong>Order ID: {order.order_id}</strong>
 
                   <div>{order.order_date}</div>
@@ -179,12 +241,15 @@ const MyOrders = () => {
                 </div>
                 <div
                   style={{
+                    width: "70px",
+                    display: "flex",
+                    justifyContent: "flex-end",
                     color: "#00990F",
                     fontSize: "14px",
                     fontWeight: "bold",
                   }}
                 >
-                  {order.total_price}₺
+                  {order.total_price} TL
                 </div>
               </div>
             </div>
