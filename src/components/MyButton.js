@@ -20,7 +20,10 @@ const button = (props) => {
       }}
       variant="contained"
       color="primary"
-      onClick={() => props.onClick()}
+      onClick={(e) => {
+        e.stopPropagation();
+        props.onClick();
+      }}
     >
       {props.buttonText}
     </button>

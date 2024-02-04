@@ -36,7 +36,10 @@ const IncrementDecrementButtonGroup = ({
         <Button
           disabled={counter === 0}
           style={{ fontSize: `${height / 2}px` }}
-          onClick={handleDecrease}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDecrease();
+          }}
         >
           -
         </Button>
@@ -54,7 +57,10 @@ const IncrementDecrementButtonGroup = ({
 
         <Button
           style={{ fontSize: `${height / 2}px` }}
-          onClick={handleIncrease}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleIncrease();
+          }}
         >
           +
         </Button>

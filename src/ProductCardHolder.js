@@ -184,6 +184,9 @@ const ProductCardHolder = ({
                 handleProductCardMouseEnter(product.product_id)
               }
               onMouseLeave={handleProductCardMouseLeave}
+              onClick={() => {
+                alert("calisti");
+              }}
             >
               <IconButton
                 style={{
@@ -194,7 +197,10 @@ const ProductCardHolder = ({
                   padding: "5px",
                 }}
                 aria-label="Add to favorites"
-                onClick={() => handleAddToFavorites(product)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAddToFavorites(product);
+                }}
               >
                 {isFavorite(product.product_id) ? (
                   <Favorite color="secondary" style={{ fontSize: 16 }} />
@@ -208,13 +214,33 @@ const ProductCardHolder = ({
                 style={{ width: "100%", height: 224 }}
               />
               <CardContent style={{ paddingTop: "10px" }}>
-                <Typography style={{ fontSize: "12px", fontWeight: "bold" }}>
+                <Typography
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    width: "fit-content",
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   {product.manufacturerName}
                 </Typography>
-                <Typography variant="body2" color="textSecondary">
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  style={{
+                    width: "fit-content",
+                  }}
+                >
                   {product.productName}
                 </Typography>
-                <div style={{ display: "flex", marginTop: "4px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    marginTop: "4px",
+                  }}
+                >
                   {product.campaigns &&
                     product.campaigns.map((item, index) => {
                       return (
@@ -230,6 +256,10 @@ const ProductCardHolder = ({
                     fontSize: "12px",
                     marginTop: "4px",
                     alignItems: "center",
+                    width: "fit-content",
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
                   }}
                 >
                   {renderStars(product.starPoint)}
@@ -303,7 +333,10 @@ const ProductCardHolder = ({
                           marginLeft: "10px",
                           cursor: "pointer",
                         }}
-                        onClick={() => navigate("/cart")}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate("/cart");
+                        }}
                       >
                         Buy Now
                       </Typography>
@@ -313,7 +346,9 @@ const ProductCardHolder = ({
                       hoveredProductId={hoveredProductId}
                       id={product.product_id}
                       buttonText={"Add to Cart"}
-                      onClick={() => handleAddToCart(product)}
+                      onClick={(e) => {
+                        handleAddToCart(product);
+                      }}
                     ></MyButton>
                   )}
                 </div>
