@@ -21,6 +21,7 @@ const MainPage = () => {
   const [products, setProducts] = useState([]);
   const [currUserFavoriteProductsIds, setCurrUserFavoriteProductsIds] =
     useState([]);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     //TODO: getCartItems first with the GET method.
@@ -35,6 +36,26 @@ const MainPage = () => {
         console.log(response.data);
         setProducts(response.data);
         setIsProductsLoading(false);
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the request
+        alert("Error fetching data:", error);
+      });
+  }, []); // The empty array as the second argument makes this useEffect run once on component mount
+
+  useEffect(() => {
+    //TODO: getCartItems first with the GET method.
+
+    // Define the URL of the API you want to request
+    const apiUrl = "http://localhost:3002/getCategories"; // Replace with your API URL
+
+    // Use Axios to make the GET request
+    axios
+      .get(apiUrl)
+      .then((response) => {
+        console.log(response.data);
+        setCategories(response.data);
+        console.log("categoriess:", response.data);
       })
       .catch((error) => {
         // Handle any errors that occurred during the request
@@ -132,14 +153,14 @@ const MainPage = () => {
                   gap: "20px",
                 }}
               >
-                <CategoryBox
-                  imagePath={require("./Organics.png")}
-                  label={"deneme"}
-                ></CategoryBox>
-                <CategoryBox
-                  imagePath={require("./Handmades.png")}
-                  label={"deneme"}
-                ></CategoryBox>
+                {categories.map((category) => {
+                  return (
+                    <CategoryBox
+                      imagePath={category.category_img}
+                      label={category.category_name}
+                    ></CategoryBox>
+                  );
+                })}
               </div>
             </Grid>
           </Grid>
