@@ -2,15 +2,25 @@ import React, { useEffect, useState } from "react";
 import ProductCardHolder from "./ProductCardHolder";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import Typography from "@mui/material/Typography";
-import Breadcrumbs from "@mui/material/Breadcrumbs";
-import Link from "@mui/material/Link";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import Breadcrumb from "./components/BreadCrumb";
 
 const SubCategoriesPage = () => {
-  const { subCategoryId, subCategoryName } = useParams();
+  const { categoryId, categoryName, subCategoryId, subCategoryName } =
+    useParams();
   const [productsOfCurrentSubCategory, setProductsOfCurrentSubCategory] =
     useState([]);
+
+  const breadCrumbData = [
+    { name: "Home Page", navigation: "/mainPage" },
+    {
+      name: categoryName,
+      navigation: `/category/${categoryId}/${categoryName}`,
+    },
+    {
+      name: subCategoryName,
+      navigation: `/category/${categoryId}/${categoryName}/${subCategoryId}/${subCategoryName}`,
+    },
+  ];
   useEffect(() => {
     try {
       axios
@@ -24,6 +34,7 @@ const SubCategoriesPage = () => {
   }, []);
   return (
     <>
+      <Breadcrumb breadCrumbData={breadCrumbData} />
       <ProductCardHolder products={productsOfCurrentSubCategory} />
     </>
   );

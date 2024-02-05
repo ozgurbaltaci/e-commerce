@@ -11,9 +11,14 @@ const Breadcrumb = (props) => {
           return (
             <div>
               <a href={e.navigation} className={classes.breadcrumb_item}>
-                <span>{e.name}</span>
+                {i !== props.breadCrumbData.length - 1 ? (
+                  <span>{e.name}</span>
+                ) : (
+                  <span style={{ color: "#2FB009" }}>{e.name}</span>
+                )}
+
                 {i !== props.breadCrumbData.length - 1 && (
-                  <MdOutlineKeyboardArrowRight color="#2FB009" />
+                  <MdOutlineKeyboardArrowRight color="black" />
                 )}
               </a>
             </div>
