@@ -112,7 +112,7 @@ const ProductCardHolder = ({
 
   const isFavorite = (product_id) => {
     console.log("gelen product product_id: ", product_id);
-    return favorites.some((favId) => favId === product_id);
+    return favorites ? favorites.some((favId) => favId === product_id) : false;
   };
 
   const handleProductCardMouseEnter = (product_id) => {
@@ -125,7 +125,9 @@ const ProductCardHolder = ({
 
   const isItemAddedToCart = (product) => {
     console.log("cartItems", cartItems);
-    return cartItems.some((item) => item.product_id === product.product_id);
+    return cartItems
+      ? cartItems.some((item) => item.product_id === product.product_id)
+      : false;
   };
 
   const getCartItemAmount = (product_id) => {
