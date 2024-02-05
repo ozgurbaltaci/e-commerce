@@ -5,7 +5,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 
 import axios from "axios";
 
-const CategoriesPage = () => {
+const SubCategoriesPage = () => {
   const { categoryId, categoryName } = useParams();
   const [subCategories, setSubCategories] = useState([]);
   const navigate = useNavigate();
@@ -73,4 +73,4 @@ const CategoriesPage = () => {
   );
 };
 
-export default CategoriesPage;
+export default SubCategoriesPage;
