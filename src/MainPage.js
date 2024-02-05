@@ -23,6 +23,8 @@ const MainPage = () => {
     useState([]);
   const [categories, setCategories] = useState([]);
 
+  const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
+
   useEffect(() => {
     //TODO: getCartItems first with the GET method.
 
@@ -55,6 +57,7 @@ const MainPage = () => {
       .then((response) => {
         console.log(response.data);
         setCategories(response.data);
+        setIsCategoriesLoading(false);
         console.log("categoriess:", response.data);
       })
       .catch((error) => {
@@ -153,14 +156,22 @@ const MainPage = () => {
                   gap: "20px",
                 }}
               >
-                {categories.map((category) => {
-                  return (
-                    <CategoryBox
-                      imagePath={category.category_img}
-                      label={category.category_name}
-                    ></CategoryBox>
-                  );
-                })}
+                {isCategoriesLoading
+                  ? categories.map((category) => {
+                      return (
+                        <Skeleton width={"300px"} height={"120px"}></Skeleton>
+                      );
+                    })
+                  : categories.map((category) => {
+                      return (
+                        <CategoryBox
+                          categoryId={category.category_id}
+                          category_name={category.category_name}
+                          imagePath={category.category_img}
+                          label={category.category_name}
+                        ></CategoryBox>
+                      );
+                    })}
               </div>
             </Grid>
           </Grid>

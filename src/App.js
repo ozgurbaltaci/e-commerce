@@ -10,6 +10,8 @@ import AddProduct from "./AddProduct";
 import Profile from "./Profile";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import NavBar from "./NavBar";
+import CategoriesPage from "./CategoriesPage";
+import SubCategoriesPage from "./SubCategoriesPage";
 
 const theme = createMuiTheme({
   typography: {
@@ -62,6 +64,15 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/category/:categoryId/:categoryName"
+            element={<CategoriesPage />}
+          />
+
+          <Route
+            path="/category/:categoryId/:categoryName/:subCategoryId/:subCategoryName"
+            element={<SubCategoriesPage />}
+          />
 
           <Route path="/mainPage" element={<MainPage />} />
           <Route path="/addProduct" element={<AddProduct />} />
