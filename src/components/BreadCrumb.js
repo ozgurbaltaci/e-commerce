@@ -1,10 +1,9 @@
 import React from "react";
-import classes from "./Breadcrumb.module.css";
+import classes from "./BreadCrumb.module.css";
 import { IconContext } from "react-icons";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 
 const Breadcrumb = (props) => {
-  const n = 4;
   return (
     <div>
       <div className={classes.breadCrumb}>
@@ -13,7 +12,9 @@ const Breadcrumb = (props) => {
             <div>
               <a href={e.navigation} className={classes.breadcrumb_item}>
                 <span>{e.name}</span>
-                {i !== n - 1 && <MdOutlineKeyboardArrowRight color="#2FB009" />}
+                {i !== props.breadCrumbData.length - 1 && (
+                  <MdOutlineKeyboardArrowRight color="#2FB009" />
+                )}
               </a>
             </div>
           );
