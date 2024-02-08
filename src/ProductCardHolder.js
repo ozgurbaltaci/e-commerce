@@ -187,7 +187,9 @@ const ProductCardHolder = ({
               }
               onMouseLeave={handleProductCardMouseLeave}
               onClick={() => {
-                alert("calisti");
+                navigate(
+                  `/category/${product.category_id}/${product.sub_category_id}/${product.product_id}`
+                );
               }}
             >
               <IconButton
