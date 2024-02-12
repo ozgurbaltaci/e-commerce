@@ -156,13 +156,13 @@ const ProductDeteailsPage = () => {
             >
               <div style={{ fontWeight: "bold", marginRight: "5px" }}>
                 {`${
-                  productDetails.starPoint
-                    ? productDetails.starPoint.toFixed(1)
-                    : 0.0
+                  productDetails.star_point
+                    ? parseFloat(productDetails.star_point).toFixed(1)
+                    : "0.0"
                 }`}
               </div>
 
-              {renderStars(productDetails.starPoint)}
+              {renderStars(parseFloat(productDetails.star_point).toFixed(1))}
               <FiberManualRecordIcon
                 style={{
                   color: "#999999",
@@ -212,7 +212,7 @@ const ProductDeteailsPage = () => {
               </div>
             )}
           </div>
-          {console.log(productDetails)}
+          {console.log("product details:", productDetails)}
 
           <Divider style={{ margin: "5px 0px" }}></Divider>
           <div style={{ fontSize: "12px" }}>
