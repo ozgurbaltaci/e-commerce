@@ -13,3 +13,22 @@ code {
   font-family: "Cabin", source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0px 0px 11px 0px;
+}
+textarea {
+  font-family: "Cabin", source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+  border: 1px solid #9999 !important;
+  border-radius: 3px;
+  outline: none !important;
+}
+textarea:focus {
+  border-color: #2fb009 !important;
+}
