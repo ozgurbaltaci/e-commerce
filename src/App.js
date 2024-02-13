@@ -57,7 +57,7 @@ const theme = createMuiTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <div style={{ padding: "0px 70px 0px 70px" }}>
+      <div style={{ padding: "0px 90px 0px 90px" }}>
         <NavBar></NavBar>
         <Routes>
           <Route path="*" element={<Navigate to="/" />} />

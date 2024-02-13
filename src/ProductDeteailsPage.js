@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { Typography } from "@mui/material";
+import { Typography, Avatar } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import { Divider } from "@mui/material";
+import Divider from "@mui/material/Divider";
 import MyButton from "./components/MyButton";
 import { TiStarOutline } from "react-icons/ti";
 import { TiStarFullOutline, TiStarHalfOutline } from "react-icons/ti";
@@ -31,6 +31,9 @@ const ProductDeteailsPage = () => {
   const [commentInput, setCommentInput] = useState("");
   const [comments, setComments] = useState([]);
   const [isReviewInputFocused, setIsReviewInputFocused] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [nonSelectedRatingPointError, setNonSelectedRatingPointError] =
+    useState(false);
   useEffect(() => {
     try {
       axios
@@ -41,7 +44,7 @@ const ProductDeteailsPage = () => {
     } catch (err) {}
   }, []);
 
-  const renderStars = (starPoint) => {
+  const renderStars = (starPoint, specificFontSize) => {
     const starElements = [];
     const fullStars = Math.floor(starPoint);
     const hasHalfStar = starPoint - fullStars >= 0.5;
@@ -51,23 +54,60 @@ const ProductDeteailsPage = () => {
         starElements.push(
           <TiStarFullOutline
             key={i}
-            style={{ color: "rgb(245, 195, 69)", fontSize: "18px" }}
+            style={{
+              color: "rgb(245, 195, 69)",
+              fontSize: specificFontSize ? specificFontSize : "18px",
+            }}
           />
         );
       } else if (i === fullStars && hasHalfStar) {
         starElements.push(
           <TiStarHalfOutline
             key={i}
-            style={{ color: "rgb(245, 195, 69)", fontSize: "18px" }}
+            style={{
+              color: "rgb(245, 195, 69)",
+              fontSize: specificFontSize ? specificFontSize : "18px",
+            }}
           />
         );
       } else {
         starElements.push(
-          <TiStarOutline key={i} style={{ fontSize: "18px" }} />
+          <TiStarOutline
+            key={i}
+            style={{ fontSize: specificFontSize ? specificFontSize : "18px" }}
+          />
         );
       }
     }
 
+    return starElements;
+  };
+
+  const renderRatingStars = () => {
+    const starElements = [];
+    for (let i = 0; i < 5; i++) {
+      if (i < rating) {
+        starElements.push(
+          <TiStarFullOutline
+            key={i}
+            style={{
+              color: "rgb(245, 195, 69)",
+              fontSize: "18px",
+              cursor: "pointer",
+            }}
+            onClick={() => handleStarClick(i)}
+          />
+        );
+      } else {
+        starElements.push(
+          <TiStarOutline
+            key={i}
+            style={{ fontSize: "18px", cursor: "pointer" }}
+            onClick={() => handleStarClick(i)}
+          />
+        );
+      }
+    }
     return starElements;
   };
 
@@ -76,22 +116,29 @@ const ProductDeteailsPage = () => {
   };
 
   const handleSubmitComment = async () => {
-    try {
-      if (commentInput.trim() !== "") {
-        const response = await axios.post(
-          `http://localhost:3002/saveRatingAndReview/${localStorage.getItem(
-            "user_id"
-          )}/${productId}`,
-          {
-            ratingPoint: 1,
-            review: commentInput,
-          }
-        );
-        setComments([...comments, commentInput]);
-        setCommentInput(""); // Clear input field after submission
+    if (rating > 0) {
+      setNonSelectedRatingPointError(false);
+
+      try {
+        if (commentInput.trim() !== "" && rating > 0) {
+          const response = await axios.post(
+            `http://localhost:3002/saveRatingAndReview/${localStorage.getItem(
+              "user_id"
+            )}/${productId}`,
+            {
+              ratingPoint: rating,
+              review: commentInput,
+            }
+          );
+          setComments([...comments, commentInput]);
+          setCommentInput(""); // Clear input field after submission
+          setRating(0);
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
+    } else {
+      setNonSelectedRatingPointError(true);
     }
   };
 
@@ -101,6 +148,27 @@ const ProductDeteailsPage = () => {
 
   const handleReviewInputBlur = () => {
     setIsReviewInputFocused(false);
+  };
+
+  const handleStarClick = (starIndex) => {
+    setRating(starIndex + 1);
+  };
+
+  const displayCommentOwnerName = (user_name, user_surname) => {
+    // Get the first two letters of the name and surname
+    const abbreviatedName = user_name.slice(0, 1);
+    const abbreviatedSurname = user_surname.slice(0, 1);
+
+    // Create a string of 4 asterisks
+    const asterisks = "****";
+
+    // Combine the abbreviated name with the asterisks
+    const maskedName = abbreviatedName + asterisks;
+
+    // Combine the abbreviated surname with the asterisks
+    const maskedSurname = abbreviatedSurname + asterisks;
+
+    return `${maskedName} ${maskedSurname}`;
   };
 
   return (
@@ -369,6 +437,8 @@ const ProductDeteailsPage = () => {
       >
         <div>
           <h3>Rate the Product: </h3>
+          <div className="ratingStars">{renderRatingStars()}</div>
+
           <textarea
             value={commentInput}
             onChange={handleCommentInputChange}
@@ -379,6 +449,17 @@ const ProductDeteailsPage = () => {
               width: "calc(100% - 28px)",
             }}
           />
+          <div
+            style={{
+              display: !nonSelectedRatingPointError ? "none" : "block",
+              color: "red",
+              fontSize: "10px",
+              marginTop: "5px",
+            }}
+          >
+            {" "}
+            Please rate the product before saving your review!
+          </div>
           <button
             style={{
               width: "180px",
@@ -403,11 +484,57 @@ const ProductDeteailsPage = () => {
         </div>
         <div>
           <h2>Comments</h2>
-          <ul>
-            {comments.map((comment, index) => (
-              <li key={index}>{comment}</li>
+          {productDetails.reviewsAndRatings &&
+            productDetails.reviewsAndRatings.map((comment, index) => (
+              <>
+                <div style={{ display: "flex", marginTop: "25px" }}>
+                  <Avatar
+                    style={{
+                      backgroundColor: "#E0E0E0",
+                      color: "black",
+                      fontWeight: "bold",
+                      width: "40px",
+                      height: "40px",
+                      fontSize: "12px",
+                      fontFamily: "Cabin",
+                    }}
+                  >
+                    {comment.user_name.charAt(0).toUpperCase()}
+                    {comment.user_surname.charAt(0).toUpperCase()}
+                  </Avatar>
+                  <div style={{ display: "block", marginLeft: "10px" }}>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <div>{renderStars(comment.rating, "10px")}</div>
+                      <div
+                        style={{ fontSize: "7px", marginTop: "2px" }}
+                      >{`| ${displayCommentOwnerName(
+                        comment.user_name,
+                        comment.user_surname
+                      )}`}</div>
+                    </div>
+                    <div
+                      style={{
+                        width: "400px",
+                        height: "fit-content",
+                        backgroundColor: "#F4F4F4",
+                        borderRadius: "3px",
+                        fontSize: "11px",
+                        minHeight: "35px",
+                        padding: "10px",
+
+                        display: "block",
+                      }}
+                    >
+                      {" "}
+                      {comment.review_text}
+                    </div>
+                  </div>
+                </div>
+                <Divider
+                  style={{ width: "calc(100% - 28px)", marginTop: "25px" }}
+                ></Divider>
+              </>
             ))}
-          </ul>
         </div>
       </div>
     </ThemeProvider>
