@@ -38,6 +38,10 @@ const ProductCardHolder = ({
   cartItems,
   parentComponent,
   handleUpdateDesiredAmount,
+  custom_xs = 12,
+  custom_sm = 4,
+  custom_md = 3,
+  custom_lg = 3,
 }) => {
   const [favorites, setFavorites] = useState(currUserFavoriteProductsIds);
   const [hoveredProductId, setHoveredProductId] = useState(null);
@@ -175,11 +179,18 @@ const ProductCardHolder = ({
             currUserFavoriteProductsIds
           )}
 
-          <Grid item key={product.id} xs={12} sm={4} md={3} lg={3}>
+          <Grid
+            item
+            key={product.id}
+            xs={custom_xs}
+            sm={custom_sm}
+            md={custom_md}
+            lg={custom_lg}
+          >
             <Card
               style={{
                 width: "100%",
-                height: "100%",
+                height: "310px",
                 position: "relative",
               }}
               onMouseEnter={() =>
@@ -215,7 +226,7 @@ const ProductCardHolder = ({
               <CardMedia
                 component="img"
                 image={product.image}
-                style={{ width: "100%", height: 224 }}
+                style={{ width: "100%", height: "50%" }}
               />
               <CardContent style={{ paddingTop: "10px" }}>
                 <Typography

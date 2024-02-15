@@ -3,6 +3,7 @@ import ProductCardHolder from "./ProductCardHolder";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Breadcrumb from "./components/BreadCrumb";
+import SideBarOfAllCategories from "./SideBarOfAllCategories";
 
 const SubCategoriesPage = () => {
   const { categoryId, categoryName, subCategoryId, subCategoryName } =
@@ -35,7 +36,17 @@ const SubCategoriesPage = () => {
   return (
     <>
       <Breadcrumb breadCrumbData={breadCrumbData} />
-      <ProductCardHolder products={productsOfCurrentSubCategory} />
+      <div style={{ display: "flex" }}>
+        <SideBarOfAllCategories></SideBarOfAllCategories>
+
+        <ProductCardHolder
+          products={productsOfCurrentSubCategory}
+          custom_xs={12}
+          custom_sm={6}
+          custom_md={3}
+          custom_lg={3}
+        />
+      </div>
     </>
   );
 };
