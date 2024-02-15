@@ -430,7 +430,7 @@ const ProductDeteailsPage = () => {
       <div
         className="reviews_and_ratings"
         style={{
-          padding: "20px 0px 20px 28px",
+          padding: "20px 32px 20px 32px",
           border: "1px solid #9999 ",
           borderRadius: "7px",
         }}
@@ -446,7 +446,7 @@ const ProductDeteailsPage = () => {
             style={{
               minHeight: "100px",
               display: "block",
-              width: "calc(100% - 28px)",
+              width: "100%",
             }}
           />
           <div
@@ -482,6 +482,7 @@ const ProductDeteailsPage = () => {
             {"Save your rating"}
           </button>
         </div>
+        <Divider style={{ margin: "20px 0px" }}></Divider>
         <div>
           <h2>Comments</h2>
           {productDetails.reviewsAndRatings &&
@@ -519,9 +520,14 @@ const ProductDeteailsPage = () => {
                         backgroundColor: "#F4F4F4",
                         borderRadius: "3px",
                         fontSize: "11px",
-                        minHeight: "35px",
+                        minHeight: "50px",
+                        maxHeight: "200px",
                         padding: "10px",
+                        overflowY: "auto",
+                        textOverflow: "ellipsis",
+                        scrollbarWidth: "thin", // Modern tarayıcılarda ince bir scroll barı göstermek için
 
+                        scrollbarColor: "#9999 #F4F4F4", // Scroll barı rengi
                         display: "block",
                       }}
                     >
@@ -530,9 +536,7 @@ const ProductDeteailsPage = () => {
                     </div>
                   </div>
                 </div>
-                <Divider
-                  style={{ width: "calc(100% - 28px)", marginTop: "25px" }}
-                ></Divider>
+                <Divider style={{ width: "100%", marginTop: "25px" }}></Divider>
               </>
             ))}
         </div>
