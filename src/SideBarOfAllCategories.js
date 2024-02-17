@@ -9,50 +9,47 @@ import {
   Box,
 } from "@material-ui/core";
 
-const sideBarOptions = [
-  {
-    group: "Organic Products",
-    options: [
-      "Nuts",
-      "Jams",
-      "Olive Products",
-      "Appetizers",
-      "Pastes",
-      "Fresh Fruits and Vegetables",
-      "Legumes",
-      "Gluten-free Products",
-    ],
-  },
-  {
-    group: "Handmade Products",
-    options: [
-      "Knit wears",
-      "Christmas Products",
-      "Belts",
-      "Wallets",
-      "hanmade other",
-      "handmade one another",
-      "handmade another",
-      "handmade last one",
-    ],
-  },
-];
+import axios from "axios";
+import { Navigate, useNavigate } from "react-router-dom";
+
 const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 };
 
-const SideBarOfAllCategories = () => {
-  const [selectedOption, setSelectedOption] = useState();
+const SideBarOfAllCategories = ({ currentSelectedSubCategoryId }) => {
+  const [selectedOption, setSelectedOption] = useState(
+    currentSelectedSubCategoryId
+  );
   const userName = localStorage.getItem("user_name");
   const userSurname = localStorage.getItem("user_surname");
 
-  const handleOptionClick = (option) => {
-    setSelectedOption(option);
+  const handleOptionClick = (
+    category_id,
+    category_name,
+    sub_category_id,
+    sub_category_name
+  ) => {
+    setSelectedOption(sub_category_id);
+    navigate(
+      `/category/${category_id}/${category_name}/${sub_category_id}/${sub_category_name}`
+    );
   };
 
+  const [categories, setCategories] = useState([]);
+
+  const navigate = useNavigate();
+
   useEffect(() => {
-    // Add any additional logic you want to perform on option selection
-  }, [selectedOption]);
+    // Fetch categories with subcategories from backend API using Axios
+    axios
+      .get(`http://localhost:3002/getCategoriesWithSubCategories`)
+      .then((response) => {
+        setCategories(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching categories:", error);
+      });
+  }, []);
 
   const renderSideBar = () => (
     <Card
@@ -64,21 +61,39 @@ const SideBarOfAllCategories = () => {
         marginRight: "25px",
       }}
     >
-      {sideBarOptions.map(({ group, options }, groupIndex) => (
-        <>
-          <div style={{ fontSize: "11px", color: "#2FB009" }}>{group}</div>
-          {options.map((option, index) => (
-            <div>
+      {categories.map(
+        ({ category_name, category_id, sub_categories }, groupIndex) => (
+          <div key={groupIndex}>
+            <div style={{ fontSize: "11px", color: "#2FB009" }}>
+              <div
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  navigate(`/category/${category_id}/${category_name}`);
+                }}
+              >
+                {category_name}
+              </div>
+            </div>
+            {sub_categories.map((subCategory, index) => (
               <Typography
+                key={index}
                 style={{
                   cursor: "pointer",
                   marginLeft: "3px",
                   marginTop: "4px",
-
-                  fontWeight: selectedOption === option ? "bold" : "normal",
+                  fontWeight:
+                    parseInt(selectedOption) ===
+                    parseInt(subCategory.sub_category_id)
+                      ? "bold"
+                      : "normal",
                 }}
                 onClick={() => {
-                  handleOptionClick(option);
+                  handleOptionClick(
+                    category_id,
+                    category_name,
+                    subCategory.sub_category_id,
+                    subCategory.sub_category_name
+                  );
                 }}
               >
                 <div
@@ -91,18 +106,16 @@ const SideBarOfAllCategories = () => {
                   <FiberManualRecordIcon
                     style={{ fontSize: "4px", marginRight: "4px" }}
                   />
-                  {option}
+                  {subCategory.sub_category_name}
                 </div>
               </Typography>
-            </div>
-          ))}
-          {groupIndex !== sideBarOptions.length - 1 && (
-            <Divider
-              style={{ marginTop: "10px", marginBottom: "10px" }}
-            ></Divider>
-          )}
-        </>
-      ))}
+            ))}
+            {groupIndex !== categories.length - 1 && (
+              <Divider style={{ marginTop: "10px", marginBottom: "10px" }} />
+            )}
+          </div>
+        )
+      )}
     </Card>
   );
 

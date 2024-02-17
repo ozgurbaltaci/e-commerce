@@ -32,12 +32,14 @@ const SubCategoriesPage = () => {
           setProductsOfCurrentSubCategory(response.data);
         });
     } catch (err) {}
-  }, []);
+  }, [categoryId, subCategoryId]);
   return (
     <>
       <Breadcrumb breadCrumbData={breadCrumbData} />
       <div style={{ display: "flex" }}>
-        <SideBarOfAllCategories></SideBarOfAllCategories>
+        <SideBarOfAllCategories
+          currentSelectedSubCategoryId={subCategoryId}
+        ></SideBarOfAllCategories>
 
         <ProductCardHolder
           products={productsOfCurrentSubCategory}
