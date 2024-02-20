@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import MyOrders from "./MyOrders";
+import MyReviews from "./MyReviews";
 import {
   Card,
   Grid,
@@ -114,6 +115,9 @@ const Profile = () => {
         switch (selectedOption) {
           case "My Orders":
             return <MyOrders />;
+            break;
+          case "My Reviews":
+            return <MyReviews />;
             break;
           default:
             // Your code for other cases

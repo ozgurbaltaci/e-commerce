@@ -180,7 +180,7 @@ const MainPage = () => {
         <div
           style={{ fontWeight: "bold", fontSize: "17px", marginBottom: "12px" }}
         >
-          Best Sellers of Emekçi Dükkanı
+          Best Sellers of HandyGreen
         </div>
         {isProductsLoading ? (
           <Grid container spacing={3} style={{ overflowX: "hidden" }}>

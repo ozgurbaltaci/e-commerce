@@ -41,7 +41,7 @@ const NavBar = () => {
             }}
             onClick={() => navigate("/mainPage")}
           >
-            Emekçi Dükkanı
+            HandyGreen
           </div>
         </Grid>
         <Grid item xs={12} sm={4} md={6} lg={6}>
