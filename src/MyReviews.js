@@ -11,11 +11,14 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import Toast, { successToast, errorToast } from "./Toaster";
 
 const MyReviews = () => {
   const [reviews, setReviews] = useState([]);
   const [selectedReview, setSelectedReview] = useState();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteReviewModalOpen, setIsDeleteReviewModalOpen] = useState(false);
+
   const [editedReviewText, setEditedReviewText] = useState("");
   const [updatedRating, setUpdatedRating] = useState(0);
 
@@ -74,8 +77,11 @@ const MyReviews = () => {
     return starElements;
   };
 
-  const handleClose = () => {
+  const handleEditModalClose = () => {
     setIsEditModalOpen(false);
+  };
+  const handleDeleteReviewModalClose = () => {
+    setIsDeleteReviewModalOpen(false);
   };
 
   const handleEditModalOpen = (review) => {
@@ -84,6 +90,28 @@ const MyReviews = () => {
     setEditedReviewText(review.review_text); // Set the initial value of edited review text
     setIsEditModalOpen(true);
   };
+  const handleReviewModalOpen = (review) => {
+    setSelectedReview(review.id); // Set selected review when edit button is clicked
+    setEditedReviewText(review.review_text); // Set the initial value of edited review text
+    setUpdatedRating(review.rating);
+    setIsDeleteReviewModalOpen(true);
+  };
+
+  const handleDeleteReview = async (reviewId) => {
+    try {
+      await axios
+        .delete(`http://localhost:3002/deleteReview/${reviewId}`)
+        .then((response) => {
+          // Remove the deleted review from the current state
+          setReviews(reviews.filter((review) => review.id !== reviewId));
+          successToast(response.data.message);
+          setIsDeleteReviewModalOpen(false);
+        });
+    } catch (err) {
+      console.log(err);
+      errorToast(err.response.data.message);
+    }
+  };
 
   const handleReviewTextChange = (event) => {
     setEditedReviewText(event.target.value); // Update edited review text when text field value changes
@@ -91,7 +119,7 @@ const MyReviews = () => {
   const handleStarClick = (starIndex) => {
     setUpdatedRating(starIndex + 1);
   };
-  const renderRatingStars = () => {
+  const renderRatingStars = (isStarsClickable = true) => {
     const starElements = [];
     for (let i = 0; i < 5; i++) {
       if (i < updatedRating) {
@@ -103,7 +131,7 @@ const MyReviews = () => {
               fontSize: "18px",
               cursor: "pointer",
             }}
-            onClick={() => handleStarClick(i)}
+            onClick={() => isStarsClickable && handleStarClick(i)}
           />
         );
       } else {
@@ -111,7 +139,7 @@ const MyReviews = () => {
           <TiStarOutline
             key={i}
             style={{ fontSize: "18px", cursor: "pointer" }}
-            onClick={() => handleStarClick(i)}
+            onClick={() => isStarsClickable && handleStarClick(i)}
           />
         );
       }
@@ -127,18 +155,37 @@ const MyReviews = () => {
         updatedRating: updatedRating,
       })
       .then((response) => {
-        console.log(response.data.message);
-        setIsEditModalOpen(false);
+        if (response.status === 201) {
+          setReviews(
+            reviews.map((review) =>
+              review.id === selectedReview
+                ? {
+                    ...review,
+                    review_text: editedReviewText,
+                    rating: updatedRating,
+                  }
+                : review
+            )
+          );
+          successToast(response.data.message);
+          setIsEditModalOpen(false);
+        }
       })
       .catch((error) => {
         console.error("Error updating review:", error);
+        errorToast(error.response.data.message);
       });
   };
 
   return (
     <>
+      <Toast></Toast>
       <LoaderInBackdrop isThereUpdateOperation={false}></LoaderInBackdrop>
-      <Dialog open={isEditModalOpen} onClose={handleClose} fullWidth={true}>
+      <Dialog
+        open={isEditModalOpen}
+        onClose={handleEditModalClose}
+        fullWidth={true}
+      >
         <DialogTitle>Edit comment</DialogTitle>
         <DialogContent>
           <div className="DialogContent">
@@ -159,7 +206,7 @@ const MyReviews = () => {
         <DialogActions>
           <Button
             onClick={() => {
-              handleClose();
+              handleEditModalClose();
             }}
           >
             Cancel
@@ -173,6 +220,44 @@ const MyReviews = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Dialog
+        open={isDeleteReviewModalOpen}
+        onClose={handleDeleteReviewModalClose}
+        fullWidth={true}
+      >
+        <DialogTitle>Delete Comment</DialogTitle>
+        <DialogContent>
+          <div className="DialogContent">
+            {" "}
+            <DialogContentText>
+              Are you sure to delete your comment below?
+            </DialogContentText>
+            {renderRatingStars(false)}
+            <textarea
+              disabled
+              value={editedReviewText} // Set value of textarea to edited review text
+              style={{ width: "100%", height: "150px" }} // Adjust size as needed
+            />
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              handleDeleteReviewModalClose();
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              handleDeleteReview(selectedReview);
+            }}
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Card
         style={{
           padding: "15px",
@@ -254,6 +339,9 @@ const MyReviews = () => {
                             border: "none",
                             color: "rgba(237,74,0)",
                             borderRadius: "2px",
+                          }}
+                          onClick={() => {
+                            handleReviewModalOpen(review);
                           }}
                         >
                           Delete Review
