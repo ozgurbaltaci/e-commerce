@@ -113,6 +113,7 @@ const Profile = () => {
   const renderSelectedOption = () => (
     <Box style={{ display: "block", marginLeft: "20px", width: "100%" }}>
       <Typography variant="h2">{selectedOption}</Typography>
+
       {(() => {
         switch (selectedOption) {
           case "My Orders":

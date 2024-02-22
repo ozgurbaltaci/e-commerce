@@ -42,136 +42,134 @@ const MyOrders = () => {
     // Render the grouped products
     return Object.keys(groupedProducts).map((manufacturerId, index) => (
       <div key={index}>
-        <Card style={{ marginBottom: "20px" }}>
-          <div>
-            <Accordion defaultExpanded={true}>
-              <AccordionSummary
-                expandIcon={
-                  <KeyboardArrowDownIcon style={{ fontSize: "12px" }} />
-                }
-                style={{ minHeight: "30px", maxHeight: "30px" }} // Set the desired height
+        <div>
+          <Accordion style={{ marginBottom: "15px" }} defaultExpanded={true}>
+            <AccordionSummary
+              expandIcon={
+                <KeyboardArrowDownIcon style={{ fontSize: "12px" }} />
+              }
+              style={{ minHeight: "30px", maxHeight: "30px" }} // Set the desired height
+            >
+              <div
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "11px",
+                }}
               >
-                <div
-                  style={{
-                    fontWeight: "bold",
-                    fontSize: "11px",
-                  }}
-                >
-                  {groupedProducts[manufacturerId][0].manufacturer_name}
-                </div>
-              </AccordionSummary>
-              {groupedProducts[manufacturerId].map((product, index) => (
-                <>
-                  {" "}
-                  <Divider />
-                  <AccordionDetails style={{ display: "flex" }}>
-                    <img
-                      key={index}
-                      src={product.image}
-                      style={{
-                        display: "flex",
-                        width: "50px",
-                        height: "50px",
-                        boxShadow: "0 0 5px 2px rgba(0,0,0,0.01)",
-                        borderRadius: "2px",
-                        marginRight: "15px",
-                      }}
-                      alt={product.product_name}
-                    />
-                    <Grid
-                      container
-                      spacing={5}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Grid item xs={12} sm={3} md={3}>
+                {groupedProducts[manufacturerId][0].manufacturer_name}
+              </div>
+            </AccordionSummary>
+            {groupedProducts[manufacturerId].map((product, index) => (
+              <>
+                {" "}
+                <Divider />
+                <AccordionDetails style={{ display: "flex" }}>
+                  <img
+                    key={index}
+                    src={product.image}
+                    style={{
+                      display: "flex",
+                      width: "50px",
+                      height: "50px",
+                      boxShadow: "0 0 5px 2px rgba(0,0,0,0.01)",
+                      borderRadius: "2px",
+                      marginRight: "15px",
+                    }}
+                    alt={product.product_name}
+                  />
+                  <Grid
+                    container
+                    spacing={5}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Grid item xs={12} sm={3} md={3}>
+                      <div
+                        style={{
+                          display: "block",
+                          fontSize: "11px",
+                        }}
+                      >
                         <div
                           style={{
                             display: "block",
-                            fontSize: "11px",
+                            whiteSpace: "nowrap", // Prevent text wrapping
+                            overflow: "hidden",
+                            textOverflow: "ellipsis", // Display ellipsis for overflow
                           }}
                         >
-                          <div
-                            style={{
-                              display: "block",
-                              whiteSpace: "nowrap", // Prevent text wrapping
-                              overflow: "hidden",
-                              textOverflow: "ellipsis", // Display ellipsis for overflow
-                            }}
-                          >
-                            {" "}
-                            {product.product_name}
-                          </div>
-                          <div style={{ color: "#00990F", fontWeight: "bold" }}>
-                            {product.price_on_add}₺
-                          </div>
+                          {" "}
+                          {product.product_name}
                         </div>
-                      </Grid>
-                      <Grid item xs={12} sm={3} md={3}>
-                        <div style={{ display: "block", fontSize: "11px" }}>
-                          <div>Desired Amount:</div>
-                          <div style={{ color: "#00990F", fontWeight: "bold" }}>
-                            {" "}
-                            {product.desired_amount}
-                          </div>
+                        <div style={{ color: "#00990F", fontWeight: "bold" }}>
+                          {product.price_on_add}₺
                         </div>
-                      </Grid>
-                      <Grid item xs={12} sm={2} md={2}>
-                        <div style={{ display: "block", fontSize: "11px" }}>
-                          <div>Total Price:</div>
-                          <div style={{ color: "#00990F", fontWeight: "bold" }}>
-                            {" "}
-                            {product.total_price_for_product}
-                          </div>
-                        </div>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                        sm={4}
-                        md={4}
-                        style={{ display: "flex", justifyContent: "flex-end" }}
-                      >
-                        <button
-                          style={{
-                            width: "80px",
-                            height: "24px",
-                            fontSize: "9px",
-                            fontWeight: "bold",
-                            backgroundColor: "rgba(173,176,9,0.16)",
-                            border: "none",
-                            color: "rgba(173,176,9)",
-                            borderRadius: "2px",
-                            marginRight: "9px",
-                          }}
-                        >
-                          Review Order
-                        </button>
-
-                        <button
-                          style={{
-                            width: "80px",
-                            height: "24px",
-                            fontSize: "9px",
-                            fontWeight: "bold",
-                            backgroundColor: "rgba(47,176,9,0.16)",
-                            border: "none",
-                            color: "rgba(47,176,9)",
-                            borderRadius: "2px",
-                          }}
-                        >
-                          Buy Again
-                        </button>
-                      </Grid>
+                      </div>
                     </Grid>
-                  </AccordionDetails>
-                </>
-              ))}
-            </Accordion>
-          </div>
-        </Card>
+                    <Grid item xs={12} sm={3} md={3}>
+                      <div style={{ display: "block", fontSize: "11px" }}>
+                        <div>Desired Amount:</div>
+                        <div style={{ color: "#00990F", fontWeight: "bold" }}>
+                          {" "}
+                          {product.desired_amount}
+                        </div>
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} sm={2} md={2}>
+                      <div style={{ display: "block", fontSize: "11px" }}>
+                        <div>Total Price:</div>
+                        <div style={{ color: "#00990F", fontWeight: "bold" }}>
+                          {" "}
+                          {product.total_price_for_product}
+                        </div>
+                      </div>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={4}
+                      md={4}
+                      style={{ display: "flex", justifyContent: "flex-end" }}
+                    >
+                      <button
+                        style={{
+                          width: "80px",
+                          height: "24px",
+                          fontSize: "9px",
+                          fontWeight: "bold",
+                          backgroundColor: "rgba(173,176,9,0.16)",
+                          border: "none",
+                          color: "rgba(173,176,9)",
+                          borderRadius: "2px",
+                          marginRight: "9px",
+                        }}
+                      >
+                        Review Order
+                      </button>
+
+                      <button
+                        style={{
+                          width: "80px",
+                          height: "24px",
+                          fontSize: "9px",
+                          fontWeight: "bold",
+                          backgroundColor: "rgba(47,176,9,0.16)",
+                          border: "none",
+                          color: "rgba(47,176,9)",
+                          borderRadius: "2px",
+                        }}
+                      >
+                        Buy Again
+                      </button>
+                    </Grid>
+                  </Grid>
+                </AccordionDetails>
+              </>
+            ))}
+          </Accordion>
+        </div>
       </div>
     ));
   };
@@ -186,12 +184,15 @@ const MyOrders = () => {
             id={`panel-${order.order_id}-header`}
             style={{ display: "flex", alignItems: "center" }}
           >
-            <div style={{ display: "flex" }}>
+            <div style={{ display: "flex", width: "100%" }}>
               <div
+                className="avatars"
                 style={{
                   display: "flex",
                   width: "84px",
                   justifyContent: "center",
+                  alignItems: "center",
+                  width: "12%",
                 }}
               >
                 {order.products.slice(0, 2).map((product, index) => (
@@ -223,34 +224,38 @@ const MyOrders = () => {
                 )}
               </div>
               <div
+                className="order_id_and_date"
                 style={{
                   display: "flex",
-                  justifyContent: "center",
                   alignItems: "center",
+                  justifyContent: "center",
+                  width: "11%",
                 }}
               >
-                <div style={{ width: "90px" }}>
+                <div>
                   <strong>Order ID: {order.order_id}</strong>
 
                   <div>{order.order_date}</div>
                 </div>
-                <div style={{ width: "500px" }}>
-                  <OrderStatusStepper
-                    activeStep={order.order_status_id}
-                  ></OrderStatusStepper>
-                </div>
-                <div
-                  style={{
-                    width: "70px",
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    color: "#00990F",
-                    fontSize: "14px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {order.total_price} TL
-                </div>
+              </div>
+              <div className="order_status_stepper" style={{ width: "67%" }}>
+                <OrderStatusStepper
+                  activeStep={order.order_status_id}
+                ></OrderStatusStepper>
+              </div>
+              <div
+                className="order_total_price"
+                style={{
+                  width: "10%",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  color: "#00990F",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                }}
+              >
+                {order.total_price} TL
               </div>
             </div>
           </AccordionSummary>
