@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MyOrders from "./MyOrders";
 import MyReviews from "./MyReviews";
+import MyDiscountCodes from "./MyDiscountCodes";
 import Toast, { successToast, errorToast } from "./Toaster";
 
 import {
@@ -112,7 +113,9 @@ const Profile = () => {
 
   const renderSelectedOption = () => (
     <Box style={{ display: "block", marginLeft: "20px", width: "100%" }}>
-      <Typography variant="h2">{selectedOption}</Typography>
+      <Typography variant="h2" style={{ marginBottom: "10px" }}>
+        {selectedOption}
+      </Typography>
 
       {(() => {
         switch (selectedOption) {
@@ -121,6 +124,9 @@ const Profile = () => {
             break;
           case "My Reviews":
             return <MyReviews />;
+            break;
+          case "My Discount Codes":
+            return <MyDiscountCodes />;
             break;
           default:
             // Your code for other cases
