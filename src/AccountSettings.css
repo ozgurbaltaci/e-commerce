@@ -1,0 +1,11 @@
+.accountSettings .MuiOutlinedInput-notchedOutline {
+  border: 1px solid #f7f7f7 !important;
+  border-radius: 5px !important;
+  background-color: #f7f7f7;
+  margin-top: 2px;
+}
+.accountSettings .MuiOutlinedInput-input {
+  color: black;
+  z-index: 1;
+  font-family: "Cabin";
+}

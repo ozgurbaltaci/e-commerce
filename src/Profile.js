@@ -3,6 +3,7 @@ import MyOrders from "./MyOrders";
 import MyReviews from "./MyReviews";
 import MyDiscountCodes from "./MyDiscountCodes";
 import Toast, { successToast, errorToast } from "./Toaster";
+import AccountSettings from "./AccountSettings";
 
 import {
   Card,
@@ -127,6 +128,9 @@ const Profile = () => {
             break;
           case "My Discount Codes":
             return <MyDiscountCodes />;
+            break;
+          case "Account Settings":
+            return <AccountSettings />;
             break;
           default:
             // Your code for other cases
