@@ -12,6 +12,19 @@ const MyReviews = () => {
 
   useEffect(() => {
     // Fetch coupons of current user.
+    // There are two coupons tables
+    // coupons table: show the coupons that every user has
+    // special_coupons_for_users table: show the coupons for the defined users only
+
+    axios
+      .get(`http://localhost:3002/getCoupons`)
+      .then((response) => {
+        setCoupons(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching categories:", error);
+      });
+
     var dummyData = [
       {
         coupon_id: 1,
@@ -20,7 +33,9 @@ const MyReviews = () => {
         coupon_code: "USDHBC",
         validity_start_date: "2024.02.02",
         validity_end_date: "2024.03.02",
-        manufacturer_id: 1,
+        available_manufacturer_id: 1,
+        coupon_discount_amount: null,
+        coupon_discount_percentage: 50,
       },
       {
         coupon_id: 2,
@@ -29,11 +44,25 @@ const MyReviews = () => {
         coupon_code: "KHAJS",
         validity_start_date: "2024.03.03",
         validity_end_date: "2024.05.03",
-        manufacturer_id: 1,
+        available_manufacturer_id: 1,
+        coupon_discount_amount: 200,
+        coupon_discount_percentage: null,
       },
     ];
-    setCoupons(dummyData);
   }, []);
+  function formatDateWithoutTimezone(dateStr) {
+    const date = new Date(dateStr);
+
+    // Get the date components
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0 indexed
+    const day = String(date.getDate()).padStart(2, "0");
+
+    // Format the date as desired
+    const formattedDate = `${day}/${month}/${year}`;
+
+    return formattedDate;
+  }
 
   const handleSeeProducts = () => {
     //navigate user to the products in discount
@@ -52,10 +81,27 @@ const MyReviews = () => {
         console.error("Unable to copy text to clipboard", err);
       });
   };
+  const calculateRemainingTime = (endDate) => {
+    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+    const now = new Date().getTime();
+    const end = new Date(endDate).getTime();
+
+    const diffTime = end - now;
+    console.log(diffTime);
+    if (diffTime < 0) {
+      return { days: -1, hours: -1 }; // Return 0 days and 0 hours if the time has already passed
+    }
+
+    const remainingDays = Math.floor(diffTime / oneDay);
+    const remainingHours = diffTime / (1000 * 60 * 60);
+
+    return { days: remainingDays, hours: remainingHours.toFixed(0) };
+  };
 
   return (
     <>
       {coupons.map((coupon, index) => {
+        const timesLeft = calculateRemainingTime(coupon.validity_end_date);
         return (
           <>
             <Card
@@ -69,14 +115,41 @@ const MyReviews = () => {
                 width: "100%",
                 display: "flex",
                 alignItems: "center",
+                backgroundColor: timesLeft.days === -1 && "#F1F1F1",
               }}
             >
-              <div className="discount_img">
-                <img
-                  src={require("./discount_green.png")}
-                  width={"45px"}
-                  height={"45px"}
-                ></img>
+              <div style={{ width: "60px" }}>
+                <div
+                  className="discount_img"
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
+                  <img
+                    src={require("./discount_green.png")}
+                    width={"45px"}
+                    height={"45px"}
+                  ></img>
+                </div>
+
+                {timesLeft.hours <= 72 && (
+                  <div
+                    style={{
+                      fontSize: "7px",
+                      fontWeight: "bold",
+                      display: "flex",
+                      justifyContent: "center",
+                      color: "red",
+                      minWidth: "50px",
+                    }}
+                  >
+                    {console.log("here", timesLeft.days)}
+                    {timesLeft.days === -1
+                      ? `Expired!`
+                      : timesLeft.days >= 1 && timesLeft.days <= 6
+                      ? `Last ${timesLeft.days} day(s)!`
+                      : timesLeft.hours >= 0 &&
+                        `Last ${timesLeft.hours} hour(s)!`}
+                  </div>
+                )}
               </div>
               <div style={{ marginLeft: "5px", width: "100%" }}>
                 <div
@@ -139,10 +212,12 @@ const MyReviews = () => {
                     <div style={{ display: "flex" }}>
                       Validty Date:
                       <div style={{ marginLeft: "1px" }}>
-                        {coupon.validity_start_date}
+                        {formatDateWithoutTimezone(coupon.validity_start_date)}
                       </div>
                       <div style={{ margin: "0px 1px" }}>{` - `}</div>
-                      <div>{coupon.validity_end_date}</div>
+                      <div>
+                        {formatDateWithoutTimezone(coupon.validity_end_date)}
+                      </div>
                     </div>
                   </div>
                   <Tooltip
