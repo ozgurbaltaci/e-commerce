@@ -1,17 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Divider, TextField, Grid, OutlinedInput } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import "./AccountSettings.css";
+import axios from "axios";
 
 const AccountSettings = () => {
   const [showCurrentPassword, setShowCurrentPassword] = React.useState(false);
   const [showNewPassword, setShowNewPassword] = React.useState(false);
+
   const [showConfirmNewPassword, setShowConfirmNewPassword] =
     React.useState(false);
 
+  const [currentUser, setCurrentUser] = useState({
+    user_name: "",
+    user_surname: "",
+    user_mail: "",
+    user_phone: "",
+    user_birth_date: "",
+    day: "",
+    month: "",
+    year: "",
+  });
   const handleClickShowCurrentPassword = () =>
     setShowCurrentPassword((show) => !show);
   const handleClickShowNewPassword = () => setShowNewPassword((show) => !show);
@@ -21,8 +33,58 @@ const AccountSettings = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
+  function formatDateWithoutTimezone(dateStr) {
+    const date = new Date(dateStr);
+
+    // Get the date components
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0 indexed
+    const day = String(date.getDate()).padStart(2, "0");
+
+    // Format the date as desired
+
+    return { day: day, month: month, year: year };
+  }
+  useEffect(() => {
+    axios
+      .get(
+        `http://localhost:3002/getCurrentUser/${localStorage.getItem(
+          "user_id"
+        )}`
+      )
+      .then((response) => {
+        if (response.data) {
+          var birthDate = response.data.user_birth_date
+            ? formatDateWithoutTimezone(response.data.user_birth_date)
+            : "";
+          setCurrentUser((prevUser) => ({
+            ...prevUser,
+            ...response.data,
+            // Parsing user_birth_date and setting day, month, year
+            day: birthDate.day,
+
+            month: birthDate.month,
+            year: birthDate.year,
+          }));
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+  }, []);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setCurrentUser((prevUser) => ({
+      ...prevUser,
+      [name]: value,
+    }));
+  };
+
   return (
     <div className="accountSettings">
+      {console.log(currentUser)}
       <Card
         style={{
           width: "100%",
@@ -59,6 +121,9 @@ const AccountSettings = () => {
                     <div style={{ fontWeight: "bold" }}>Name</div>
                     <TextField
                       variant="outlined"
+                      name="user_name"
+                      value={currentUser.user_name}
+                      onChange={handleInputChange}
                       fullWidth
                       InputProps={{
                         style: {
@@ -73,6 +138,9 @@ const AccountSettings = () => {
                     <div style={{ fontWeight: "bold" }}>Surname</div>
                     <TextField
                       variant="outlined"
+                      name="user_surname"
+                      value={currentUser.user_surname}
+                      onChange={handleInputChange}
                       fullWidth
                       InputProps={{
                         style: {
@@ -92,6 +160,9 @@ const AccountSettings = () => {
                     <div style={{ fontWeight: "bold" }}>E-mail</div>
                     <TextField
                       variant="outlined"
+                      name="user_mail"
+                      value={currentUser.user_mail}
+                      onChange={handleInputChange}
                       fullWidth
                       InputProps={{
                         style: {
@@ -110,6 +181,9 @@ const AccountSettings = () => {
                     <div style={{ fontWeight: "bold" }}>Phone Number</div>
                     <TextField
                       variant="outlined"
+                      name="user_phone"
+                      value={currentUser.user_phone}
+                      onChange={handleInputChange}
                       fullWidth
                       InputProps={{
                         style: {
@@ -129,6 +203,9 @@ const AccountSettings = () => {
                     <div style={{ fontWeight: "bold" }}>Birth Day</div>
                     <TextField
                       variant="outlined"
+                      name="day"
+                      value={currentUser.day}
+                      onChange={handleInputChange}
                       fullWidth
                       InputProps={{
                         style: {
@@ -143,6 +220,9 @@ const AccountSettings = () => {
                     <div style={{ fontWeight: "bold" }}>Birth Month</div>
                     <TextField
                       variant="outlined"
+                      name="month"
+                      value={currentUser.month}
+                      onChange={handleInputChange}
                       fullWidth
                       InputProps={{
                         style: {
@@ -157,6 +237,9 @@ const AccountSettings = () => {
                     <div style={{ fontWeight: "bold" }}>Birth Year</div>
                     <TextField
                       variant="outlined"
+                      name="year"
+                      value={currentUser.year}
+                      onChange={handleInputChange}
                       fullWidth
                       InputProps={{
                         style: {
