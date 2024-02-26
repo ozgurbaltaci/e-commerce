@@ -43,7 +43,7 @@ const Profile = () => {
   }, [selectedOption]);
 
   const renderSideBar = () => (
-    <Card style={{ padding: "15px", width: "200px" }}>
+    <Card style={{ padding: "15px", width: "200px", height: "fit-content" }}>
       <Grid container direction="column" spacing={1}>
         <Grid item>
           <div

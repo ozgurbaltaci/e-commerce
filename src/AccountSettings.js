@@ -6,6 +6,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import "./AccountSettings.css";
 import axios from "axios";
+import Toast, { successToast, errorToast } from "./Toaster";
 
 const AccountSettings = () => {
   const [showCurrentPassword, setShowCurrentPassword] = React.useState(false);
@@ -82,177 +83,339 @@ const AccountSettings = () => {
     }));
   };
 
+  const handleSavePersonalInformationChanges = async () => {
+    try {
+      await axios.put(
+        `http://localhost:3002/updateUser/${localStorage.getItem("user_id")}`,
+        {
+          currentUser: currentUser,
+        }
+      );
+      const keysToUpdate = [
+        "user_phone",
+        "user_mail",
+        "user_name",
+        "user_surname",
+      ];
+      keysToUpdate.forEach((key) => {
+        localStorage.setItem(key, currentUser[key]);
+      });
+      successToast("Changes saved successfully");
+    } catch (error) {
+      console.error("Error saving changes:", error);
+    }
+  };
+
   return (
-    <div className="accountSettings">
-      {console.log(currentUser)}
-      <Card
-        style={{
-          width: "100%",
-          display: "flex",
-          height: "100%",
-          padding: "15px 0px",
-        }}
-      >
-        <div
-          className="personal_information"
+    <>
+      <Toast></Toast>
+      <div className="accountSettings">
+        {console.log(currentUser)}
+        <Card
           style={{
-            fontSize: "10px",
-            width: "50%",
-            padding: "0px 15px",
+            width: "100%",
+            display: "flex",
+            height: "100%",
+            padding: "15px 0px",
           }}
         >
-          <div>
-            <div
-              style={{
-                color: "#2FB009",
-                fontSize: "16px",
-                fontWeight: "bold",
+          <div
+            className="personal_information"
+            style={{
+              fontSize: "10px",
+              width: "50%",
+              padding: "0px 15px",
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  color: "#2FB009",
+                  fontSize: "16px",
+                  fontWeight: "bold",
 
-                marginBottom: "20px",
-              }}
-            >
-              Personal Information
+                  marginBottom: "20px",
+                }}
+              >
+                Personal Information
+              </div>
+
+              <Grid container spacing={1} direction={"column"}>
+                <Grid item>
+                  <Grid container spacing={1}>
+                    <Grid item xs={6} sm={6} md={6} lg={6}>
+                      <div style={{ fontWeight: "bold" }}>Name</div>
+                      <TextField
+                        variant="outlined"
+                        name="user_name"
+                        value={currentUser.user_name}
+                        onChange={handleInputChange}
+                        fullWidth
+                        InputProps={{
+                          style: {
+                            height: "40px",
+                            fontSize: "10px",
+                            width: "100%",
+                          },
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={6} sm={6} md={6} lg={6}>
+                      <div style={{ fontWeight: "bold" }}>Surname</div>
+                      <TextField
+                        variant="outlined"
+                        name="user_surname"
+                        value={currentUser.user_surname}
+                        onChange={handleInputChange}
+                        fullWidth
+                        InputProps={{
+                          style: {
+                            height: "40px",
+                            fontSize: "10px",
+                            width: "100%",
+                          },
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+                <Grid item>
+                  <Grid container>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                      <div style={{ fontWeight: "bold" }}>E-mail</div>
+                      <TextField
+                        variant="outlined"
+                        name="user_mail"
+                        value={currentUser.user_mail}
+                        onChange={handleInputChange}
+                        fullWidth
+                        InputProps={{
+                          style: {
+                            height: "40px",
+                            fontSize: "10px",
+                            width: "100%",
+                          },
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item>
+                  <Grid container>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                      <div style={{ fontWeight: "bold" }}>Phone Number</div>
+                      <TextField
+                        variant="outlined"
+                        name="user_phone"
+                        onChange={handleInputChange}
+                        value={currentUser.user_phone}
+                        // onChange={handleInputChange}
+                        fullWidth
+                        InputProps={{
+                          style: {
+                            height: "40px",
+                            fontSize: "10px",
+                            width: "100%",
+                          },
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+                <Grid item>
+                  <Grid container spacing={1}>
+                    <Grid item xs={4} sm={4} md={4} lg={4}>
+                      <div style={{ fontWeight: "bold" }}>Birth Day</div>
+                      <TextField
+                        variant="outlined"
+                        name="day"
+                        value={currentUser.day}
+                        //onChange={handleInputChange}
+                        fullWidth
+                        InputProps={{
+                          readOnly: true,
+
+                          style: {
+                            height: "40px",
+                            fontSize: "10px",
+                            width: "100%",
+                          },
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={4} sm={4} md={4} lg={4}>
+                      <div style={{ fontWeight: "bold" }}>Birth Month</div>
+                      <TextField
+                        variant="outlined"
+                        name="month"
+                        value={currentUser.month}
+                        // onChange={handleInputChange}
+                        fullWidth
+                        InputProps={{
+                          readOnly: true,
+
+                          style: {
+                            height: "40px",
+                            fontSize: "10px",
+                            width: "100%",
+                          },
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={4} sm={4} md={4} lg={4}>
+                      <div style={{ fontWeight: "bold" }}>Birth Year</div>
+                      <TextField
+                        variant="outlined"
+                        name="year"
+                        value={currentUser.year}
+                        onChange={handleInputChange}
+                        fullWidth
+                        InputProps={{
+                          readOnly: true,
+                          style: {
+                            height: "40px",
+                            fontSize: "10px",
+                            width: "100%",
+                          },
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item>
+                  <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <button
+                      style={{
+                        width: "100%",
+                        height: "32px",
+                        marginRight: "10px",
+
+                        backgroundColor: "#2FB009",
+                        borderRadius: "3px",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        border: "none",
+                        color: "white",
+                        fontWeight: "bold",
+                        fontSize: "12px",
+                        fontFamily: "Cabin",
+                      }}
+                      variant="contained"
+                      color="primary"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSavePersonalInformationChanges();
+                      }}
+                    >
+                      {"SAVE CHANGES"}
+                    </button>
+                  </Grid>
+                </Grid>
+              </Grid>
             </div>
+          </div>
+          <Divider orientation="vertical" style={{ height: "100%" }}></Divider>
+          <div
+            className="change_password"
+            style={{
+              width: "50%",
+              height: "100%",
+              padding: "0px 15px",
+              fontSize: "10px",
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  color: "#2FB009",
+                  fontSize: "16px",
+                  fontWeight: "bold",
 
-            <Grid container spacing={1} direction={"column"}>
-              <Grid item>
-                <Grid container spacing={1}>
-                  <Grid item xs={6} sm={6} md={6} lg={6}>
-                    <div style={{ fontWeight: "bold" }}>Name</div>
-                    <TextField
-                      variant="outlined"
-                      name="user_name"
-                      value={currentUser.user_name}
-                      onChange={handleInputChange}
-                      fullWidth
-                      InputProps={{
-                        style: {
-                          height: "40px",
-                          fontSize: "10px",
-                          width: "100%",
-                        },
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={6} sm={6} md={6} lg={6}>
-                    <div style={{ fontWeight: "bold" }}>Surname</div>
-                    <TextField
-                      variant="outlined"
-                      name="user_surname"
-                      value={currentUser.user_surname}
-                      onChange={handleInputChange}
-                      fullWidth
-                      InputProps={{
-                        style: {
-                          height: "40px",
-                          fontSize: "10px",
-                          width: "100%",
-                        },
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
+                  marginBottom: "20px",
+                }}
+              >
+                Change Password
+              </div>
 
-              <Grid item>
-                <Grid container>
-                  <Grid item xs={12} sm={12} md={12} lg={12}>
-                    <div style={{ fontWeight: "bold" }}>E-mail</div>
-                    <TextField
-                      variant="outlined"
-                      name="user_mail"
-                      value={currentUser.user_mail}
-                      onChange={handleInputChange}
-                      fullWidth
-                      InputProps={{
-                        style: {
-                          height: "40px",
-                          fontSize: "10px",
-                          width: "100%",
-                        },
-                      }}
-                    />
-                  </Grid>
+              <Grid container spacing={1} direction={"column"}>
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                  <div style={{ fontWeight: "bold" }}>Current Password</div>
+                  <OutlinedInput
+                    style={{ height: "40px", fontSize: "10px" }}
+                    type={showCurrentPassword ? "text" : "password"}
+                    endAdornment={
+                      <InputAdornment position="end" style={{ zIndex: 1 }}>
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowCurrentPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showCurrentPassword ? (
+                            <VisibilityOff style={{ fontSize: "14px" }} />
+                          ) : (
+                            <Visibility style={{ fontSize: "14px" }} />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    variant="outlined"
+                    fullWidth
+                  />
                 </Grid>
-              </Grid>
-              <Grid item>
-                <Grid container>
-                  <Grid item xs={12} sm={12} md={12} lg={12}>
-                    <div style={{ fontWeight: "bold" }}>Phone Number</div>
-                    <TextField
-                      variant="outlined"
-                      name="user_phone"
-                      value={currentUser.user_phone}
-                      onChange={handleInputChange}
-                      fullWidth
-                      InputProps={{
-                        style: {
-                          height: "40px",
-                          fontSize: "10px",
-                          width: "100%",
-                        },
-                      }}
-                    />
-                  </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                  <div style={{ fontWeight: "bold" }}>New Password</div>
+                  <OutlinedInput
+                    style={{ height: "40px", fontSize: "10px" }}
+                    type={showNewPassword ? "text" : "password"}
+                    endAdornment={
+                      <InputAdornment position="end" style={{ zIndex: 1 }}>
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowNewPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showNewPassword ? (
+                            <VisibilityOff style={{ fontSize: "14px" }} />
+                          ) : (
+                            <Visibility style={{ fontSize: "14px" }} />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    variant="outlined"
+                    fullWidth
+                  />
                 </Grid>
-              </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                  <div style={{ fontWeight: "bold" }}>Confirm New Password</div>
+                  <OutlinedInput
+                    style={{ height: "40px", fontSize: "10px" }}
+                    type={showConfirmNewPassword ? "text" : "password"}
+                    endAdornment={
+                      <InputAdornment position="end" style={{ zIndex: 1 }}>
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowConfirmNewPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showConfirmNewPassword ? (
+                            <VisibilityOff style={{ fontSize: "14px" }} />
+                          ) : (
+                            <Visibility style={{ fontSize: "14px" }} />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    variant="outlined"
+                    fullWidth
+                  />
+                </Grid>
 
-              <Grid item>
-                <Grid container spacing={1}>
-                  <Grid item xs={4} sm={4} md={4} lg={4}>
-                    <div style={{ fontWeight: "bold" }}>Birth Day</div>
-                    <TextField
-                      variant="outlined"
-                      name="day"
-                      value={currentUser.day}
-                      onChange={handleInputChange}
-                      fullWidth
-                      InputProps={{
-                        style: {
-                          height: "40px",
-                          fontSize: "10px",
-                          width: "100%",
-                        },
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={4} sm={4} md={4} lg={4}>
-                    <div style={{ fontWeight: "bold" }}>Birth Month</div>
-                    <TextField
-                      variant="outlined"
-                      name="month"
-                      value={currentUser.month}
-                      onChange={handleInputChange}
-                      fullWidth
-                      InputProps={{
-                        style: {
-                          height: "40px",
-                          fontSize: "10px",
-                          width: "100%",
-                        },
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={4} sm={4} md={4} lg={4}>
-                    <div style={{ fontWeight: "bold" }}>Birth Year</div>
-                    <TextField
-                      variant="outlined"
-                      name="year"
-                      value={currentUser.year}
-                      onChange={handleInputChange}
-                      fullWidth
-                      InputProps={{
-                        style: {
-                          height: "40px",
-                          fontSize: "10px",
-                          width: "100%",
-                        },
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item>
                 <Grid item xs={12} sm={12} md={12} lg={12}>
                   <button
                     style={{
@@ -276,144 +439,15 @@ const AccountSettings = () => {
                       e.stopPropagation();
                     }}
                   >
-                    {"SAVE CHANGES"}
+                    {"CHANGE PASSWORD"}
                   </button>
                 </Grid>
               </Grid>
-            </Grid>
-          </div>
-        </div>
-        <Divider orientation="vertical" style={{ height: "100%" }}></Divider>
-        <div
-          className="change_password"
-          style={{
-            width: "50%",
-            height: "100%",
-            padding: "0px 15px",
-            fontSize: "10px",
-          }}
-        >
-          <div>
-            <div
-              style={{
-                color: "#2FB009",
-                fontSize: "16px",
-                fontWeight: "bold",
-
-                marginBottom: "20px",
-              }}
-            >
-              Change Password
             </div>
-
-            <Grid container spacing={1} direction={"column"}>
-              <Grid item xs={12} sm={12} md={12} lg={12}>
-                <div style={{ fontWeight: "bold" }}>Current Password</div>
-                <OutlinedInput
-                  style={{ height: "40px", fontSize: "10px" }}
-                  type={showCurrentPassword ? "text" : "password"}
-                  endAdornment={
-                    <InputAdornment position="end" style={{ zIndex: 1 }}>
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowCurrentPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
-                      >
-                        {showCurrentPassword ? (
-                          <VisibilityOff style={{ fontSize: "14px" }} />
-                        ) : (
-                          <Visibility style={{ fontSize: "14px" }} />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                  variant="outlined"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} md={12} lg={12}>
-                <div style={{ fontWeight: "bold" }}>New Password</div>
-                <OutlinedInput
-                  style={{ height: "40px", fontSize: "10px" }}
-                  type={showNewPassword ? "text" : "password"}
-                  endAdornment={
-                    <InputAdornment position="end" style={{ zIndex: 1 }}>
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowNewPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
-                      >
-                        {showNewPassword ? (
-                          <VisibilityOff style={{ fontSize: "14px" }} />
-                        ) : (
-                          <Visibility style={{ fontSize: "14px" }} />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                  variant="outlined"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} md={12} lg={12}>
-                <div style={{ fontWeight: "bold" }}>Confirm New Password</div>
-                <OutlinedInput
-                  style={{ height: "40px", fontSize: "10px" }}
-                  type={showConfirmNewPassword ? "text" : "password"}
-                  endAdornment={
-                    <InputAdornment position="end" style={{ zIndex: 1 }}>
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowConfirmNewPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
-                      >
-                        {showConfirmNewPassword ? (
-                          <VisibilityOff style={{ fontSize: "14px" }} />
-                        ) : (
-                          <Visibility style={{ fontSize: "14px" }} />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                  variant="outlined"
-                  fullWidth
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={12} md={12} lg={12}>
-                <button
-                  style={{
-                    width: "100%",
-                    height: "32px",
-                    marginRight: "10px",
-
-                    backgroundColor: "#2FB009",
-                    borderRadius: "3px",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    border: "none",
-                    color: "white",
-                    fontWeight: "bold",
-                    fontSize: "12px",
-                    fontFamily: "Cabin",
-                  }}
-                  variant="contained"
-                  color="primary"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                >
-                  {"CHANGE PASSWORD"}
-                </button>
-              </Grid>
-            </Grid>
           </div>
-        </div>
-      </Card>
-    </div>
+        </Card>
+      </div>
+    </>
   );
 };
 
