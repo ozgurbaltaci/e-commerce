@@ -15,6 +15,10 @@ const AccountSettings = () => {
   const [showConfirmNewPassword, setShowConfirmNewPassword] =
     React.useState(false);
 
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+
   const [currentUser, setCurrentUser] = useState({
     user_name: "",
     user_surname: "",
@@ -103,6 +107,54 @@ const AccountSettings = () => {
       successToast("Changes saved successfully");
     } catch (error) {
       console.error("Error saving changes:", error);
+    }
+  };
+
+  function isValidPassword(password) {
+    // Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one digit.
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    return passwordRegex.test(password);
+  }
+
+  const handleChangePassword = async () => {
+    if (
+      newPassword.trim() !== "" &&
+      confirmNewPassword.trim() !== "" &&
+      currentPassword.trim() !== ""
+    ) {
+      if (newPassword !== confirmNewPassword) {
+        errorToast(
+          "Confirmation password does not match with the new password!"
+        );
+        return;
+      }
+
+      if (!isValidPassword(newPassword)) {
+        errorToast(
+          "Password must be at least 8 characters and include at least one uppercase letter, one lowercase letter, and one digit."
+        );
+        return;
+      }
+
+      try {
+        await axios
+          .put(
+            `http://localhost:3002/updatePassword/${localStorage.getItem(
+              "user_id"
+            )}`,
+            {
+              newPassword: newPassword,
+              currentPassword: currentPassword,
+            }
+          )
+          .then((response) => {
+            successToast(response.data.message);
+          });
+      } catch (error) {
+        errorToast(error.response.data.error);
+      }
+    } else {
+      errorToast("Please fill in all fields.");
     }
   };
 
@@ -345,6 +397,7 @@ const AccountSettings = () => {
                   <OutlinedInput
                     style={{ height: "40px", fontSize: "10px" }}
                     type={showCurrentPassword ? "text" : "password"}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
                     endAdornment={
                       <InputAdornment position="end" style={{ zIndex: 1 }}>
                         <IconButton
@@ -370,6 +423,7 @@ const AccountSettings = () => {
                   <OutlinedInput
                     style={{ height: "40px", fontSize: "10px" }}
                     type={showNewPassword ? "text" : "password"}
+                    onChange={(e) => setNewPassword(e.target.value)}
                     endAdornment={
                       <InputAdornment position="end" style={{ zIndex: 1 }}>
                         <IconButton
@@ -395,6 +449,7 @@ const AccountSettings = () => {
                   <OutlinedInput
                     style={{ height: "40px", fontSize: "10px" }}
                     type={showConfirmNewPassword ? "text" : "password"}
+                    onChange={(e) => setConfirmNewPassword(e.target.value)}
                     endAdornment={
                       <InputAdornment position="end" style={{ zIndex: 1 }}>
                         <IconButton
@@ -437,6 +492,7 @@ const AccountSettings = () => {
                     color="primary"
                     onClick={(e) => {
                       e.stopPropagation();
+                      handleChangePassword();
                     }}
                   >
                     {"CHANGE PASSWORD"}
