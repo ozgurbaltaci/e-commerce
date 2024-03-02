@@ -258,107 +258,113 @@ const MyReviews = () => {
         </DialogActions>
       </Dialog>
 
-      {reviews.map((review, index) => {
-        return (
-          <>
-            <Card
-              style={{
-                marginBottom: "10px",
-                fontSize: "11px",
-                padding: "14px",
-                width: "fit-content",
-                minWidth: "150px",
-                height: "fit-content",
-                width: "100%",
-              }}
-            >
-              <div style={{ display: "flex" }}>
-                <img
-                  src={review.image}
-                  width={"94px"}
-                  height={"74px"}
-                  style={{ borderRadius: "2px" }}
-                ></img>
-                <div style={{ marginLeft: "6px", width: "100%" }}>
-                  <div style={{ display: "flex" }}>
-                    <div style={{ width: "100%" }}>
-                      <div
-                        className="sellerNameAndDescription"
-                        style={{ display: "flex" }}
-                      >
-                        <div style={{ fontWeight: "bold" }}>
-                          {review.manufacturer_name}
+      {reviews.length > 0 ? (
+        reviews.map((review, index) => {
+          return (
+            <>
+              <Card
+                style={{
+                  marginBottom: "10px",
+                  fontSize: "11px",
+                  padding: "14px",
+                  width: "fit-content",
+                  minWidth: "150px",
+                  height: "fit-content",
+                  width: "100%",
+                }}
+              >
+                <div style={{ display: "flex" }}>
+                  <img
+                    src={review.image}
+                    width={"94px"}
+                    height={"74px"}
+                    style={{ borderRadius: "2px" }}
+                  ></img>
+                  <div style={{ marginLeft: "6px", width: "100%" }}>
+                    <div style={{ display: "flex" }}>
+                      <div style={{ width: "100%" }}>
+                        <div
+                          className="sellerNameAndDescription"
+                          style={{ display: "flex" }}
+                        >
+                          <div style={{ fontWeight: "bold" }}>
+                            {review.manufacturer_name}
+                          </div>
+                          <div style={{ marginLeft: "3px", color: "#262626" }}>
+                            {review.description}
+                          </div>
                         </div>
-                        <div style={{ marginLeft: "3px", color: "#262626" }}>
-                          {review.description}
+
+                        <div className="stars">
+                          {renderStars(review.rating, "11px")}
                         </div>
                       </div>
+                      <div
+                        className="buttonGroup"
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          alignItems: "center",
+                        }}
+                      >
+                        <button
+                          style={{
+                            width: "75px",
+                            height: "18px",
+                            fontSize: "9px",
+                            backgroundColor: "rgba(0,139,255,0.16)",
+                            border: "none",
+                            color: "rgba(0,139,255)",
+                            borderRadius: "2px",
+                            marginRight: "6px",
+                          }}
+                          onClick={() => {
+                            handleEditModalOpen(review);
+                          }}
+                        >
+                          Edit Review
+                        </button>
 
-                      <div className="stars">
-                        {renderStars(review.rating, "11px")}
+                        <button
+                          style={{
+                            width: "75px",
+                            height: "18px",
+                            fontSize: "9px",
+                            backgroundColor: "rgba(237,74,0,0.16)",
+                            border: "none",
+                            color: "rgba(237,74,0)",
+                            borderRadius: "2px",
+                          }}
+                          onClick={() => {
+                            handleReviewModalOpen(review);
+                          }}
+                        >
+                          Delete Review
+                        </button>
                       </div>
                     </div>
+
                     <div
-                      className="buttonGroup"
                       style={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        alignItems: "center",
+                        padding: "10px",
+                        backgroundColor: "#F2F1F1",
+                        borderRadius: "3px",
+                        minHeight: "25px",
                       }}
                     >
-                      <button
-                        style={{
-                          width: "75px",
-                          height: "18px",
-                          fontSize: "9px",
-                          backgroundColor: "rgba(0,139,255,0.16)",
-                          border: "none",
-                          color: "rgba(0,139,255)",
-                          borderRadius: "2px",
-                          marginRight: "6px",
-                        }}
-                        onClick={() => {
-                          handleEditModalOpen(review);
-                        }}
-                      >
-                        Edit Review
-                      </button>
-
-                      <button
-                        style={{
-                          width: "75px",
-                          height: "18px",
-                          fontSize: "9px",
-                          backgroundColor: "rgba(237,74,0,0.16)",
-                          border: "none",
-                          color: "rgba(237,74,0)",
-                          borderRadius: "2px",
-                        }}
-                        onClick={() => {
-                          handleReviewModalOpen(review);
-                        }}
-                      >
-                        Delete Review
-                      </button>
+                      {review.review_text}
                     </div>
                   </div>
-
-                  <div
-                    style={{
-                      padding: "10px",
-                      backgroundColor: "#F2F1F1",
-                      borderRadius: "3px",
-                      minHeight: "25px",
-                    }}
-                  >
-                    {review.review_text}
-                  </div>
                 </div>
-              </div>
-            </Card>
-          </>
-        );
-      })}
+              </Card>
+            </>
+          );
+        })
+      ) : (
+        <div style={{ fontSize: "14px" }}>
+          Looks like you haven't placed any comment yet.
+        </div>
+      )}
     </>
   );
 };
