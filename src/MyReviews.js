@@ -86,12 +86,12 @@ const MyReviews = () => {
 
   const handleEditModalOpen = (review) => {
     setUpdatedRating(review.rating);
-    setSelectedReview(review.id); // Set selected review when edit button is clicked
+    setSelectedReview(review); // Set selected review when edit button is clicked
     setEditedReviewText(review.review_text); // Set the initial value of edited review text
     setIsEditModalOpen(true);
   };
   const handleReviewModalOpen = (review) => {
-    setSelectedReview(review.id); // Set selected review when edit button is clicked
+    setSelectedReview(review); // Set selected review when edit button is clicked
     setEditedReviewText(review.review_text); // Set the initial value of edited review text
     setUpdatedRating(review.rating);
     setIsDeleteReviewModalOpen(true);
@@ -100,7 +100,9 @@ const MyReviews = () => {
   const handleDeleteReview = async (reviewId) => {
     try {
       await axios
-        .delete(`http://localhost:3002/deleteReview/${reviewId}`)
+        .delete(`http://localhost:3002/deleteReview/${reviewId}`, {
+          manufacturer_id: selectedReview.manufacturer_id,
+        })
         .then((response) => {
           // Remove the deleted review from the current state
           setReviews(reviews.filter((review) => review.id !== reviewId));
@@ -150,15 +152,16 @@ const MyReviews = () => {
   const handleSaveChanges = () => {
     // Send update request to backend
     axios
-      .put(`http://localhost:3002/updateReview/${selectedReview}`, {
+      .put(`http://localhost:3002/updateReview/${selectedReview.id}`, {
         updatedReviewText: editedReviewText,
         updatedRating: updatedRating,
+        manufacturer_id: selectedReview.manufacturer_id,
       })
       .then((response) => {
         if (response.status === 201) {
           setReviews(
             reviews.map((review) =>
-              review.id === selectedReview
+              review.id === selectedReview.id
                 ? {
                     ...review,
                     review_text: editedReviewText,
@@ -250,7 +253,7 @@ const MyReviews = () => {
           </Button>
           <Button
             onClick={() => {
-              handleDeleteReview(selectedReview);
+              handleDeleteReview(selectedReview.id);
             }}
           >
             Confirm

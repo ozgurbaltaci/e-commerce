@@ -192,6 +192,7 @@ const ProductCardHolder = ({
                 width: "100%",
                 height: "310px",
                 position: "relative",
+                cursor: "pointer",
               }}
               onMouseEnter={() =>
                 handleProductCardMouseEnter(product.product_id)
@@ -239,7 +240,18 @@ const ProductCardHolder = ({
                     e.stopPropagation();
                   }}
                 >
-                  {product.manufacturerName}
+                  <div
+                    style={{ cursor: "pointer" }}
+                    onMouseOver={(e) => (e.target.style.color = "#00990F")}
+                    onMouseOut={(e) => (e.target.style.color = "black")}
+                    onClick={() => {
+                      navigate(
+                        `/manufacturer/${product.manufacturerId}/${product.manufacturerName}`
+                      );
+                    }}
+                  >
+                    {product.manufacturerName}
+                  </div>
                 </Typography>
                 <Typography
                   variant="body2"

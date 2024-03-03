@@ -17,6 +17,7 @@ const button = (props) => {
         alignItems: "center",
         border: "none",
         color: "white",
+        cursor: "pointer",
       }}
       variant="contained"
       color="primary"

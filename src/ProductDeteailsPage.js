@@ -128,6 +128,7 @@ const ProductDeteailsPage = () => {
             {
               ratingPoint: rating,
               review: commentInput,
+              manufacturer_id: productDetails.manufacturer_id,
             }
           );
           setComments([...comments, commentInput]);
