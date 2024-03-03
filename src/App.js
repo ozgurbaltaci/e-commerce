@@ -13,6 +13,7 @@ import NavBar from "./NavBar";
 import SubCategoriesPage from "./SubCategoriesPage";
 import ProductsOfSelectedSubCategoriesPage from "./ProductsOfSelectedSubCategoriesPage";
 import ProductDeteailsPage from "./ProductDeteailsPage";
+import SellerPage from "./SellerPage";
 
 const theme = createMuiTheme({
   typography: {
@@ -73,6 +74,11 @@ function App() {
           <Route
             path="/category/:categoryId/:categoryName/:subCategoryId/:subCategoryName"
             element={<ProductsOfSelectedSubCategoriesPage />}
+          />
+
+          <Route
+            path="/manufacturer/:manufacturerId/:manufacturerName"
+            element={<SellerPage />}
           />
 
           <Route
