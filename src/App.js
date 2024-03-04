@@ -1,3 +1,4 @@
+import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import "./App.css";
@@ -8,91 +9,55 @@ import Register from "./Register";
 import Login from "./Login";
 import AddProduct from "./AddProduct";
 import Profile from "./Profile";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import NavBar from "./NavBar";
 import SubCategoriesPage from "./SubCategoriesPage";
 import ProductsOfSelectedSubCategoriesPage from "./ProductsOfSelectedSubCategoriesPage";
 import ProductDeteailsPage from "./ProductDeteailsPage";
 import SellerPage from "./SellerPage";
-
-const theme = createMuiTheme({
-  typography: {
-    fontFamily: "Cabin, sans-serif",
-    fontSize: 12,
-    fontWeightRegular: 400,
-    fontWeightMedium: 500,
-
-    h1: {
-      fontSize: 36,
-      fontWeight: 700,
-      lineHeight: 1.2,
-    },
-    h2: {
-      fontSize: 28,
-      fontWeight: 700,
-      lineHeight: 1.2,
-    },
-    h3: {
-      fontSize: 22,
-      fontWeight: 700,
-      lineHeight: 1.2,
-    },
-    h4: {
-      fontSize: 18,
-      fontWeight: 700,
-      lineHeight: 1.2,
-    },
-    h5: {
-      fontSize: 16,
-      fontWeight: 700,
-      lineHeight: 1.2,
-    },
-    h6: {
-      fontSize: 14,
-      fontWeight: 700,
-      lineHeight: 1.2,
-    },
-  },
-});
+import AuthContext from "./auth-context";
+import { useContext } from "react";
 
 function App() {
+  const authCtx = useContext(AuthContext);
+  const isLoggedIn = authCtx.isLoggedIn;
+
+  const navTo = (comp) => {
+    return isLoggedIn ? comp : <Navigate to="/login" />;
+  };
+
   return (
-    <ThemeProvider theme={theme}>
-      <div style={{ padding: "0px 90px 0px 90px" }}>
-        <NavBar></NavBar>
-        <Routes>
-          <Route path="*" element={<Navigate to="/" />} />
+    <div style={{ padding: "0px 90px 0px 90px" }}>
+      <NavBar />
+      <Routes>
+        {!isLoggedIn && <Route path="/login" element={<Login />} />}
+        {!isLoggedIn && <Route path="/register" element={<Register />} />}
+        <Route path="*" element={<Navigate to="/mainPage" />} />
 
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route
-            path="/category/:categoryId/:categoryName"
-            element={<SubCategoriesPage />}
-          />
-
-          <Route
-            path="/category/:categoryId/:categoryName/:subCategoryId/:subCategoryName"
-            element={<ProductsOfSelectedSubCategoriesPage />}
-          />
-
-          <Route
-            path="/manufacturer/:manufacturerId/:manufacturerName"
-            element={<SellerPage />}
-          />
-
-          <Route
-            path="category/:categoryId/:subCategoryId/:productId"
-            element={<ProductDeteailsPage />}
-          />
-          <Route path="/mainPage" element={<MainPage />} />
-          <Route path="/addProduct" element={<AddProduct />} />
-
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/favorites" element={<Favorites />} />
-        </Routes>
-      </div>
-    </ThemeProvider>
+        <Route path="/mainPage" element={<MainPage />} />
+        <Route path="/cart" element={navTo(<Cart />)} />
+        <Route path="/favorites" element={navTo(<Favorites />)} />
+        <Route path="/profile" element={navTo(<Profile />)} />
+        <Route path="/addProduct" element={navTo(<AddProduct />)} />
+        <Route
+          path="/category/:categoryId/:categoryName"
+          element={navTo(<SubCategoriesPage />)}
+        />
+        <Route
+          path="/category/:categoryId/:categoryName/:subCategoryId/:subCategoryName"
+          element={navTo(<ProductsOfSelectedSubCategoriesPage />)}
+        />
+        <Route
+          path="/manufacturer/:manufacturerId/:manufacturerName"
+          element={navTo(<SellerPage />)}
+        />
+        <Route
+          path="/category/:categoryId/:subCategoryId/:productId"
+          element={navTo(<ProductDeteailsPage />)}
+        />
+        {/* Default route for authenticated users */}
+        <Route path="*" element={navTo(<Navigate to="/" />)} />
+      </Routes>
+    </div>
   );
 }
 

@@ -10,11 +10,14 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlin
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Divider } from "@material-ui/core";
+import AuthContext from "./auth-context";
+import { useContext } from "react";
 
 import "./NavBar.css";
 
 const NavBar = () => {
   const navigate = useNavigate();
+  const authCtx = useContext(AuthContext);
 
   return (
     <div
@@ -67,60 +70,64 @@ const NavBar = () => {
             }}
           />
         </Grid>
-        <Grid item xs={12} sm={1} md={1} lg={1}>
-          <div
-            style={{
-              textAlign: "right",
-              fontSize: "12px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              cursor: "pointer",
-            }}
-            onClick={() => navigate("/profile")}
-          >
-            <PersonOutlineOutlinedIcon
-              style={{ fontSize: "18px" }}
-            ></PersonOutlineOutlinedIcon>
-            Profile
-          </div>
-        </Grid>{" "}
-        <Grid item xs={12} sm={1} md={1} lg={1}>
-          <div
-            style={{
-              textAlign: "right",
-              fontSize: "12px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              cursor: "pointer",
-            }}
-            onClick={() => navigate("/favorites")}
-          >
-            <FavoriteBorderOutlinedIcon
-              style={{ fontSize: "18px" }}
-            ></FavoriteBorderOutlinedIcon>
-            Favorites
-          </div>
-        </Grid>
-        <Grid item xs={12} sm={1} md={1} lg={1}>
-          <div
-            style={{
-              textAlign: "right",
-              fontSize: "12px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              cursor: "pointer",
-            }}
-            onClick={() => navigate("/cart")}
-          >
-            <ShoppingCartOutlinedIcon
-              style={{ fontSize: "18px" }}
-            ></ShoppingCartOutlinedIcon>
-            Cart
-          </div>
-        </Grid>
+        {authCtx.isLoggedIn && (
+          <>
+            <Grid item xs={12} sm={1} md={1} lg={1}>
+              <div
+                style={{
+                  textAlign: "right",
+                  fontSize: "12px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+                onClick={() => navigate("/profile")}
+              >
+                <PersonOutlineOutlinedIcon
+                  style={{ fontSize: "18px" }}
+                ></PersonOutlineOutlinedIcon>
+                Profile
+              </div>
+            </Grid>{" "}
+            <Grid item xs={12} sm={1} md={1} lg={1}>
+              <div
+                style={{
+                  textAlign: "right",
+                  fontSize: "12px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+                onClick={() => navigate("/favorites")}
+              >
+                <FavoriteBorderOutlinedIcon
+                  style={{ fontSize: "18px" }}
+                ></FavoriteBorderOutlinedIcon>
+                Favorites
+              </div>
+            </Grid>
+            <Grid item xs={12} sm={1} md={1} lg={1}>
+              <div
+                style={{
+                  textAlign: "right",
+                  fontSize: "12px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+                onClick={() => navigate("/cart")}
+              >
+                <ShoppingCartOutlinedIcon
+                  style={{ fontSize: "18px" }}
+                ></ShoppingCartOutlinedIcon>
+                Cart
+              </div>
+            </Grid>
+          </>
+        )}
       </Grid>
       <Divider style={{ position: "absolute", right: 0, left: 0 }}></Divider>
     </div>

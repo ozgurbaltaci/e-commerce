@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Avatar from "@mui/material/Avatar";
 import axios from "axios";
 import Button from "@mui/material/Button";
@@ -12,7 +12,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Navigate, useNavigate } from "react-router-dom";
 import Toast, { successToast, errorToast } from "./Toaster";
-
+import AuthContext from "./auth-context";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 function isValidEmail(email) {
@@ -41,6 +41,8 @@ function Copyright(props) {
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const authCtx = useContext(AuthContext);
+
   const [formData, setFormData] = useState({
     user_mail: "",
     user_password: "",
@@ -92,7 +94,13 @@ export default function SignIn() {
           if (response_data) {
             localStorage.setItem("user_id", response_data.user_id);
             localStorage.setItem("user_name", response_data.user_name);
-            localStorage.setItem("accessToken", response_data.accessToken);
+            const expirationTime = new Date(
+              new Date().getTime() + 36000 * 1000
+            );
+            authCtx.login(
+              response_data.accessToken,
+              expirationTime.toISOString()
+            );
             localStorage.setItem("user_surname", response_data.user_surname);
             localStorage.setItem("user_phone", response_data.user_phone);
             localStorage.setItem("user_mail", response_data.user_mail);
