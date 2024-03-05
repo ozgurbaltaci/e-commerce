@@ -95,8 +95,9 @@ export default function SignIn() {
             localStorage.setItem("user_id", response_data.user_id);
             localStorage.setItem("user_name", response_data.user_name);
             const expirationTime = new Date(
-              new Date().getTime() + 36000 * 1000
+              response_data.accessTokenExpirationTime
             );
+
             authCtx.login(
               response_data.accessToken,
               expirationTime.toISOString()
