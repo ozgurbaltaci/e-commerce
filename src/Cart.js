@@ -43,6 +43,8 @@ import Labels from "./Labels";
 import IncrementDecrementButtonGroup from "./IncrementDecrementButtonGroup";
 import { withStyles } from "@material-ui/core/styles";
 import MyButton from "./components/MyButton";
+import AuthContext from "./auth-context";
+import { useContext } from "react";
 
 const availablePaymentMethods = [
   /**  {
@@ -151,6 +153,7 @@ const Cart = () => {
       return Array.from(updatedSet);
     });
   };
+  const authCtx = useContext(AuthContext);
 
   useEffect(() => {
     setProvinces(sehirler[2].data);
@@ -516,6 +519,9 @@ const Cart = () => {
         await saveOrder();
       } else if (payment.status === 201) {
         alert("You are not authorized");
+      } else if (payment.status === 403) {
+        alert("Your session expired!");
+        authCtx.logout();
       } else {
         alert(`Error: Payment failed.`);
       }
