@@ -12,6 +12,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { Divider } from "@material-ui/core";
 import AuthContext from "./auth-context";
 import { useContext } from "react";
+import LoginIcon from "@mui/icons-material/Login";
 
 import "./NavBar.css";
 
@@ -70,7 +71,7 @@ const NavBar = () => {
             }}
           />
         </Grid>
-        {authCtx.isLoggedIn && (
+        {authCtx.isLoggedIn ? (
           <>
             <Grid item xs={12} sm={1} md={1} lg={1}>
               <div
@@ -127,6 +128,24 @@ const NavBar = () => {
               </div>
             </Grid>
           </>
+        ) : (
+          <Grid item xs={12} sm={3} md={3} lg={3}>
+            <div
+              style={{
+                textAlign: "right",
+                fontSize: "12px",
+                display: "flex",
+                width: "100%",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/login")}
+            >
+              <LoginIcon style={{ fontSize: "18px" }}></LoginIcon>
+              Login
+            </div>
+          </Grid>
         )}
       </Grid>
       <Divider style={{ position: "absolute", right: 0, left: 0 }}></Divider>
