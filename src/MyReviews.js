@@ -22,6 +22,8 @@ const MyReviews = () => {
   const [editedReviewText, setEditedReviewText] = useState("");
   const [updatedRating, setUpdatedRating] = useState(0);
 
+  const [isReviewsLoading, setIsReviewsLoading] = useState(true);
+
   useEffect(() => {
     // Fetch categories with subcategories from backend API using Axios
     axios
@@ -32,6 +34,7 @@ const MyReviews = () => {
       )
       .then((response) => {
         setReviews(response.data);
+        setIsReviewsLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching categories:", error);
@@ -261,7 +264,9 @@ const MyReviews = () => {
         </DialogActions>
       </Dialog>
 
-      {reviews.length > 0 ? (
+      {isReviewsLoading ? (
+        <div>Your reviews are loading...</div>
+      ) : reviews.length > 0 ? (
         reviews.map((review, index) => {
           return (
             <>
