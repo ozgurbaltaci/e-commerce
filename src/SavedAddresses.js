@@ -56,6 +56,8 @@ const SavedAddresses = () => {
   const [receiverPhoneNumberError, setReceiverPhoneNumberError] =
     useState(false);
 
+  const [savedAddressesLoading, setSavedAddressesLoading] = useState(true);
+
   useEffect(() => {
     axios
       .get(
@@ -66,6 +68,7 @@ const SavedAddresses = () => {
       .then((response) => {
         if (response.data) {
           setSavedAddresses(response.data);
+          setSavedAddressesLoading(false);
         }
       })
       .catch((error) => {
@@ -526,62 +529,66 @@ const SavedAddresses = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <div className="accountSettings">
-        <Card
-          style={{
-            width: "100%",
-            display: "flex",
-            height: "100%",
-            padding: "15px",
-          }}
-        >
-          <Grid container spacing={1}>
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <Card
-                style={{
-                  height: savedAddresses.length > 0 ? "100%" : "140px",
-                  width: "100%",
-                  border: "1px dashed rgba(47, 176, 9)",
-                  backgroundColor: "rgba(47, 176, 9, 0.14)",
-                  boxShadow: "none",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  cursor: "pointer",
-                }}
-                onClick={handleClickOpen}
-              >
-                {" "}
-                <div>
-                  <img
-                    src={require("./add_new_icon.png")}
-                    width={"35px"}
-                    height={"35px"}
-                  ></img>
-                </div>
-                <div
+      {savedAddressesLoading ? (
+        <div>Your saved addresses are loading...</div>
+      ) : (
+        <div className="accountSettings">
+          <Card
+            style={{
+              width: "100%",
+              display: "flex",
+              height: "100%",
+              padding: "15px",
+            }}
+          >
+            <Grid container spacing={1}>
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <Card
                   style={{
-                    color: "rgba(47, 176, 9)",
-                    fontSize: "12px",
-                    fontWeight: "bold",
+                    height: savedAddresses.length > 0 ? "100%" : "140px",
+                    width: "100%",
+                    border: "1px dashed rgba(47, 176, 9)",
+                    backgroundColor: "rgba(47, 176, 9, 0.14)",
+                    boxShadow: "none",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    cursor: "pointer",
                   }}
+                  onClick={handleClickOpen}
                 >
                   {" "}
-                  Add New Address
-                </div>
-              </Card>
+                  <div>
+                    <img
+                      src={require("./add_new_icon.png")}
+                      width={"35px"}
+                      height={"35px"}
+                    ></img>
+                  </div>
+                  <div
+                    style={{
+                      color: "rgba(47, 176, 9)",
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {" "}
+                    Add New Address
+                  </div>
+                </Card>
+              </Grid>
+              {savedAddresses.map((savedAddress, index) => {
+                return (
+                  <Grid item xs={12} sm={6} md={4} lg={4}>
+                    {renderSavedAddressesCard(savedAddress)}
+                  </Grid>
+                );
+              })}
             </Grid>
-            {savedAddresses.map((savedAddress, index) => {
-              return (
-                <Grid item xs={12} sm={6} md={4} lg={4}>
-                  {renderSavedAddressesCard(savedAddress)}
-                </Grid>
-              );
-            })}
-          </Grid>
-        </Card>
-      </div>
+          </Card>
+        </div>
+      )}
     </>
   );
 };
