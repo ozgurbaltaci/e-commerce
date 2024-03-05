@@ -22,6 +22,7 @@ const MyOrders = () => {
       .get(`http://localhost:3002/getOrders/${localStorage.getItem("user_id")}`)
       .then((response) => {
         setOrders({ orders: response.data.orders });
+        setIsOrdersLoading(false);
       });
   }, []);
 
@@ -176,98 +177,107 @@ const MyOrders = () => {
   };
 
   return (
-    <div style={{ fontSize: "9px" }}>
-      {orders.orders.length > 0 ? (
-        orders.orders.map((order) => (
-          <Accordion key={order.order_id}>
-            <AccordionSummary
-              expandIcon={<ArrowDownwardIcon />}
-              aria-controls={`panel-${order.order_id}-content`}
-              id={`panel-${order.order_id}-header`}
-              style={{ display: "flex", alignItems: "center" }}
-            >
-              <div style={{ display: "flex", width: "100%" }}>
-                <div
-                  className="avatars"
-                  style={{
-                    display: "flex",
-                    width: "84px",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "12%",
-                  }}
+    <div>
+      {isOrdersLoading ? (
+        <div>Your orders are loading...</div>
+      ) : (
+        <div style={{ fontSize: "9px" }}>
+          {orders.orders.length > 0 ? (
+            orders.orders.map((order) => (
+              <Accordion key={order.order_id}>
+                <AccordionSummary
+                  expandIcon={<ArrowDownwardIcon />}
+                  aria-controls={`panel-${order.order_id}-content`}
+                  id={`panel-${order.order_id}-header`}
+                  style={{ display: "flex", alignItems: "center" }}
                 >
-                  {order.products.slice(0, 2).map((product, index) => (
-                    <Avatar
-                      className={classes.imgAvatar}
-                      key={index}
-                      alt={product.product_name}
-                      src={product.image}
-                      sx={{
-                        width: "38px",
-                        height: "38px",
-                        boxShadow: "0 0 5px 2px rgba(0,0,0,0.08)",
-                      }}
-                    />
-                  ))}
-                  {order.products.length > 2 && (
-                    <Avatar
-                      sx={{
-                        width: "38px",
-                        height: "38px",
-                        backgroundColor: "#EDEDED",
-                        fontSize: "12px",
-                        color: "black",
-                        marginLeft: "-15px",
+                  <div style={{ display: "flex", width: "100%" }}>
+                    <div
+                      className="avatars"
+                      style={{
+                        display: "flex",
+                        width: "84px",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "12%",
                       }}
                     >
-                      +{order.products.length - 2}
-                    </Avatar>
-                  )}
-                </div>
-                <div
-                  className="order_id_and_date"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: "11%",
-                  }}
-                >
-                  <div>
-                    <strong>Order ID: {order.order_id}</strong>
+                      {order.products.slice(0, 2).map((product, index) => (
+                        <Avatar
+                          className={classes.imgAvatar}
+                          key={index}
+                          alt={product.product_name}
+                          src={product.image}
+                          sx={{
+                            width: "38px",
+                            height: "38px",
+                            boxShadow: "0 0 5px 2px rgba(0,0,0,0.08)",
+                          }}
+                        />
+                      ))}
+                      {order.products.length > 2 && (
+                        <Avatar
+                          sx={{
+                            width: "38px",
+                            height: "38px",
+                            backgroundColor: "#EDEDED",
+                            fontSize: "12px",
+                            color: "black",
+                            marginLeft: "-15px",
+                          }}
+                        >
+                          +{order.products.length - 2}
+                        </Avatar>
+                      )}
+                    </div>
+                    <div
+                      className="order_id_and_date"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "11%",
+                      }}
+                    >
+                      <div>
+                        <strong>Order ID: {order.order_id}</strong>
 
-                    <div>{order.order_date}</div>
+                        <div>{order.order_date}</div>
+                      </div>
+                    </div>
+                    <div
+                      className="order_status_stepper"
+                      style={{ width: "67%" }}
+                    >
+                      <OrderStatusStepper
+                        activeStep={order.order_status_id}
+                      ></OrderStatusStepper>
+                    </div>
+                    <div
+                      className="order_total_price"
+                      style={{
+                        width: "10%",
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                        color: "#00990F",
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {order.total_price} TL
+                    </div>
                   </div>
-                </div>
-                <div className="order_status_stepper" style={{ width: "67%" }}>
-                  <OrderStatusStepper
-                    activeStep={order.order_status_id}
-                  ></OrderStatusStepper>
-                </div>
-                <div
-                  className="order_total_price"
-                  style={{
-                    width: "10%",
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                    color: "#00990F",
-                    fontSize: "14px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {order.total_price} TL
-                </div>
-              </div>
-            </AccordionSummary>
-            <AccordionDetails>{getOrderedProducts(order)}</AccordionDetails>
-          </Accordion>
-        ))
-      ) : (
-        <div style={{ fontSize: "14px" }}>
-          Looks like you haven't placed any orders yet. Start exploring our
-          amazing products now!
+                </AccordionSummary>
+                <AccordionDetails>{getOrderedProducts(order)}</AccordionDetails>
+              </Accordion>
+            ))
+          ) : (
+            <div style={{ fontSize: "14px" }}>
+              Looks like you haven't placed any orders yet. Start exploring our
+              amazing products now!
+            </div>
+          )}
         </div>
       )}
     </div>
