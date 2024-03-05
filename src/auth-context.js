@@ -93,6 +93,10 @@ export const AuthContextProvider = (props) => {
     setToken(null);
     localStorage.removeItem("accessToken");
     localStorage.removeItem("expirationTime");
+    localStorage.removeItem("user_name");
+    localStorage.removeItem("user_mail");
+    localStorage.removeItem("user_phone");
+    localStorage.removeItem("user_id");
 
     if (logoutTimer) {
       clearTimeout(logoutTimer);
@@ -110,6 +114,10 @@ export const AuthContextProvider = (props) => {
   };
 
   useEffect(() => {
+    if (!tokenData) {
+      logoutHandler();
+      return;
+    }
     if (tokenData) {
       logoutTimer = setTimeout(logoutHandler, tokenData.duration);
     }
