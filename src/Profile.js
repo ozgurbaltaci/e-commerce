@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import MyOrders from "./MyOrders";
 import MyReviews from "./MyReviews";
 import MyDiscountCodes from "./MyDiscountCodes";
 import Toast, { successToast, errorToast } from "./Toaster";
 import AccountSettings from "./AccountSettings";
 import SavedAddresses from "./SavedAddresses";
+import AuthContext from "./auth-context";
 
 import {
   Card,
@@ -34,6 +35,7 @@ const Profile = () => {
   const [selectedOption, setSelectedOption] = useState("My Orders");
   const userName = localStorage.getItem("user_name");
   const userSurname = localStorage.getItem("user_surname");
+  const authCtx = useContext(AuthContext);
 
   const handleOptionClick = (option) => {
     setSelectedOption(option);
@@ -98,8 +100,9 @@ const Profile = () => {
                     fontWeight: selectedOption === option ? "bold" : "normal",
                   }}
                   onClick={() => {
-                    groupIndex !== sideBarOptions.length - 1 &&
-                      handleOptionClick(option);
+                    groupIndex !== sideBarOptions.length - 1
+                      ? handleOptionClick(option)
+                      : authCtx.logout();
                   }}
                 >
                   {option}
