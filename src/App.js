@@ -16,6 +16,7 @@ import ProductDeteailsPage from "./ProductDeteailsPage";
 import SellerPage from "./SellerPage";
 import AuthContext from "./auth-context";
 import { useContext } from "react";
+import SellerMainPage from "./Seller/SellerMainPage";
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -34,6 +35,11 @@ function App() {
         <Route path="*" element={<Navigate to="/mainPage" />} />
 
         <Route path="/mainPage" element={<MainPage />} />
+        <Route
+          path="/seller/:manufacturer_id/mainPage"
+          element={<SellerMainPage />}
+        />
+
         <Route path="/cart" element={navTo(<Cart />)} />
         <Route path="/favorites" element={navTo(<Favorites />)} />
         <Route path="/profile" element={navTo(<Profile />)} />
