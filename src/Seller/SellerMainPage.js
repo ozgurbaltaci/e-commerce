@@ -14,6 +14,13 @@ import OrderStatusStepper from "../OrderStatusStepper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { useParams } from "react-router-dom";
 
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+
 const SellerMainPage = () => {
   const [manufacturerData, setManufacturerData] = useState(null);
   const [orders, setOrders] = useState([]);
@@ -47,47 +54,47 @@ const SellerMainPage = () => {
   ];
 
   const getOrderedProducts = (order) => {
-    // Create an object to store products grouped by manufacturer_id
-    const groupedProducts = {};
-
-    // Group products by manufacturer_id
-    order.products.forEach((product) => {
-      const manufacturerId = product.manufacturer_id;
-
-      if (!groupedProducts[manufacturerId]) {
-        groupedProducts[manufacturerId] = [];
-      }
-
-      groupedProducts[manufacturerId].push(product);
-    });
-
-    // Render the grouped products
-    return Object.keys(groupedProducts).map((manufacturerId, index) => (
-      <div key={index}>
-        <div>
-          <Accordion style={{ marginBottom: "15px" }} defaultExpanded={true}>
-            <AccordionSummary
-              expandIcon={
-                <KeyboardArrowDownIcon style={{ fontSize: "12px" }} />
-              }
-              style={{ minHeight: "30px", maxHeight: "30px" }} // Set the desired height
-            >
-              <div
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "11px",
+    return (
+      <TableContainer component={Paper}>
+        <Table
+          sx={{
+            minWidth: 650,
+            ".MuiTableCell-root": {
+              fontSize: "11px",
+              fontFamily: "Cabin",
+              padding: "8px",
+            },
+            ".MuiTableCell-body": { color: "#00990F", fontSize: "11px" },
+          }}
+          aria-label="simple table"
+          stickyHeader={true}
+        >
+          <TableHead>
+            <TableRow>
+              <TableCell style={{ fontWeight: "bold" }}>Image</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>Name</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>
+                Delivery Deadline
+              </TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>
+                Stock Quantity
+              </TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>Unit Price</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>
+                Desired Amount
+              </TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>Total Price</TableCell>
+            </TableRow>
+          </TableHead>
+          {order.products.map((product, index) => (
+            <TableBody key={index}>
+              <TableRow
+                sx={{
+                  "&:last-child td, &:last-child th": { border: 0 },
                 }}
               >
-                Ordered Products
-              </div>
-            </AccordionSummary>
-            {groupedProducts[manufacturerId].map((product, index) => (
-              <>
-                {" "}
-                <Divider />
-                <AccordionDetails style={{ display: "flex" }}>
+                <TableCell>
                   <img
-                    key={index}
                     src={product.image}
                     style={{
                       display: "flex",
@@ -99,102 +106,23 @@ const SellerMainPage = () => {
                     }}
                     alt={product.product_name}
                   />
-                  <Grid
-                    container
-                    spacing={5}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Grid item xs={12} sm={3} md={3}>
-                      <div
-                        style={{
-                          display: "block",
-                          fontSize: "11px",
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "block",
-                            whiteSpace: "nowrap", // Prevent text wrapping
-                            overflow: "hidden",
-                            textOverflow: "ellipsis", // Display ellipsis for overflow
-                          }}
-                        >
-                          {" "}
-                          {product.product_name}
-                        </div>
-                        <div style={{ color: "#00990F", fontWeight: "bold" }}>
-                          {product.price_on_add}₺
-                        </div>
-                      </div>
-                    </Grid>
-                    <Grid item xs={12} sm={3} md={3}>
-                      <div style={{ display: "block", fontSize: "11px" }}>
-                        <div>Desired Amount:</div>
-                        <div style={{ color: "#00990F", fontWeight: "bold" }}>
-                          {" "}
-                          {product.desired_amount}
-                        </div>
-                      </div>
-                    </Grid>
-                    <Grid item xs={12} sm={2} md={2}>
-                      <div style={{ display: "block", fontSize: "11px" }}>
-                        <div>Total Price:</div>
-                        <div style={{ color: "#00990F", fontWeight: "bold" }}>
-                          {" "}
-                          {product.total_price_for_product}
-                        </div>
-                      </div>
-                    </Grid>
-                    <Grid
-                      item
-                      xs={12}
-                      sm={4}
-                      md={4}
-                      style={{ display: "flex", justifyContent: "flex-end" }}
-                    >
-                      <button
-                        style={{
-                          width: "80px",
-                          height: "24px",
-                          fontSize: "9px",
-                          fontWeight: "bold",
-                          backgroundColor: "rgba(173,176,9,0.16)",
-                          border: "none",
-                          color: "rgba(173,176,9)",
-                          borderRadius: "2px",
-                          marginRight: "9px",
-                        }}
-                      >
-                        Review Order
-                      </button>
-
-                      <button
-                        style={{
-                          width: "80px",
-                          height: "24px",
-                          fontSize: "9px",
-                          fontWeight: "bold",
-                          backgroundColor: "rgba(47,176,9,0.16)",
-                          border: "none",
-                          color: "rgba(47,176,9)",
-                          borderRadius: "2px",
-                        }}
-                      >
-                        Buy Again
-                      </button>
-                    </Grid>
-                  </Grid>
-                </AccordionDetails>
-              </>
-            ))}
-          </Accordion>
-        </div>
-      </div>
-    ));
+                </TableCell>
+                <TableCell style={{ color: "black" }}>
+                  {product.product_name}
+                </TableCell>
+                <TableCell>{order.delivery_deadline}</TableCell>
+                <TableCell>{product.stock_quantity}</TableCell>
+                <TableCell>{product.price_on_add}</TableCell>
+                <TableCell>{product.desired_amount}</TableCell>
+                <TableCell>{product.total_price_for_product}</TableCell>
+              </TableRow>
+            </TableBody>
+          ))}
+        </Table>
+      </TableContainer>
+    );
   };
+
   const renderOrders = () => {
     return (
       <div style={{ fontSize: "9px", width: "100%" }}>
@@ -208,7 +136,6 @@ const SellerMainPage = () => {
                 style={{ display: "flex", alignItems: "center" }}
               >
                 <div style={{ display: "flex", width: "100%" }}>
-                  {console.log("orderımız: ", order)}
                   <div
                     className="avatars"
                     style={{
