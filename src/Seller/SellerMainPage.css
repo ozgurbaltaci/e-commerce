@@ -1,0 +1,8 @@
+.MuiMenuItem-root {
+  font-size: 9px !important;
+  font-family: "Cabin" !important;
+}
+.MuiMenuItem-root.Mui-selected {
+  background-color: rgba(47, 176, 9, 0.16) !important;
+  font-weight: bold;
+}

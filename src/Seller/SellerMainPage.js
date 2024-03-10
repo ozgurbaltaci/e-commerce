@@ -21,10 +21,40 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormHelperText from "@mui/material/FormHelperText";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import "./SellerMainPage.css";
+
 const SellerMainPage = () => {
   const [manufacturerData, setManufacturerData] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [orderStatuses, setOrderStatuses] = useState({}); // State to store order statuses individually
 
+  const handleOrderStatusChange = async (event, orderId) => {
+    const newOrderStatus = event.target.value;
+    // Update the order status for the specific order ID
+    setOrderStatuses((prevStatuses) => ({
+      ...prevStatuses,
+      [orderId]: newOrderStatus,
+    }));
+    try {
+      await axios
+        .put(
+          `http://localhost:3002/updateOrderStatus/${orderId}/${newOrderStatus}
+          )}`
+        )
+        .then((response) => {
+          if (response.status === 200) {
+            alert("successfull");
+          }
+        });
+    } catch (error) {
+      alert(error);
+    }
+  };
   const { manufacturer_id } = useParams();
 
   useEffect(() => {
@@ -56,6 +86,7 @@ const SellerMainPage = () => {
   const getOrderedProducts = (order) => {
     return (
       <TableContainer component={Paper}>
+        {console.log("gelenOrder: ", order)}
         <Table
           sx={{
             minWidth: 650,
@@ -231,36 +262,84 @@ const SellerMainPage = () => {
                           justifyContent: "flex-end",
                         }}
                       >
-                        <button
-                          style={{
-                            width: "100%",
-                            height: "24px",
-                            fontSize: "9px",
-                            fontWeight: "bold",
-                            backgroundColor: "rgba(173,176,9,0.16)",
-                            border: "none",
-                            color: "rgba(173,176,9)",
-                            borderRadius: "2px",
-                            marginRight: "9px",
-                          }}
-                        >
-                          Review Order
-                        </button>
-                        <button
-                          style={{
-                            width: "100%",
-                            height: "24px",
-                            fontSize: "9px",
-                            fontWeight: "bold",
-                            backgroundColor: "rgba(173,176,9,0.16)",
-                            border: "none",
-                            color: "rgba(173,176,9)",
-                            borderRadius: "2px",
-                            marginRight: "9px",
-                          }}
-                        >
-                          Review Order
-                        </button>
+                        <div style={{ marginRight: "8px" }}>
+                          <button
+                            style={{
+                              height: "24px",
+                              width: "100%",
+
+                              fontSize: "9px",
+                              fontWeight: "bold",
+                              backgroundColor: "rgba(173,176,9,0.16)",
+                              border: "none",
+                              color: "rgba(173,176,9)",
+                              borderRadius: "2px",
+                            }}
+                          >
+                            Review Order
+                          </button>
+                        </div>
+                        <div style={{ width: "50%" }}>
+                          <FormControl
+                            onClick={(e) => e.stopPropagation()}
+                            sx={{
+                              ".MuiOutlinedInput-root": {
+                                display: "flex",
+                                height: "24px",
+                                padding: "0px",
+                                margin: "0px",
+                                fontSize: "9px",
+                                fontWeight: "bold",
+                                fontStyle: "normal",
+                                color: "rgba(47,176,9)",
+                                backgroundColor: "rgba(47,176,9, 0.16)",
+
+                                border: "none",
+                                borderRadius: "2px",
+                                fontFamily: "Cabin",
+                                fontStyle: "normal",
+                              },
+                              ".MuiOutlinedInput-root em": {
+                                fontStyle: "normal",
+                              },
+                              "& fieldset": {
+                                border: "none",
+                              },
+                              ".MuiSvgIcon-root": {
+                                fontSize: "16px",
+                                color: "rgba(47,176,9)",
+                              },
+                              ".MuiMenuItem-root ": {
+                                fontStyle: "normal",
+                                fontSize: "8px",
+                              },
+
+                              ".MuiMenuItem-root": {
+                                color: "rgba(47,176,9,0.16)",
+                              },
+                            }}
+                          >
+                            <Select
+                              value={
+                                orderStatuses[order.order_id] ||
+                                order.order_status_id
+                              }
+                              onChange={(event) =>
+                                handleOrderStatusChange(event, order.order_id)
+                              }
+                              displayEmpty
+                              inputProps={{
+                                "aria-label": "Without label",
+                              }}
+                            >
+                              <MenuItem value={1}>Recived</MenuItem>
+                              <MenuItem value={2}>Preparing</MenuItem>
+                              <MenuItem value={3}>On the way</MenuItem>
+                              <MenuItem value={4}>Arrived</MenuItem>
+                              <MenuItem value={5}>Completed</MenuItem>
+                            </Select>
+                          </FormControl>
+                        </div>
                       </Grid>
                     </Grid>
                   </div>
