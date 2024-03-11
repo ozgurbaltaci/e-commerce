@@ -130,6 +130,7 @@ const Cart = () => {
             ? product.discounted_price
             : product.price,
         desired_amount: product.desired_amount,
+        manufacturer_id: product.manufacturer_id,
       };
       console.log(
         "produccct:",

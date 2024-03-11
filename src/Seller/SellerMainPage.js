@@ -29,11 +29,19 @@ import Select from "@mui/material/Select";
 import "./SellerMainPage.css";
 
 const SellerMainPage = () => {
-  const [manufacturerData, setManufacturerData] = useState(null);
+  const [manufacturerData, setManufacturerData] = useState({
+    manufacturer_id: 0,
+    manufacturer_name: "",
+    manufacturer_image: null,
+    manufacturer_rating: 0.0,
+    totalSales: 0,
+    totalIncome: 0.0,
+    pendingOrders: 0,
+  });
   const [orders, setOrders] = useState([]);
   const [orderStatuses, setOrderStatuses] = useState({}); // State to store order statuses individually
 
-  const handleOrderStatusChange = async (event, orderId) => {
+  const handleOrderStatusChange = async (event, orderId, manufacturer_id) => {
     const newOrderStatus = event.target.value;
     // Update the order status for the specific order ID
     setOrderStatuses((prevStatuses) => ({
@@ -43,7 +51,7 @@ const SellerMainPage = () => {
     try {
       await axios
         .put(
-          `http://localhost:3002/updateOrderStatus/${orderId}/${newOrderStatus}
+          `http://localhost:3002/updateOrderStatus/${orderId}/${manufacturer_id}/${newOrderStatus}
           )}`
         )
         .then((response) => {
@@ -154,6 +162,45 @@ const SellerMainPage = () => {
     );
   };
 
+  const renderDataCard = (label, data) => {
+    return (
+      <Card
+        key={label}
+        style={{
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "12px",
+          fontWeight: "bold",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              marginBottom: "5px",
+            }}
+          >
+            {label}
+          </div>
+          <div
+            style={{
+              color: "#2FB009",
+            }}
+          >
+            {data}
+          </div>
+        </div>
+      </Card>
+    );
+  };
   const renderOrders = () => {
     return (
       <div style={{ fontSize: "9px", width: "100%" }}>
@@ -266,7 +313,7 @@ const SellerMainPage = () => {
                           <button
                             style={{
                               height: "24px",
-                              width: "100%",
+                              width: "85px",
 
                               fontSize: "9px",
                               fontWeight: "bold",
@@ -279,12 +326,14 @@ const SellerMainPage = () => {
                             Review Order
                           </button>
                         </div>
-                        <div style={{ width: "50%" }}>
+                        <div>
                           <FormControl
                             onClick={(e) => e.stopPropagation()}
                             sx={{
                               ".MuiOutlinedInput-root": {
                                 display: "flex",
+                                width: "85px",
+
                                 height: "24px",
                                 padding: "0px",
                                 margin: "0px",
@@ -325,7 +374,11 @@ const SellerMainPage = () => {
                                 order.order_status_id
                               }
                               onChange={(event) =>
-                                handleOrderStatusChange(event, order.order_id)
+                                handleOrderStatusChange(
+                                  event,
+                                  order.order_id,
+                                  manufacturerData.manufacturer_id
+                                )
                               }
                               displayEmpty
                               inputProps={{
@@ -373,7 +426,9 @@ const SellerMainPage = () => {
   };
   return (
     <div>
-      <div style={{ fontWeight: "bold" }}>Name of the seller</div>
+      <div style={{ fontWeight: "bold" }}>
+        {manufacturerData.manufacturer_name}
+      </div>
       <div
         style={{
           height: "200px",
@@ -382,10 +437,13 @@ const SellerMainPage = () => {
         }}
       >
         <img
-          src={require("../discount_green.png")}
+          src={manufacturerData.manufacturer_image}
           width={"200px"}
-          height={"100%"}
-          style={{ objectFit: "cover", marginRight: "20px" }}
+          height={"192px"}
+          style={{
+            objectFit: "cover",
+            marginRight: "16px",
+          }}
           alt="seller image"
         />
 
@@ -396,47 +454,25 @@ const SellerMainPage = () => {
               spacing={1}
               style={{ height: "200px", overflow: "hidden" }}
             >
-              {Object.keys(arr).map((key) => {
-                return (
-                  <Grid item xs={4} sm={4} md={4} lg={4}>
-                    <Card
-                      key={key}
-                      style={{
-                        height: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "12px",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          flexDirection: "column",
-                          textAlign: "center",
-                        }}
-                      >
-                        <div
-                          style={{
-                            marginBottom: "5px",
-                          }}
-                        >
-                          {key}
-                        </div>
-                        <div
-                          style={{
-                            color: "#2FB009",
-                          }}
-                        >
-                          {arr[key]}
-                        </div>
-                      </div>
-                    </Card>
-                  </Grid>
-                );
-              })}
+              <Grid item xs={4} sm={4} md={4} lg={4}>
+                {renderDataCard(
+                  "Rating",
+
+                  parseFloat(manufacturerData.manufacturer_rating).toFixed(1)
+                )}
+              </Grid>
+              <Grid item xs={4} sm={4} md={4} lg={4}>
+                {renderDataCard("Total Sales", manufacturerData.totalSales)}
+              </Grid>
+              <Grid item xs={4} sm={4} md={4} lg={4}>
+                {renderDataCard("Total Income", manufacturerData.totalIncome)}
+              </Grid>
+              <Grid item xs={4} sm={4} md={4} lg={4}>
+                {renderDataCard(
+                  "Pending Orders",
+                  manufacturerData.pendingOrders
+                )}
+              </Grid>
             </Grid>
           </Grid>
           <Grid item xs={6} sm={6} md={6} lg={6}>

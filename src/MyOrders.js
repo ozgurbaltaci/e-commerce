@@ -28,6 +28,7 @@ const MyOrders = () => {
 
   const getOrderedProducts = (order) => {
     // Create an object to store products grouped by manufacturer_id
+    console.log("order", order);
     const groupedProducts = {};
 
     // Group products by manufacturer_id
@@ -42,138 +43,168 @@ const MyOrders = () => {
     });
 
     // Render the grouped products
-    return Object.keys(groupedProducts).map((manufacturerId, index) => (
-      <div key={index}>
-        <div>
-          <Accordion style={{ marginBottom: "15px" }} defaultExpanded={true}>
-            <AccordionSummary
-              expandIcon={
-                <KeyboardArrowDownIcon style={{ fontSize: "12px" }} />
-              }
-              style={{ minHeight: "30px", maxHeight: "30px" }} // Set the desired height
-            >
-              <div
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "11px",
-                }}
+    return (
+      <>
+        {Object.keys(groupedProducts).map((manufacturerId, index) => (
+          <div key={index}>
+            {console.log("groupedProducts", groupedProducts)}
+
+            <div>
+              <Accordion
+                style={{ marginBottom: "15px" }}
+                defaultExpanded={true}
               >
-                {groupedProducts[manufacturerId][0].manufacturer_name}
-              </div>
-            </AccordionSummary>
-            {groupedProducts[manufacturerId].map((product, index) => (
-              <>
-                {" "}
-                <Divider />
-                <AccordionDetails style={{ display: "flex" }}>
-                  <img
-                    key={index}
-                    src={product.image}
+                <AccordionSummary
+                  expandIcon={
+                    <KeyboardArrowDownIcon style={{ fontSize: "12px" }} />
+                  }
+                  style={{ height: "55px" }} // Set the desired height
+                >
+                  <div
                     style={{
+                      fontWeight: "bold",
+                      fontSize: "11px",
                       display: "flex",
-                      width: "50px",
-                      height: "50px",
-                      boxShadow: "0 0 5px 2px rgba(0,0,0,0.01)",
-                      borderRadius: "2px",
-                      marginRight: "15px",
-                    }}
-                    alt={product.product_name}
-                  />
-                  <Grid
-                    container
-                    spacing={5}
-                    style={{
-                      display: "flex",
+                      width: "100%",
                       alignItems: "center",
                     }}
                   >
-                    <Grid item xs={12} sm={3} md={3}>
-                      <div
+                    <div style={{ width: "20%" }}>
+                      {groupedProducts[manufacturerId][0].manufacturer_name}
+                    </div>
+                    <div style={{ width: "60%" }}>
+                      <OrderStatusStepper
+                        activeStep={
+                          groupedProducts[manufacturerId][0].order_status_id
+                        }
+                      ></OrderStatusStepper>
+                    </div>
+                  </div>
+                </AccordionSummary>
+                {groupedProducts[manufacturerId].map((product, index) => (
+                  <>
+                    {" "}
+                    <Divider />
+                    <AccordionDetails style={{ display: "flex" }}>
+                      <img
+                        key={index}
+                        src={product.image}
                         style={{
-                          display: "block",
-                          fontSize: "11px",
+                          display: "flex",
+                          width: "50px",
+                          height: "50px",
+                          boxShadow: "0 0 5px 2px rgba(0,0,0,0.01)",
+                          borderRadius: "2px",
+                          marginRight: "15px",
+                        }}
+                        alt={product.product_name}
+                      />
+                      <Grid
+                        container
+                        spacing={5}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
                         }}
                       >
-                        <div
+                        <Grid item xs={12} sm={3} md={3}>
+                          <div
+                            style={{
+                              display: "block",
+                              fontSize: "11px",
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "block",
+                                whiteSpace: "nowrap", // Prevent text wrapping
+                                overflow: "hidden",
+                                textOverflow: "ellipsis", // Display ellipsis for overflow
+                              }}
+                            >
+                              {" "}
+                              {product.product_name}
+                            </div>
+                            <div
+                              style={{ color: "#00990F", fontWeight: "bold" }}
+                            >
+                              {product.price_on_add}₺
+                            </div>
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} sm={3} md={3}>
+                          <div style={{ display: "block", fontSize: "11px" }}>
+                            <div>Desired Amount:</div>
+                            <div
+                              style={{ color: "#00990F", fontWeight: "bold" }}
+                            >
+                              {" "}
+                              {product.desired_amount}
+                            </div>
+                          </div>
+                        </Grid>
+                        <Grid item xs={12} sm={2} md={2}>
+                          <div style={{ display: "block", fontSize: "11px" }}>
+                            <div>Total Price:</div>
+                            <div
+                              style={{ color: "#00990F", fontWeight: "bold" }}
+                            >
+                              {" "}
+                              {product.total_price_for_product}
+                            </div>
+                          </div>
+                        </Grid>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={4}
+                          md={4}
                           style={{
-                            display: "block",
-                            whiteSpace: "nowrap", // Prevent text wrapping
-                            overflow: "hidden",
-                            textOverflow: "ellipsis", // Display ellipsis for overflow
+                            display: "flex",
+                            justifyContent: "flex-end",
                           }}
                         >
-                          {" "}
-                          {product.product_name}
-                        </div>
-                        <div style={{ color: "#00990F", fontWeight: "bold" }}>
-                          {product.price_on_add}₺
-                        </div>
-                      </div>
-                    </Grid>
-                    <Grid item xs={12} sm={3} md={3}>
-                      <div style={{ display: "block", fontSize: "11px" }}>
-                        <div>Desired Amount:</div>
-                        <div style={{ color: "#00990F", fontWeight: "bold" }}>
-                          {" "}
-                          {product.desired_amount}
-                        </div>
-                      </div>
-                    </Grid>
-                    <Grid item xs={12} sm={2} md={2}>
-                      <div style={{ display: "block", fontSize: "11px" }}>
-                        <div>Total Price:</div>
-                        <div style={{ color: "#00990F", fontWeight: "bold" }}>
-                          {" "}
-                          {product.total_price_for_product}
-                        </div>
-                      </div>
-                    </Grid>
-                    <Grid
-                      item
-                      xs={12}
-                      sm={4}
-                      md={4}
-                      style={{ display: "flex", justifyContent: "flex-end" }}
-                    >
-                      <button
-                        style={{
-                          width: "80px",
-                          height: "24px",
-                          fontSize: "9px",
-                          fontWeight: "bold",
-                          backgroundColor: "rgba(173,176,9,0.16)",
-                          border: "none",
-                          color: "rgba(173,176,9)",
-                          borderRadius: "2px",
-                          marginRight: "9px",
-                        }}
-                      >
-                        Review Order
-                      </button>
+                          <button
+                            style={{
+                              width: "80px",
+                              height: "24px",
+                              fontSize: "9px",
+                              fontWeight: "bold",
+                              backgroundColor: "rgba(173,176,9,0.16)",
+                              border: "none",
+                              color: "rgba(173,176,9)",
+                              borderRadius: "2px",
+                              marginRight: "9px",
+                            }}
+                          >
+                            Review Order
+                          </button>
 
-                      <button
-                        style={{
-                          width: "80px",
-                          height: "24px",
-                          fontSize: "9px",
-                          fontWeight: "bold",
-                          backgroundColor: "rgba(47,176,9,0.16)",
-                          border: "none",
-                          color: "rgba(47,176,9)",
-                          borderRadius: "2px",
-                        }}
-                      >
-                        Buy Again
-                      </button>
-                    </Grid>
-                  </Grid>
-                </AccordionDetails>
-              </>
-            ))}
-          </Accordion>
-        </div>
-      </div>
-    ));
+                          <button
+                            style={{
+                              width: "80px",
+                              height: "24px",
+                              fontSize: "9px",
+                              fontWeight: "bold",
+                              backgroundColor: "rgba(47,176,9,0.16)",
+                              border: "none",
+                              color: "rgba(47,176,9)",
+                              borderRadius: "2px",
+                            }}
+                          >
+                            Buy Again
+                          </button>
+                        </Grid>
+                      </Grid>
+                    </AccordionDetails>
+                  </>
+                ))}
+              </Accordion>
+            </div>
+          </div>
+        ))}
+      </>
+    );
   };
 
   return (
@@ -248,11 +279,7 @@ const MyOrders = () => {
                     <div
                       className="order_status_stepper"
                       style={{ width: "67%" }}
-                    >
-                      <OrderStatusStepper
-                        activeStep={order.order_status_id}
-                      ></OrderStatusStepper>
-                    </div>
+                    ></div>
                     <div
                       className="order_total_price"
                       style={{

@@ -126,7 +126,13 @@ export default function CustomizedSteppers({ activeStep }) {
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel StepIconComponent={ColorlibStepIcon}>
-              <div style={{ fontFamily: "Cabin", fontSize: "6px" }}>
+              <div
+                style={{
+                  fontFamily: "Cabin",
+                  fontSize: "6px",
+                  marginTop: "-10px",
+                }}
+              >
                 {label}
               </div>
             </StepLabel>
