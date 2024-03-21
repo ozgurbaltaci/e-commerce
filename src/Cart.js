@@ -74,11 +74,20 @@ const availablePaymentMethods = [
 
 const Cart = () => {
   const [savedAdresses, setSavedAddresses] = useState([
-    { addressId: 1, address: "Kohoutova 1550/11, 613 00, Brno/Czech Republic" },
     {
-      addressId: 2,
-      address:
-        "Kohoutova 1550/11, 613 00, Brno/Czech Republic and much much longer address that you can't imagine. It is very long to hold it in a small box. So that's why I kept writing to fill this address area.",
+      user_id: 0,
+      province: "",
+      district: "",
+      neighborhood: "",
+      street: "",
+      building_number: "",
+      floor_number: "",
+      door_number: "",
+      receiver_full_name: "",
+      receiver_phone_number: "",
+      address_title: "",
+      address_id: -1,
+      fullAddress: "",
     },
   ]);
   const [cartItems, setCartItems] = useState([]);
@@ -161,6 +170,23 @@ const Cart = () => {
 
   useEffect(() => {
     setProvinces(sehirler[2].data);
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get(
+        `http://localhost:3002/getSavedAddressesOfUser/${localStorage.getItem(
+          "user_id"
+        )}`
+      )
+      .then((response) => {
+        if (response.data) {
+          setSavedAddresses(response.data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
   }, []);
 
   const handleClickOpen = () => {
@@ -407,7 +433,7 @@ const Cart = () => {
             selectedProducts: selectedProducts,
             receiverName: receiverName,
             receiverPhone: receiverPhone,
-            deliveryAddress: selectedAddress.address,
+            deliveryAddress: selectedAddress.fullAddress,
           }),
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -429,7 +455,7 @@ const Cart = () => {
   const handleAddressChange = (event) => {
     const addressId = event.target.value;
     const selected = savedAdresses.find(
-      (item) => item.addressId.toString() === addressId
+      (item) => item.address_id.toString() === addressId
     );
     setSelectedAddress(selected);
   };
@@ -886,36 +912,46 @@ const Cart = () => {
                       onChange={handleAddressChange}
                       value={
                         selectedAddress
-                          ? selectedAddress.addressId.toString()
+                          ? selectedAddress.address_id.toString()
                           : ""
                       }
                     >
-                      {savedAdresses.map((item, index) => (
-                        <FormControlLabel
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            marginTop: "5px",
-                          }} // Adjust the margin here
-                          value={item.addressId.toString()}
-                          control={<GreenRadio />}
-                          label={
-                            <div
-                              style={{
-                                borderRadius: "5px",
-                                backgroundColor: "#F3F3F3",
-                                padding: "5px",
-                                fontSize: "11px",
-                                width: "100%",
-                              }}
-                            >
-                              {item.address.length > 50
-                                ? item.address.substring(0, 50) + "..." // Display first 50 characters and add "..." at the end
-                                : item.address}
-                            </div>
-                          }
-                        />
-                      ))}
+                      <div
+                        style={{
+                          overflow: "auto",
+                          height: "140px",
+                          padding: "2px",
+                        }}
+                      >
+                        {savedAdresses.map((item, index) => (
+                          <FormControlLabel
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              marginTop: "5px",
+                            }} // Adjust the margin here
+                            value={item.address_id.toString()}
+                            control={<GreenRadio />}
+                            label={
+                              <div
+                                style={{
+                                  borderRadius: "5px",
+                                  backgroundColor: "#F3F3F3",
+                                  padding: "5px",
+                                  fontSize: "11px",
+                                  width: "100%",
+                                  maxHeight: "50px",
+                                  overflow: "auto",
+                                }}
+                              >
+                                {item.fullAddress.length > 80
+                                  ? item.fullAddress.substring(0, 80) + "..." // Display first 50 characters and add "..." at the end
+                                  : item.fullAddress}
+                              </div>
+                            }
+                          />
+                        ))}
+                      </div>
                     </RadioGroup>
                   </FormControl>
                   <div style={{ margin: "5px 0px" }}>
