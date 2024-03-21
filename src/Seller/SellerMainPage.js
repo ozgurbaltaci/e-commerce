@@ -288,7 +288,7 @@ const SellerMainPage = () => {
                         lg={2}
                         style={{ paddingLeft: "15px" }}
                       >
-                        Özgür Baltacı
+                        {order.receiver_name}
                       </Grid>
                       <Grid item xs={2} sm={2} md={2} lg={2}>
                         {order.receiver_phone}

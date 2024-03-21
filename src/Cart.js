@@ -45,6 +45,7 @@ import { withStyles } from "@material-ui/core/styles";
 import MyButton from "./components/MyButton";
 import AuthContext from "./auth-context";
 import { useContext } from "react";
+import ReceiverInfoForm from "./ReceiverInfoForm";
 
 const availablePaymentMethods = [
   /**  {
@@ -109,7 +110,8 @@ const Cart = () => {
 
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [cardHolder, setCardHolder] = useState("");
-
+  const [receiverName, setReceiverName] = useState("");
+  const [receiverPhone, setReceiverPhone] = useState("");
   const [cardNumber, setCardNumber] = useState("");
   const [cardExpirationDate, setCardExpirationDate] = useState("");
   const [cardCVV, setCardCVV] = useState("");
@@ -117,6 +119,7 @@ const Cart = () => {
   const [isCardValid, setIsCardValid] = useState(true);
 
   const [isThereUpdateOperation, setIsThereUpdateOperation] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState(null);
 
   const handleProductSelection = (product, isSelected) => {
     setSelectedProducts((prevSelectedProducts) => {
@@ -402,6 +405,9 @@ const Cart = () => {
           method: "POST",
           body: JSON.stringify({
             selectedProducts: selectedProducts,
+            receiverName: receiverName,
+            receiverPhone: receiverPhone,
+            deliveryAddress: selectedAddress.address,
           }),
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -418,6 +424,14 @@ const Cart = () => {
     } catch (err) {
       alert(err);
     }
+  };
+
+  const handleAddressChange = (event) => {
+    const addressId = event.target.value;
+    const selected = savedAdresses.find(
+      (item) => item.addressId.toString() === addressId
+    );
+    setSelectedAddress(selected);
   };
 
   const handleCheckout = async () => {
@@ -532,7 +546,7 @@ const Cart = () => {
   };
 
   return (
-    <>
+    <div className="cartDiv">
       <LoaderInBackdrop
         isThereUpdateOperation={isThereUpdateOperation}
       ></LoaderInBackdrop>
@@ -767,6 +781,26 @@ const Cart = () => {
           {
             <Card style={{ height: "100%" }}>
               <CardContent style={{ padding: 0 }}>
+                <div
+                  style={{
+                    padding: "2px 10px",
+                  }}
+                >
+                  <Typography
+                    style={{ padding: "10px 0px", fontWeight: "bold" }}
+                  >
+                    Receiver Info
+                  </Typography>
+
+                  <Divider></Divider>
+                  <ReceiverInfoForm
+                    receiverName={receiverName}
+                    setReceiverName={setReceiverName}
+                    receiverPhone={receiverPhone}
+                    setReceiverPhone={setReceiverPhone}
+                  ></ReceiverInfoForm>
+                </div>
+                <Divider></Divider>
                 <div style={{ padding: "2px 10px" }}>
                   <Typography
                     style={{ padding: "10px 0px", fontWeight: "bold" }}
@@ -804,7 +838,9 @@ const Cart = () => {
                                   style={{ width: "40px", marginTop: "7px" }}
                                 ></img>
                               ) : (
-                                `${item.paymentType} (it will cost extra 10TL)`
+                                <div
+                                  style={{ fontSize: "12px" }}
+                                >{`${item.paymentType} (it will cost extra 10TL)`}</div>
                               )
                             }
                           />
@@ -846,8 +882,13 @@ const Cart = () => {
                   <FormControl>
                     <RadioGroup
                       aria-labelledby="demo-radio-buttons-group-label"
-                      defaultValue="1"
                       name="delivery-radio-group"
+                      onChange={handleAddressChange}
+                      value={
+                        selectedAddress
+                          ? selectedAddress.addressId.toString()
+                          : ""
+                      }
                     >
                       {savedAdresses.map((item, index) => (
                         <FormControlLabel
@@ -864,6 +905,8 @@ const Cart = () => {
                                 borderRadius: "5px",
                                 backgroundColor: "#F3F3F3",
                                 padding: "5px",
+                                fontSize: "11px",
+                                width: "100%",
                               }}
                             >
                               {item.address.length > 50
@@ -956,7 +999,7 @@ const Cart = () => {
           }
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
