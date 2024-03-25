@@ -10,24 +10,35 @@ function ReceiverInfoForm({
   setReceiverPhone,
   addressTitle,
   setAddressTitle,
+
+  addressTitleError,
+  receiverFullNameError,
+  receiverPhoneNumberError,
+
+  setAddressTitleError,
+  setReceiverFullNameError,
+  setReceiverPhoneNumberError,
 }) {
   const handleReceiverNameChange = (event) => {
     // Remove non-numeric characters from the input
     const enteredReceiverName = event.target.value;
 
     setReceiverName(enteredReceiverName);
+    setReceiverFullNameError(false);
   };
 
   const handleReceiverPhoneChange = (event) => {
     const enteredPhoneNumber = event.target.value;
 
     setReceiverPhone(enteredPhoneNumber);
+    setReceiverPhoneNumberError(false);
   };
 
   const handleAddressTitleChange = (event) => {
     const enteredAddressTitle = event.target.value;
 
     setAddressTitle(enteredAddressTitle);
+    setAddressTitleError(false);
   };
 
   return (
@@ -41,6 +52,7 @@ function ReceiverInfoForm({
         fullWidth
         value={addressTitle}
         onChange={handleAddressTitleChange}
+        error={addressTitleError}
       />
 
       <TextField
@@ -53,6 +65,7 @@ function ReceiverInfoForm({
         value={receiverName}
         onChange={handleReceiverNameChange}
         style={{ marginTop: "10px" }}
+        error={receiverFullNameError}
       />
 
       <TextField
@@ -69,6 +82,7 @@ function ReceiverInfoForm({
           pattern: "[0-9]*", // Only allow numeric input
         }}
         style={{ marginTop: "10px" }}
+        error={receiverPhoneNumberError}
       />
     </div>
   );

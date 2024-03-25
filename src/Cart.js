@@ -107,6 +107,11 @@ const Cart = () => {
   const [selectedBuildingNumber, setSelectedBuildingNumber] = useState("");
   const [selectedFloorNumber, setSelectedFloorNumber] = useState("");
   const [selectedDoorNumber, setSelectedDoorNumber] = useState("");
+  const [addressTitleError, setAddressTitleError] = useState(false);
+  const [receiverFullNameError, setReceiverFullNameError] = useState(false);
+  const [receiverPhoneNumberError, setReceiverPhoneNumberError] =
+    useState(false);
+
   const [provinceError, setProvinceError] = useState(false);
   const [districtError, setDistrictError] = useState(false);
   const [neighborhoodError, setNeighborhoodError] = useState(false);
@@ -251,6 +256,7 @@ const Cart = () => {
       (ilce) => ilce.ilce_sehirkey === sehir_key
     );
     setDistricts(selectedProvinceDistricts);
+
     setProvinceError(false);
     setSelectedDistrict("");
     setSelectedNeighborhood("");
@@ -615,6 +621,12 @@ const Cart = () => {
                 setReceiverPhone={setReceiverPhone}
                 addressTitle={addressTitle}
                 setAddressTitle={setAddressTitle}
+                addressTitleError={addressTitleError}
+                receiverFullNameError={receiverFullNameError}
+                receiverPhoneNumberError={receiverPhoneNumberError}
+                setAddressTitleError={setAddressTitleError}
+                setReceiverFullNameError={setReceiverFullNameError}
+                setReceiverPhoneNumberError={setReceiverPhoneNumberError}
               ></ReceiverInfoForm>
             </FormControl>
             <FormControl fullWidth>
@@ -750,6 +762,10 @@ const Cart = () => {
           <Button
             onClick={() => {
               handleClose();
+              setAddressTitleError(false);
+              setReceiverFullNameError(false);
+              setReceiverPhoneNumberError(false);
+
               setProvinceError(false);
               setDistrictError(false);
               setNeighborhoodError(false);
@@ -770,7 +786,10 @@ const Cart = () => {
                 selectedStreet !== "" &&
                 selectedBuildingNumber !== "" &&
                 selectedFloorNumber !== "" &&
-                selectedDoorNumber !== ""
+                selectedDoorNumber !== "" &&
+                addressTitle !== "" &&
+                receiverName !== "" &&
+                receiverPhone !== ""
               ) {
                 const address_data = {
                   province: selectedProvince,
@@ -793,6 +812,15 @@ const Cart = () => {
                 setSavedAddresses([...savedAdresses, address_data]);
                 handleClose();
               } else {
+                if (addressTitle === "") {
+                  setAddressTitleError(true);
+                }
+                if (receiverName === "") {
+                  setReceiverFullNameError(true);
+                }
+                if (receiverPhone === "") {
+                  setReceiverPhoneNumberError(true);
+                }
                 if (selectedProvince === "") {
                   setProvinceError(true);
                 }
