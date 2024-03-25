@@ -1,0 +1,29 @@
+.MuiMenuItem-root {
+  font-size: 9px !important;
+  font-family: "Cabin" !important;
+}
+.MuiMenuItem-root.Mui-selected {
+  background-color: rgba(47, 176, 9, 0.16) !important;
+  font-weight: bold;
+}
+
+.DialogContent > *:not(:first-child) {
+  margin-top: 8px;
+}
+
+.MuiFormLabel-root {
+  font-size: 11px !important;
+  font-family: "Cabin" !important;
+}
+.MuiInputBase-root {
+  font-size: 11px !important;
+  height: 3em !important;
+
+  font-family: "Cabin" !important;
+}
+
+.MuiOutlinedInput-input {
+  color: black;
+  z-index: 1;
+  font-family: "Cabin";
+}

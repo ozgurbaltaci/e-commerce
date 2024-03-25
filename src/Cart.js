@@ -75,7 +75,6 @@ const availablePaymentMethods = [
 const Cart = () => {
   const [savedAdresses, setSavedAddresses] = useState([
     {
-      user_id: 0,
       province: "",
       district: "",
       neighborhood: "",
@@ -83,11 +82,12 @@ const Cart = () => {
       building_number: "",
       floor_number: "",
       door_number: "",
+      addressTitle: "",
       receiver_full_name: "",
       receiver_phone_number: "",
       address_title: "",
       address_id: -1,
-      fullAddress: "",
+      full_address: "",
     },
   ]);
   const [cartItems, setCartItems] = useState([]);
@@ -119,6 +119,8 @@ const Cart = () => {
 
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [cardHolder, setCardHolder] = useState("");
+  const [addressTitle, setAddressTitle] = useState("");
+
   const [receiverName, setReceiverName] = useState("");
   const [receiverPhone, setReceiverPhone] = useState("");
   const [cardNumber, setCardNumber] = useState("");
@@ -433,7 +435,7 @@ const Cart = () => {
             selectedProducts: selectedProducts,
             receiverName: receiverName,
             receiverPhone: receiverPhone,
-            deliveryAddress: selectedAddress.fullAddress,
+            deliveryAddress: selectedAddress.full_address,
           }),
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -579,89 +581,93 @@ const Cart = () => {
       <Dialog open={open} onClose={handleClose} fullWidth={true}>
         <DialogTitle>Add new address</DialogTitle>
         <DialogContent>
-          <div className="DialogContent">
+          <div className="addNewAdressDialog">
             {" "}
             <DialogContentText>
               To add new address, please fill the form respectively.
             </DialogContentText>
-            <Box sx={{ minWidth: 120 }}>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Province</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={selectedProvince}
-                  label="Age"
-                  onChange={handleSelectProvince}
-                  error={provinceError}
-                >
-                  {provinces.map((province, index) => {
-                    return (
-                      <MenuItem
-                        key={province.sehir_id}
-                        value={province.sehir_title}
-                      >
-                        {province.sehir_title}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </Box>
-            <Box sx={{ minWidth: 120 }}>
-              <FormControl fullWidth>
-                <InputLabel id="districts">District</InputLabel>
-                <Select
-                  labelId="districts"
-                  id="districts"
-                  value={selectedDistrict}
-                  label="Districts"
-                  onChange={handleDistrictChange}
-                  error={districtError}
-                >
-                  {districts.map((district, index) => {
-                    return (
-                      <MenuItem
-                        key={district.ilce_id}
-                        value={district.ilce_title}
-                      >
-                        {district.ilce_title}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </Box>
-            <Box sx={{ minWidth: 120 }}>
-              <FormControl fullWidth>
-                <InputLabel id="neighborhoods">Neighborhood</InputLabel>
-                <Select
-                  labelId="neighborhoods"
-                  id="neighborhoods"
-                  value={selectedNeighborhood}
-                  label="neighborhoods"
-                  onChange={handleNeighborChange}
-                  error={neighborhoodError}
-                >
-                  {neighborhoods.map((neighbor, index) => {
-                    return (
-                      <MenuItem
-                        key={neighbor.mahalle_id}
-                        value={neighbor.mahalle_title}
-                      >
-                        {neighbor.mahalle_title}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </Box>
+            <FormControl fullWidth>
+              <ReceiverInfoForm
+                receiverName={receiverName}
+                setReceiverName={setReceiverName}
+                receiverPhone={receiverPhone}
+                setReceiverPhone={setReceiverPhone}
+                addressTitle={addressTitle}
+                setAddressTitle={setAddressTitle}
+              ></ReceiverInfoForm>
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Province</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={selectedProvince}
+                label="Age"
+                onChange={handleSelectProvince}
+                error={provinceError}
+              >
+                {provinces.map((province, index) => {
+                  return (
+                    <MenuItem
+                      key={province.sehir_id}
+                      value={province.sehir_title}
+                    >
+                      {province.sehir_title}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel id="districts">District</InputLabel>
+              <Select
+                labelId="districts"
+                id="districts"
+                value={selectedDistrict}
+                label="Districts"
+                onChange={handleDistrictChange}
+                error={districtError}
+              >
+                {districts.map((district, index) => {
+                  return (
+                    <MenuItem
+                      key={district.ilce_id}
+                      value={district.ilce_title}
+                    >
+                      {district.ilce_title}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel id="neighborhoods">Neighborhood</InputLabel>
+              <Select
+                labelId="neighborhoods"
+                id="neighborhoods"
+                value={selectedNeighborhood}
+                label="neighborhoods"
+                onChange={handleNeighborChange}
+                error={neighborhoodError}
+              >
+                {neighborhoods.map((neighbor, index) => {
+                  return (
+                    <MenuItem
+                      key={neighbor.mahalle_id}
+                      value={neighbor.mahalle_title}
+                    >
+                      {neighbor.mahalle_title}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth>
                 <InputLabel id="streets">Street</InputLabel>
                 <Select
-                  labelId="streets"
-                  id="streets"
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
                   value={selectedStreet}
                   label="streets"
                   onChange={handleStreetChange}
@@ -692,12 +698,16 @@ const Cart = () => {
               <TextField
                 required
                 label="Building number"
+                size="small"
+                fullWidth
                 value={selectedBuildingNumber}
                 onChange={handleBuildingNumberChange}
                 error={buildingNumberError}
               />
               <TextField
                 required
+                fullWidth
+                size="small"
                 label="Floor number"
                 value={selectedFloorNumber}
                 onChange={handleFloorNumberChange}
@@ -705,6 +715,8 @@ const Cart = () => {
               />
               <TextField
                 required
+                fullWidth
+                size="small"
                 label="Door number"
                 value={selectedDoorNumber}
                 onChange={handleDoorNumberChange}
@@ -742,8 +754,18 @@ const Cart = () => {
                 setSavedAddresses([
                   ...savedAdresses,
                   {
-                    addressId: Math.random(1000),
-                    address: `${selectedProvince} province, ${selectedDistrict} district, ${selectedNeighborhood} neighborhood, ${selectedStreet} street, 
+                    province: selectedProvince,
+                    district: selectedDistrict,
+                    neighborhood: selectedNeighborhood,
+                    street: selectedStreet,
+                    building_number: selectedBuildingNumber,
+                    floor_number: selectedFloorNumber,
+                    door_number: selectedDoorNumber,
+                    address_id: Math.random(1000),
+                    address_title: addressTitle,
+                    receiver_full_name: receiverName,
+                    receiver_phone: receiverPhone,
+                    full_address: `${selectedProvince} province, ${selectedDistrict} district, ${selectedNeighborhood} neighborhood, ${selectedStreet} street, 
                     building ${selectedBuildingNumber},
                     floor ${selectedFloorNumber},
                     door ${selectedDoorNumber}`,
@@ -811,21 +833,7 @@ const Cart = () => {
                   style={{
                     padding: "2px 10px",
                   }}
-                >
-                  <Typography
-                    style={{ padding: "10px 0px", fontWeight: "bold" }}
-                  >
-                    Receiver Info
-                  </Typography>
-
-                  <Divider></Divider>
-                  <ReceiverInfoForm
-                    receiverName={receiverName}
-                    setReceiverName={setReceiverName}
-                    receiverPhone={receiverPhone}
-                    setReceiverPhone={setReceiverPhone}
-                  ></ReceiverInfoForm>
-                </div>
+                ></div>
                 <Divider></Divider>
                 <div style={{ padding: "2px 10px" }}>
                   <Typography
@@ -933,21 +941,32 @@ const Cart = () => {
                             value={item.address_id.toString()}
                             control={<GreenRadio />}
                             label={
-                              <div
-                                style={{
-                                  borderRadius: "5px",
-                                  backgroundColor: "#F3F3F3",
-                                  padding: "5px",
-                                  fontSize: "11px",
-                                  width: "100%",
-                                  maxHeight: "50px",
-                                  overflow: "auto",
-                                }}
-                              >
-                                {item.fullAddress.length > 80
-                                  ? item.fullAddress.substring(0, 80) + "..." // Display first 50 characters and add "..." at the end
-                                  : item.fullAddress}
-                              </div>
+                              <>
+                                <div
+                                  style={{
+                                    borderRadius: "5px",
+                                    backgroundColor: "#F3F3F3",
+                                    padding: "5px",
+                                    fontSize: "11px",
+                                    width: "100%",
+                                    maxHeight: "100px",
+                                    overflow: "auto",
+                                  }}
+                                >
+                                  <div style={{ fontWeight: "bold" }}>
+                                    {item.address_title}
+                                  </div>
+                                  <div>
+                                    {item.receiver_full_name},{" "}
+                                    {item.receiver_phone_number}
+                                  </div>
+
+                                  {item.full_address &&
+                                  item.full_address.length > 80
+                                    ? item.full_address.substring(0, 80) + "..." // Display first 50 characters and add "..." at the end
+                                    : item.full_address}
+                                </div>
+                              </>
                             }
                           />
                         ))}

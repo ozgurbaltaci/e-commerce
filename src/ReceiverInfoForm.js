@@ -8,6 +8,8 @@ function ReceiverInfoForm({
   setReceiverName,
   receiverPhone,
   setReceiverPhone,
+  addressTitle,
+  setAddressTitle,
 }) {
   const handleReceiverNameChange = (event) => {
     // Remove non-numeric characters from the input
@@ -22,8 +24,25 @@ function ReceiverInfoForm({
     setReceiverPhone(enteredPhoneNumber);
   };
 
+  const handleAddressTitleChange = (event) => {
+    const enteredAddressTitle = event.target.value;
+
+    setAddressTitle(enteredAddressTitle);
+  };
+
   return (
     <div style={{ padding: "10px 0px" }}>
+      <TextField
+        required
+        id="addressTtile"
+        label="Address Title"
+        size="small"
+        variant="outlined"
+        fullWidth
+        value={addressTitle}
+        onChange={handleAddressTitleChange}
+      />
+
       <TextField
         required
         id="receiverName"
@@ -33,6 +52,7 @@ function ReceiverInfoForm({
         fullWidth
         value={receiverName}
         onChange={handleReceiverNameChange}
+        style={{ marginTop: "10px" }}
       />
 
       <TextField
