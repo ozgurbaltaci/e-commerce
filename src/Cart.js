@@ -462,6 +462,27 @@ const Cart = () => {
     setSelectedAddress(selected);
   };
 
+  const saveAdressesToDb = async (address_data) => {
+    try {
+      // Make an Axios request to save the new address
+      const response = await axios.put(
+        `http://localhost:3002/saveNewAddressToCurrentUser/${localStorage.getItem(
+          "user_id"
+        )}`,
+        { address_data }
+      );
+
+      if (response.status === 201) {
+        alert(response.data.message);
+      } else {
+        console.error("Failed to save the address.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      // Handle error appropriately, e.g., show an error message
+    }
+  };
+
   const handleCheckout = async () => {
     console.log("sss", selectedProducts);
     // Ödeme oluşturma isteği burada oluşturulmalı
@@ -751,26 +772,25 @@ const Cart = () => {
                 selectedFloorNumber !== "" &&
                 selectedDoorNumber !== ""
               ) {
-                setSavedAddresses([
-                  ...savedAdresses,
-                  {
-                    province: selectedProvince,
-                    district: selectedDistrict,
-                    neighborhood: selectedNeighborhood,
-                    street: selectedStreet,
-                    building_number: selectedBuildingNumber,
-                    floor_number: selectedFloorNumber,
-                    door_number: selectedDoorNumber,
-                    address_id: Math.random(1000),
-                    address_title: addressTitle,
-                    receiver_full_name: receiverName,
-                    receiver_phone: receiverPhone,
-                    full_address: `${selectedProvince} province, ${selectedDistrict} district, ${selectedNeighborhood} neighborhood, ${selectedStreet} street, 
+                const address_data = {
+                  province: selectedProvince,
+                  district: selectedDistrict,
+                  neighborhood: selectedNeighborhood,
+                  street: selectedStreet,
+                  building_number: selectedBuildingNumber,
+                  floor_number: selectedFloorNumber,
+                  door_number: selectedDoorNumber,
+                  address_id: Math.random(1000),
+                  address_title: addressTitle,
+                  receiver_full_name: receiverName,
+                  receiver_phone_number: receiverPhone,
+                  full_address: `${selectedProvince} province, ${selectedDistrict} district, ${selectedNeighborhood} neighborhood, ${selectedStreet} street, 
                     building ${selectedBuildingNumber},
                     floor ${selectedFloorNumber},
                     door ${selectedDoorNumber}`,
-                  },
-                ]);
+                };
+                saveAdressesToDb(address_data);
+                setSavedAddresses([...savedAdresses, address_data]);
                 handleClose();
               } else {
                 if (selectedProvince === "") {

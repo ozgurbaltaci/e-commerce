@@ -215,7 +215,7 @@ const SavedAddresses = () => {
         <Card style={{ width: "100%" }}>
           <div style={{ padding: "8px", fontSize: "11px" }}>
             <div style={{ fontWeight: "bold" }}>
-              {savedAddress.address_title.toUpperCase()}
+              {savedAddress && savedAddress.address_title.toUpperCase()}
             </div>
           </div>
           <Divider></Divider>
