@@ -17,6 +17,7 @@ import SellerPage from "./SellerPage";
 import AuthContext from "./auth-context";
 import { useContext } from "react";
 import SellerMainPage from "./Seller/SellerMainPage";
+import SearchResultPage from "./SearchResultsPage";
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -60,6 +61,8 @@ function App() {
           path="/category/:categoryId/:subCategoryId/:productId"
           element={navTo(<ProductDeteailsPage />)}
         />
+
+        <Route path="/search/:searchInput" element={<SearchResultPage />} />
         {/* Default route for authenticated users */}
         <Route path="*" element={navTo(<Navigate to="/" />)} />
       </Routes>

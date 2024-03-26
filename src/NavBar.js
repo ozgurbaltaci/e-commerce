@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { AppBar, Toolbar, IconButton, Typography, Button } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Grid } from "@material-ui/core";
@@ -19,6 +19,13 @@ import "./NavBar.css";
 const NavBar = () => {
   const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
+  const [searchInput, setSearchInput] = useState("");
+
+  const handleSearch = () => {
+    if (searchInput.trim() !== "") {
+      navigate(`/search/${encodeURIComponent(searchInput)}`);
+    }
+  };
 
   return (
     <div
@@ -53,6 +60,8 @@ const NavBar = () => {
             variant="outlined"
             fullWidth
             placeholder="Search for products or manufacturers"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
             InputProps={{
               style: {
                 height: 35,
@@ -62,10 +71,8 @@ const NavBar = () => {
               },
               endAdornment: (
                 <SearchIcon
-                  style={{
-                    cursor: "pointer",
-                    fontSize: "16px",
-                  }}
+                  style={{ cursor: "pointer", fontSize: "16px" }}
+                  onClick={handleSearch}
                 />
               ),
             }}
