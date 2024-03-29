@@ -1,1 +1,9 @@
-
+.addProductForm .MuiOutlinedInput-notchedOutline {
+  border-radius: 5px !important;
+  margin-top: 2px;
+}
+.addProductForm
+  .MuiOutlinedInput-root.Mui-focused
+  .MuiOutlinedInput-notchedOutline {
+  border: 1px solid #00990f !important;
+}

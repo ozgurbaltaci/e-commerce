@@ -13,6 +13,7 @@ import classes from "../MyOrders.module.css";
 import OrderStatusStepper from "../OrderStatusStepper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { useParams } from "react-router-dom";
+import AddProduct from "../AddProduct";
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -218,7 +219,6 @@ const SellerMainPage = () => {
                     className="avatars"
                     style={{
                       display: "flex",
-                      width: "84px",
                       justifyContent: "center",
                       alignItems: "center",
                       width: "12%",
@@ -309,32 +309,15 @@ const SellerMainPage = () => {
                           justifyContent: "flex-end",
                         }}
                       >
-                        <div style={{ marginRight: "8px" }}>
-                          <button
-                            style={{
-                              height: "24px",
-                              width: "85px",
-
-                              fontSize: "9px",
-                              fontWeight: "bold",
-                              backgroundColor: "rgba(173,176,9,0.16)",
-                              border: "none",
-                              color: "rgba(173,176,9)",
-                              borderRadius: "2px",
-                            }}
-                          >
-                            Review Order
-                          </button>
-                        </div>
                         <div>
                           <FormControl
                             onClick={(e) => e.stopPropagation()}
                             sx={{
                               ".MuiOutlinedInput-root": {
                                 display: "flex",
-                                width: "85px",
+                                width: "100px",
 
-                                height: "24px",
+                                height: "24px !important",
                                 padding: "0px",
                                 margin: "0px",
                                 fontSize: "9px",
@@ -406,6 +389,7 @@ const SellerMainPage = () => {
                       color: "#00990F",
                       fontSize: "14px",
                       fontWeight: "bold",
+                      marginLeft: "2px",
                     }}
                   >
                     {order.total_price} TL
@@ -423,6 +407,10 @@ const SellerMainPage = () => {
         )}
       </div>
     );
+  };
+
+  const renderAddProduct = () => {
+    return <AddProduct></AddProduct>;
   };
   return (
     <div>
@@ -524,6 +512,7 @@ const SellerMainPage = () => {
       </div>
 
       {renderOrders()}
+      <div className="addProductForm">{renderAddProduct()}</div>
     </div>
   );
 };
