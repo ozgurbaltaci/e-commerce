@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import Avatar from "@mui/material/Avatar";
 import Accordion from "@mui/material/Accordion";
@@ -7,7 +7,7 @@ import Divider from "@mui/material/Divider";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
-import { Card, Grid, Paper } from "@mui/material";
+import { Card, Grid, Paper, IconButton } from "@mui/material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import classes from "../MyOrders.module.css";
 import OrderStatusStepper from "../OrderStatusStepper";
@@ -27,7 +27,17 @@ import MenuItem from "@mui/material/MenuItem";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+
 import "./SellerMainPage.css";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
+  Button,
+} from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
 
 const SellerMainPage = () => {
   const [manufacturerData, setManufacturerData] = useState({
@@ -41,7 +51,35 @@ const SellerMainPage = () => {
   });
   const [orders, setOrders] = useState([]);
   const [orderStatuses, setOrderStatuses] = useState({}); // State to store order statuses individually
+  const [openDialog, setOpenDialog] = useState(false);
+  const [newImage, setNewImage] = useState("");
+  const [imagePreview, setImagePreview] = useState(null);
 
+  const fileInputRef = useRef(null);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64Image = event.target.result; // The Base64 representation of the image
+
+      setImagePreview(event.target.result);
+    };
+
+    reader.readAsDataURL(file);
+  };
+  const handleDivClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
   const handleOrderStatusChange = async (event, orderId, manufacturer_id) => {
     const newOrderStatus = event.target.value;
     // Update the order status for the specific order ID
@@ -71,6 +109,7 @@ const SellerMainPage = () => {
       .get(`http://localhost:3002/getManufacturersOrders/${manufacturer_id}`)
       .then((response) => {
         setManufacturerData(response.data.manufacturerInfo);
+        setImagePreview(response.data.manufacturerInfo.manufacturer_image);
         setOrders(response.data.orders);
       });
   }, [manufacturer_id]);
@@ -414,6 +453,59 @@ const SellerMainPage = () => {
   };
   return (
     <div>
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Edit Manufacturer Image</DialogTitle>
+
+        <DialogContent>
+          <DialogContentText>
+            To update your current representative image of your store, you can
+            click current image below and upload a new one.
+          </DialogContentText>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            style={{ display: "none" }}
+            ref={fileInputRef}
+            id="imageUpload"
+          />
+          <div
+            className="representativeImage"
+            onClick={handleDivClick}
+            style={{
+              width: "280px",
+              height: "260px",
+              fontSize: "12px",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            {imagePreview ? (
+              <img
+                src={imagePreview}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: "8px",
+                  objectFit: "cover",
+                }}
+                alt="Product Preview"
+              />
+            ) : (
+              "Click to upload"
+            )}
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={handleCloseDialog} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
       <div style={{ fontWeight: "bold" }}>
         {manufacturerData.manufacturer_name}
       </div>
@@ -422,18 +514,32 @@ const SellerMainPage = () => {
           height: "200px",
           width: "100%",
           display: "flex",
+          position: "relative", // To position the edit icon
         }}
       >
-        <img
-          src={manufacturerData.manufacturer_image}
-          width={"200px"}
-          height={"192px"}
-          style={{
-            objectFit: "cover",
-            marginRight: "16px",
-          }}
-          alt="seller image"
-        />
+        <div style={{ width: "200px", height: "192px", position: "relative" }}>
+          <IconButton
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              zIndex: 1,
+            }}
+            onClick={handleOpenDialog}
+          >
+            <EditIcon />
+          </IconButton>
+          <img
+            src={newImage || manufacturerData.manufacturer_image}
+            width={"200px"}
+            height={"192px"}
+            style={{
+              objectFit: "cover",
+              marginRight: "16px",
+            }}
+            alt="seller image"
+          />
+        </div>
 
         <Grid container spacing={1}>
           <Grid item xs={6} sm={6} md={6} lg={6}>

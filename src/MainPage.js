@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ProductCardHolder from "./ProductCardHolder";
-import { Button } from "@material-ui/core";
+import { Button, Avatar } from "@material-ui/core";
 import { Navigate, useNavigate } from "react-router-dom";
 import IncrementDecrementButtonGroup from "./IncrementDecrementButtonGroup";
 import axios from "axios";
@@ -24,6 +24,8 @@ const MainPage = () => {
   const [categories, setCategories] = useState([]);
 
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
+
+  const [allSubCategories, setAllSubCategories] = useState([]);
 
   useEffect(() => {
     //TODO: getCartItems first with the GET method.
@@ -91,6 +93,18 @@ const MainPage = () => {
       });
   }, []);
 
+  useEffect(() => {
+    const user_id = localStorage.getItem("user_id");
+    axios
+      .get(`http://localhost:3002/getAllSubCategories`)
+      .then((response) => {
+        setAllSubCategories(response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
+
   const handleUpdateDesiredAmount = async (product_id, newAmount) => {
     setIsThereUpdateOperation(true);
     try {
@@ -126,6 +140,18 @@ const MainPage = () => {
     } catch (error) {
       console.error("Error:", error);
     }
+  };
+
+  const handleClick = (
+    category_id,
+    category_name,
+    sub_category_id,
+    sub_category_name
+  ) => {
+    // Navigate to the dynamic category route when a category is clicked
+    navigate(
+      `/category/${category_id}/${category_name}/${sub_category_id}/${sub_category_name}`
+    );
   };
 
   return (
@@ -176,7 +202,59 @@ const MainPage = () => {
             </Grid>
           </Grid>
         </div>
-        {console.log("deneme")}
+        <div
+          style={{
+            display: "flex",
+            gap: "15px",
+            width: "100%",
+            overflowX: "scroll",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
+          <div
+            style={{
+              width: "130px",
+              height: "130px",
+            }}
+          ></div>
+          {allSubCategories.map((subCategory, index) => (
+            <div
+              key={index}
+              style={{ textAlign: "center", cursor: "pointer" }}
+              onClick={() => {
+                handleClick(
+                  subCategory.category_id,
+                  subCategory.category_name, //undefined niye geliyor
+                  subCategory.sub_category_id,
+                  subCategory.sub_category_name
+                );
+              }}
+            >
+              <Avatar
+                key={index}
+                alt={subCategory.sub_category_name}
+                src={subCategory.sub_category_img}
+                style={{
+                  width: "130px",
+                  height: "130px",
+                }}
+              />
+              <div
+                style={{
+                  width: "130px",
+                  height: "26px",
+                  overflowX: "scroll",
+                  fontSize: "11px",
+                  fontWeight: "bold",
+                  marginTop: "5px",
+                }}
+              >
+                {subCategory.sub_category_name}
+              </div>
+            </div>
+          ))}
+        </div>
         <div
           style={{ fontWeight: "bold", fontSize: "17px", marginBottom: "12px" }}
         >
