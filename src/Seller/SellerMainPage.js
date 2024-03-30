@@ -518,6 +518,7 @@ const SellerMainPage = () => {
         }}
       >
         <div style={{ width: "200px", height: "192px", position: "relative" }}>
+          {/** Edit Manufacturer Image Functionality Added */}
           <IconButton
             style={{
               position: "absolute",
