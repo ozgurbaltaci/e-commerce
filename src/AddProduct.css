@@ -1,0 +1,6 @@
+.representativeImage {
+  border: 1px dashed #ccc;
+}
+.representativeImage:hover {
+  border: 1px dashed #2fb009;
+}

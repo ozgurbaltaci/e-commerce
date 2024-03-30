@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 
 import { Button, Select, TextField, MenuItem } from "@material-ui/core";
 import axios from "axios";
+import "./AddProduct.css";
 
 const ProductUpload = () => {
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
+  const [imagePreview, setImagePreview] = useState(null);
 
   const { manufacturer_id } = useParams();
+  const fileInputRef = useRef(null);
 
   const [product, setProduct] = useState({
     product_name: "",
@@ -67,6 +70,7 @@ const ProductUpload = () => {
       const base64Image = event.target.result; // The Base64 representation of the image
 
       setProduct({ ...product, image: base64Image });
+      setImagePreview(event.target.result);
     };
 
     reader.readAsDataURL(file);
@@ -84,54 +88,135 @@ const ProductUpload = () => {
       });
   };
 
+  const handleDivClick = () => {
+    fileInputRef.current.click();
+  };
   return (
     <>
       {console.log(product)}
       <h2>Upload Product</h2>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-        <div>
-          <div style={{ fontSize: "10px", fontWeight: "bold" }}>
-            Product Name:
+      <div style={{ display: "flex", flexDirection: "column", gap: "9px" }}>
+        <div style={{ display: "flex", width: "100%" }}>
+          <div style={{ width: "18%" }}>
+            <div
+              style={{
+                fontSize: "10px",
+                fontWeight: "bold",
+                marginBottom: "3px",
+                overflow: "hidden",
+                height: "12px",
+              }}
+            >
+              Representative Image:
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              style={{ display: "none" }}
+              ref={fileInputRef}
+              id="imageUpload"
+            />
+            <div
+              className="representativeImage"
+              onClick={handleDivClick}
+              style={{
+                width: "100%",
+                height: "137px",
+                fontSize: "12px",
+                borderRadius: "8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              {imagePreview ? (
+                <img
+                  src={imagePreview}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: "8px",
+                    objectFit: "cover",
+                  }}
+                  alt="Product Preview"
+                />
+              ) : (
+                "Click to upload"
+              )}
+            </div>
           </div>
-          <TextField
-            size="small"
-            name="product_name"
-            onChange={handleInputChange}
-            value={product.product_name}
-            fullWidth
-            variant="outlined"
-          />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "9px",
+              width: "82%",
+              marginLeft: "20px",
+            }}
+          >
+            <div>
+              <div style={{ fontSize: "10px", fontWeight: "bold" }}>
+                Product Name:
+              </div>
+              <TextField
+                size="small"
+                name="product_name"
+                onChange={handleInputChange}
+                value={product.product_name}
+                fullWidth
+                variant="outlined"
+              />
+            </div>
+            <div style={{ display: "flex", gap: "6px" }}>
+              <div style={{ width: "100%" }}>
+                <div style={{ fontSize: "10px", fontWeight: "bold" }}>
+                  Product Price:
+                </div>
+                <TextField
+                  size="small"
+                  name="price"
+                  type="number"
+                  onChange={handleInputChange}
+                  value={product.price}
+                  fullWidth
+                  variant="outlined"
+                />
+              </div>
+              <div style={{ width: "100%" }}>
+                <div style={{ fontSize: "10px", fontWeight: "bold" }}>
+                  Product Discounted Price:
+                </div>
+                <TextField
+                  size="small"
+                  name="discounted_price"
+                  type="number"
+                  onChange={handleInputChange}
+                  value={product.discounted_price}
+                  fullWidth
+                  variant="outlined"
+                />
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: "10px", fontWeight: "bold" }}>
+                Product Description:
+              </div>
+              <TextField
+                size="small"
+                name="description"
+                onChange={handleInputChange}
+                value={product.description}
+                fullWidth
+                variant="outlined"
+                rows={4}
+              />
+            </div>
+          </div>
         </div>
 
-        <div>
-          <div style={{ fontSize: "10px", fontWeight: "bold" }}>
-            Product Price:
-          </div>
-          <TextField
-            size="small"
-            name="price"
-            type="number"
-            onChange={handleInputChange}
-            value={product.price}
-            fullWidth
-            variant="outlined"
-          />
-        </div>
-        <div>
-          <div style={{ fontSize: "10px", fontWeight: "bold" }}>
-            Product Discounted Price:
-          </div>
-          <TextField
-            size="small"
-            name="discounted_price"
-            type="number"
-            onChange={handleInputChange}
-            value={product.discounted_price}
-            fullWidth
-            variant="outlined"
-          />
-        </div>
         <div>
           <div style={{ fontSize: "10px", fontWeight: "bold" }}>
             Product Category:
@@ -176,20 +261,6 @@ const ProductUpload = () => {
 
         <div>
           <div style={{ fontSize: "10px", fontWeight: "bold" }}>
-            Product Description:
-          </div>
-          <TextField
-            size="small"
-            name="description"
-            onChange={handleInputChange}
-            value={product.description}
-            fullWidth
-            variant="outlined"
-            rows={4}
-          />
-        </div>
-        <div>
-          <div style={{ fontSize: "10px", fontWeight: "bold" }}>
             Product Stock Quantity:
           </div>
           <TextField
@@ -202,13 +273,7 @@ const ProductUpload = () => {
             variant="outlined"
           />
         </div>
-        {/* Add input fields for variations, shippingInformation, relatedProducts, and campaigns */}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          style={{ margin: "10px 0" }}
-        />
+
         <Button
           variant="contained"
           color="primary"
