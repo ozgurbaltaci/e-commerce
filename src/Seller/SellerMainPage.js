@@ -80,6 +80,23 @@ const SellerMainPage = () => {
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
+
+  const handleUpdateManufacturerImage = async () => {
+    setOpenDialog(false);
+    try {
+      await axios.put(
+        `http://localhost:3002/updateManufacturer/${manufacturer_id}`,
+        {
+          manufacturer_image: imagePreview,
+        }
+      );
+
+      alert("Changes saved successfully");
+    } catch (error) {
+      console.error("Error saving changes:", error);
+    }
+  };
+
   const handleOrderStatusChange = async (event, orderId, manufacturer_id) => {
     const newOrderStatus = event.target.value;
     // Update the order status for the specific order ID
@@ -501,7 +518,7 @@ const SellerMainPage = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={handleCloseDialog} color="primary">
+          <Button onClick={handleUpdateManufacturerImage} color="primary">
             Save
           </Button>
         </DialogActions>
