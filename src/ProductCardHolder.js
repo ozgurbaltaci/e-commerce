@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import MyButton from "./components/MyButton";
 import axios from "axios";
@@ -33,7 +33,6 @@ import Labels from "./Labels";
 
 const ProductCardHolder = ({
   products,
-  currUserFavoriteProductsIds,
   setCartItems,
   cartItems,
   parentComponent,
@@ -42,8 +41,9 @@ const ProductCardHolder = ({
   custom_sm = 4,
   custom_md = 3,
   custom_lg = 3,
+  isItCalledFromFavoritesPage = false,
+  setFavoriteItems,
 }) => {
-  const [favorites, setFavorites] = useState(currUserFavoriteProductsIds);
   const [hoveredProductId, setHoveredProductId] = useState(null);
   const [addedProductId, setAddedProductId] = useState(null);
   const currentUserId = localStorage.getItem("user_id");
@@ -51,8 +51,18 @@ const ProductCardHolder = ({
     useState(false);
   const [isThereAddToCartOperation, setIsThereAddToCartOperation] =
     useState(false);
+  const [favorites, setFavorites] = useState({});
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Initialize favorites state based on the products data
+    const initialFavorites = {};
+    products.forEach((product) => {
+      initialFavorites[product.product_id] = product.is_favorite || false;
+    });
+    setFavorites(initialFavorites);
+  }, [products]);
 
   const handleAddToCart = async (product) => {
     setIsThereAddToCartOperation(true);
@@ -80,23 +90,21 @@ const ProductCardHolder = ({
 
   const handleAddToFavorites = async (product) => {
     setIsThereFavoritesUpdateOperation(true);
-    const index = favorites.indexOf(product.product_id);
-    if (index !== -1) {
+
+    if (product.is_favorite) {
       // If it exists, remove it from the favorites array
 
       try {
         const response = await axios.delete(
           `http://localhost:3002/removeFromFavorite/${currentUserId}/${product.product_id}`
         );
-
-        if (response.status === 200) {
-          setFavorites((prevFavorites) =>
-            prevFavorites.filter(
-              (product_id) => product_id !== product.product_id
-            )
+        if (isItCalledFromFavoritesPage) {
+          setFavoriteItems(
+            products.filter((item) => product.product_id !== item.product_id)
           );
-          setIsThereFavoritesUpdateOperation(false);
         }
+
+        setIsThereFavoritesUpdateOperation(false);
       } catch (error) {
         console.log(error);
       }
@@ -109,14 +117,13 @@ const ProductCardHolder = ({
       } catch (error) {
         console.log(error);
       }
-      setFavorites((prevFavorites) => [...prevFavorites, product.product_id]);
+
       setIsThereFavoritesUpdateOperation(false);
     }
-  };
-
-  const isFavorite = (product_id) => {
-    console.log("gelen product product_id: ", product_id);
-    return favorites ? favorites.some((favId) => favId === product_id) : false;
+    setFavorites((prevFavorites) => ({
+      ...prevFavorites,
+      [product.product_id]: !favorites[product.product_id],
+    }));
   };
 
   const handleProductCardMouseEnter = (product_id) => {
@@ -174,10 +181,6 @@ const ProductCardHolder = ({
       {products.map((product) => (
         <>
           {console.log("render edilen productlar ", products)}
-          {console.log(
-            "currUserFavoriteProductsIds: ",
-            currUserFavoriteProductsIds
-          )}
 
           <Grid
             item
@@ -218,8 +221,12 @@ const ProductCardHolder = ({
                   handleAddToFavorites(product);
                 }}
               >
-                {isFavorite(product.product_id) ? (
-                  <Favorite color="secondary" style={{ fontSize: 16 }} />
+                {favorites[product.product_id] ? (
+                  favorites[product.product_id] === true ? (
+                    <Favorite color="secondary" style={{ fontSize: 16 }} />
+                  ) : (
+                    <FavoriteBorder style={{ fontSize: 16 }} />
+                  )
                 ) : (
                   <FavoriteBorder style={{ fontSize: 16 }} />
                 )}

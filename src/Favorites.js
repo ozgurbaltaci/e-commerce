@@ -8,8 +8,6 @@ import LoaderInBackdrop from "./components/LoaderInBackdrop";
 
 const Favorites = () => {
   const [favoriteItems, setFavoriteItems] = useState([]);
-  const [currUserFavoriteProductsIds, setCurrUserFavoriteProductsIds] =
-    useState([]);
   const [isProductsLoading, setIsProductsLoading] = useState(true);
 
   const [cartItems, setCartItems] = useState([]);
@@ -39,20 +37,7 @@ const Favorites = () => {
       .catch((error) => {
         console.error("Error:", error);
       });
-  }, [favoriteItems]);
-
-  useEffect(() => {
-    const user_id = localStorage.getItem("user_id");
-    axios
-      .get(`http://localhost:3002/getFavoritesIdsOfUser/${user_id}`) // Make a GET request with Axios, including the product_id as a parameter in the URL
-      .then((response) => {
-        setCurrUserFavoriteProductsIds(response.data);
-        console.log("idssss: ", response.data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
+  }, [isThereUpdateOperation]);
 
   const handleUpdateDesiredAmount = async (product_id, newAmount) => {
     setIsThereUpdateOperation(true);
@@ -117,7 +102,8 @@ const Favorites = () => {
       ) : (
         <ProductCardHolder
           products={favoriteItems}
-          currUserFavoriteProductsIds={currUserFavoriteProductsIds}
+          isItCalledFromFavoritesPage={true}
+          setFavoriteItems={setFavoriteItems}
           setCartItems={setCartItems}
           cartItems={cartItems}
           handleUpdateDesiredAmount={handleUpdateDesiredAmount}

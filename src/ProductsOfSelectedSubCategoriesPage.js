@@ -26,7 +26,9 @@ const SubCategoriesPage = () => {
     try {
       axios
         .get(
-          `http://localhost:3002/getProductsOfCurrentSubCategory/${subCategoryId}`
+          `http://localhost:3002/getProductsOfCurrentSubCategory/${subCategoryId}?user_id=${localStorage.getItem(
+            "user_id"
+          )}`
         )
         .then((response) => {
           setProductsOfCurrentSubCategory(response.data);

@@ -19,8 +19,6 @@ const MainPage = () => {
 
   const [cartItems, setCartItems] = useState([]);
   const [products, setProducts] = useState([]);
-  const [currUserFavoriteProductsIds, setCurrUserFavoriteProductsIds] =
-    useState([]);
   const [categories, setCategories] = useState([]);
 
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
@@ -31,7 +29,9 @@ const MainPage = () => {
     //TODO: getCartItems first with the GET method.
 
     // Define the URL of the API you want to request
-    const apiUrl = "http://localhost:3002/getProducts"; // Replace with your API URL
+    const apiUrl = `http://localhost:3002/getProducts?user_id=${localStorage.getItem(
+      "user_id"
+    )}`;
 
     // Use Axios to make the GET request
     axios
@@ -75,18 +75,6 @@ const MainPage = () => {
       .get(`http://localhost:3002/getCart/${user_id}`) // Make a GET request with Axios, including the product_id as a parameter in the URL
       .then((response) => {
         setCartItems(response.data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
-
-  useEffect(() => {
-    const user_id = localStorage.getItem("user_id");
-    axios
-      .get(`http://localhost:3002/getFavoritesIdsOfUser/${user_id}`) // Make a GET request with Axios, including the product_id as a parameter in the URL
-      .then((response) => {
-        setCurrUserFavoriteProductsIds(response.data);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -271,7 +259,6 @@ const MainPage = () => {
         ) : (
           <ProductCardHolder
             products={products}
-            currUserFavoriteProductsIds={currUserFavoriteProductsIds}
             setCartItems={setCartItems}
             cartItems={cartItems}
             handleUpdateDesiredAmount={handleUpdateDesiredAmount}

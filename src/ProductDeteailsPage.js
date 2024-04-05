@@ -8,7 +8,7 @@ import MyButton from "./components/MyButton";
 import { TiStarOutline } from "react-icons/ti";
 import { TiStarFullOutline, TiStarHalfOutline } from "react-icons/ti";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import { FavoriteBorder } from "@material-ui/icons";
+import { FavoriteBorder, Favorite } from "@material-ui/icons";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const theme = createTheme({
@@ -37,7 +37,11 @@ const ProductDeteailsPage = () => {
   useEffect(() => {
     try {
       axios
-        .get(`http://localhost:3002/getProductDetails/${productId}`)
+        .get(
+          `http://localhost:3002/getProductDetails/${productId}?user_id=${localStorage.getItem(
+            "user_id"
+          )}`
+        )
         .then((response) => {
           setProductDetails(response.data);
         });
@@ -365,7 +369,15 @@ const ProductDeteailsPage = () => {
                 alignItems: "center",
               }}
             >
-              <FavoriteBorder style={{ fontSize: 22 }} />
+              {productDetails.is_favorite ? (
+                productDetails.is_favorite === true ? (
+                  <Favorite color="secondary" style={{ fontSize: 22 }} />
+                ) : (
+                  <FavoriteBorder style={{ fontSize: 22 }} />
+                )
+              ) : (
+                <FavoriteBorder style={{ fontSize: 22 }} />
+              )}
             </div>
           </div>
           <div
