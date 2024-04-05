@@ -28,10 +28,11 @@ const MainPage = () => {
   useEffect(() => {
     //TODO: getCartItems first with the GET method.
 
-    // Define the URL of the API you want to request
-    const apiUrl = `http://localhost:3002/getProducts?user_id=${localStorage.getItem(
-      "user_id"
-    )}`;
+    let apiUrl = "http://localhost:3002/getProducts";
+    const userId = localStorage.getItem("user_id");
+    if (userId) {
+      apiUrl += `?user_id=${userId}`;
+    }
 
     // Use Axios to make the GET request
     axios
@@ -213,7 +214,7 @@ const MainPage = () => {
               onClick={() => {
                 handleClick(
                   subCategory.category_id,
-                  subCategory.category_name, //undefined niye geliyor
+                  subCategory.category_name,
                   subCategory.sub_category_id,
                   subCategory.sub_category_name
                 );
@@ -231,8 +232,6 @@ const MainPage = () => {
               <div
                 style={{
                   width: "130px",
-                  height: "26px",
-                  overflowX: "scroll",
                   fontSize: "11px",
                   fontWeight: "bold",
                   marginTop: "5px",

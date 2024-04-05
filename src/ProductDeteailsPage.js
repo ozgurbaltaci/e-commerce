@@ -35,16 +35,16 @@ const ProductDeteailsPage = () => {
   const [nonSelectedRatingPointError, setNonSelectedRatingPointError] =
     useState(false);
   useEffect(() => {
+    let apiUrl = `http://localhost:3002/getProductDetails/${productId}`;
+    const userId = localStorage.getItem("user_id");
+    if (userId) {
+      apiUrl += `?user_id=${userId}`;
+    }
+
     try {
-      axios
-        .get(
-          `http://localhost:3002/getProductDetails/${productId}?user_id=${localStorage.getItem(
-            "user_id"
-          )}`
-        )
-        .then((response) => {
-          setProductDetails(response.data);
-        });
+      axios.get(apiUrl).then((response) => {
+        setProductDetails(response.data);
+      });
     } catch (err) {}
   }, []);
 

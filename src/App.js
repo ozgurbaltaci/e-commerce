@@ -59,7 +59,7 @@ function App() {
         />
         <Route
           path="/category/:categoryId/:subCategoryId/:productId"
-          element={navTo(<ProductDeteailsPage />)}
+          element={<ProductDeteailsPage />}
         />
 
         <Route path="/search/:searchInput" element={<SearchResultPage />} />
