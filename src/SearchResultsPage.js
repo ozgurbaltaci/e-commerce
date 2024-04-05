@@ -9,15 +9,19 @@ const SearchResultPage = () => {
 
   useEffect(() => {
     const fetchSearchResults = async () => {
+      // Define the URL of the API you want to request
+      let apiUrl = "http://localhost:3002/searchProducts";
+      const userId = localStorage.getItem("user_id");
+      if (userId) {
+        apiUrl += `?user_id=${userId}`;
+      }
+
       try {
-        const response = await axios.get(
-          "http://localhost:3002/searchProducts",
-          {
-            params: {
-              searchInput,
-            },
-          }
-        );
+        const response = await axios.get(apiUrl, {
+          params: {
+            searchInput,
+          },
+        });
         setMatchedProducts(response.data);
       } catch (error) {
         console.error("Error fetching search results:", error);
