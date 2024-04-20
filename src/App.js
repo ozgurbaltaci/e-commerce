@@ -47,15 +47,15 @@ function App() {
         <Route path="/addProduct" element={navTo(<AddProduct />)} />
         <Route
           path="/category/:categoryId/:categoryName"
-          element={navTo(<SubCategoriesPage />)}
+          element={<SubCategoriesPage />}
         />
         <Route
           path="/category/:categoryId/:categoryName/:subCategoryId/:subCategoryName"
-          element={navTo(<ProductsOfSelectedSubCategoriesPage />)}
+          element={<ProductsOfSelectedSubCategoriesPage />}
         />
         <Route
           path="/manufacturer/:manufacturerId/:manufacturerName"
-          element={navTo(<SellerPage />)}
+          element={<SellerPage />}
         />
         <Route
           path="/category/:categoryId/:subCategoryId/:productId"
