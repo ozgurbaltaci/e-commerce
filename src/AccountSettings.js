@@ -164,7 +164,6 @@ const AccountSettings = () => {
 
   return (
     <>
-      <Toast></Toast>
       {accountSettingsLoading ? (
         <div>Your account settings are loading...</div>
       ) : (

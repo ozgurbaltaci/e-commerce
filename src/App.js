@@ -18,6 +18,7 @@ import AuthContext from "./auth-context";
 import { useContext } from "react";
 import SellerMainPage from "./Seller/SellerMainPage";
 import SearchResultPage from "./SearchResultsPage";
+import Toast, { successToast, errorToast } from "./Toaster";
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -29,6 +30,7 @@ function App() {
 
   return (
     <div style={{ padding: "0px 90px 0px 90px" }}>
+      <Toast></Toast>
       <NavBar />
       <Routes>
         {!isLoggedIn && <Route path="/login" element={<Login />} />}

@@ -89,41 +89,46 @@ const ProductCardHolder = ({
   };
 
   const handleAddToFavorites = async (product) => {
-    setIsThereFavoritesUpdateOperation(true);
+    if (localStorage.getItem("user_id")) {
+      setIsThereFavoritesUpdateOperation(true);
 
-    if (product.is_favorite) {
-      // If it exists, remove it from the favorites array
+      if (product.is_favorite) {
+        // If it exists, remove it from the favorites array
 
-      try {
-        const response = await axios.delete(
-          `http://localhost:3002/removeFromFavorite/${currentUserId}/${product.product_id}`
-        );
-        if (isItCalledFromFavoritesPage) {
-          setFavoriteItems(
-            products.filter((item) => product.product_id !== item.product_id)
+        try {
+          const response = await axios.delete(
+            `http://localhost:3002/removeFromFavorite/${currentUserId}/${product.product_id}`
           );
+          if (isItCalledFromFavoritesPage) {
+            setFavoriteItems(
+              products.filter((item) => product.product_id !== item.product_id)
+            );
+          }
+
+          setIsThereFavoritesUpdateOperation(false);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        // If it doesn't exist, add it to the favorites array
+        try {
+          const response = await axios.post(
+            `http://localhost:3002/addToFavorite/${currentUserId}/${product.product_id}`
+          );
+        } catch (error) {
+          console.log(error);
         }
 
         setIsThereFavoritesUpdateOperation(false);
-      } catch (error) {
-        console.log(error);
       }
+      setFavorites((prevFavorites) => ({
+        ...prevFavorites,
+        [product.product_id]: !favorites[product.product_id],
+      }));
     } else {
-      // If it doesn't exist, add it to the favorites array
-      try {
-        const response = await axios.post(
-          `http://localhost:3002/addToFavorite/${currentUserId}/${product.product_id}`
-        );
-      } catch (error) {
-        console.log(error);
-      }
-
-      setIsThereFavoritesUpdateOperation(false);
+      errorToast("You should log in first to add product to your favorites!");
+      navigate("/login");
     }
-    setFavorites((prevFavorites) => ({
-      ...prevFavorites,
-      [product.product_id]: !favorites[product.product_id],
-    }));
   };
 
   const handleProductCardMouseEnter = (product_id) => {
@@ -177,7 +182,6 @@ const ProductCardHolder = ({
           isThereFavoritesUpdateOperation || isThereAddToCartOperation
         }
       ></LoaderInBackdrop>
-      <Toast></Toast>
       {products.map((product) => (
         <>
           {console.log("render edilen productlar ", products)}

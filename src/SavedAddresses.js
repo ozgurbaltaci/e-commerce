@@ -288,7 +288,6 @@ const SavedAddresses = () => {
 
   return (
     <>
-      <Toast></Toast>
       <Dialog open={open} onClose={handleClose} fullWidth={true}>
         <DialogTitle>Add new address</DialogTitle>
         <DialogContent>

@@ -185,7 +185,6 @@ const MyReviews = () => {
 
   return (
     <>
-      <Toast></Toast>
       <LoaderInBackdrop isThereUpdateOperation={false}></LoaderInBackdrop>
       <Dialog
         open={isEditModalOpen}
