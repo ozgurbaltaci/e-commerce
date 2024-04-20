@@ -65,26 +65,31 @@ const ProductCardHolder = ({
   }, [products]);
 
   const handleAddToCart = async (product) => {
-    setIsThereAddToCartOperation(true);
-    const price_on_add =
-      product.discountedPrice !== null
-        ? product.discountedPrice
-        : product.price;
+    if (localStorage.getItem("user_id")) {
+      setIsThereAddToCartOperation(true);
+      const price_on_add =
+        product.discountedPrice !== null
+          ? product.discountedPrice
+          : product.price;
 
-    try {
-      const response = await axios.post(
-        `http://localhost:3002/addToCart/${currentUserId}/${product.product_id}/${price_on_add}`
-      );
+      try {
+        const response = await axios.post(
+          `http://localhost:3002/addToCart/${currentUserId}/${product.product_id}/${price_on_add}`
+        );
 
-      if (response.status === 201) {
+        if (response.status === 201) {
+          setIsThereAddToCartOperation(false);
+          const insertedRow = response.data;
+          setCartItems([...cartItems, insertedRow]);
+        }
+      } catch (error) {
         setIsThereAddToCartOperation(false);
-        const insertedRow = response.data;
-        setCartItems([...cartItems, insertedRow]);
+        alert("Product could not be added to your cart");
+        console.log(error);
       }
-    } catch (error) {
-      setIsThereAddToCartOperation(false);
-      alert("Product could not be added to your cart");
-      console.log(error);
+    } else {
+      errorToast("You should log in first to add product to your cart!");
+      navigate("/login");
     }
   };
 
