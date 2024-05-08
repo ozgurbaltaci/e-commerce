@@ -59,8 +59,14 @@ const AccountSettings = () => {
       .get(
         `http://localhost:3002/getCurrentUser/${localStorage.getItem(
           "user_id"
-        )}`
+        )}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
       )
+
       .then((response) => {
         if (response.data) {
           var birthDate = response.data.user_birth_date
@@ -79,7 +85,15 @@ const AccountSettings = () => {
         setAccountSettingsLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching user data:", error);
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          errorToast(error.response.data.message);
+        } else {
+          console.error("Error fetching user data:", error);
+        }
       });
   }, []);
 

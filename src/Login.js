@@ -100,7 +100,9 @@ export default function SignIn() {
 
             authCtx.login(
               response_data.accessToken,
-              expirationTime.toISOString()
+              expirationTime.toISOString(),
+              response_data.user_id,
+              response_data.user_name
             );
             localStorage.setItem("user_surname", response_data.user_surname);
             localStorage.setItem("user_phone", response_data.user_phone);

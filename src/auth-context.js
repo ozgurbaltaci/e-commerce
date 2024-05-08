@@ -89,6 +89,9 @@ export const AuthContextProvider = (props) => {
 
   const userIsLoggedIn = !!token;
 
+  const [userId, setUserId] = useState(-1);
+  const [userName, setUserName] = useState("");
+
   const logoutHandler = useCallback(() => {
     setToken(null);
     localStorage.removeItem("accessToken");
@@ -103,10 +106,12 @@ export const AuthContextProvider = (props) => {
     }
   }, []);
 
-  const loginHandler = (token, expirationTime) => {
+  const loginHandler = (token, expirationTime, user_id, user_name) => {
     setToken(token);
     localStorage.setItem("accessToken", token);
     localStorage.setItem("expirationTime", expirationTime);
+    setUserId(user_id);
+    setUserName(user_name);
 
     const remainingTime = calculateRemainingTime(expirationTime);
 
@@ -128,6 +133,8 @@ export const AuthContextProvider = (props) => {
     isLoggedIn: userIsLoggedIn,
     login: loginHandler,
     logout: logoutHandler,
+    userId: userId,
+    userName: userName,
   };
 
   return (
