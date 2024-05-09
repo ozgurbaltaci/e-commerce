@@ -56,16 +56,7 @@ const AccountSettings = () => {
   }
   useEffect(() => {
     axios
-      .get(
-        `http://localhost:3002/getCurrentUser/${localStorage.getItem(
-          "user_id"
-        )}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      )
+      .get(`http://localhost:3002/getCurrentUser`)
 
       .then((response) => {
         if (response.data) {

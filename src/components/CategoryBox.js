@@ -24,6 +24,7 @@ const CategoryBox = ({
         height: height,
         width: "90%",
         borderRadius: "7px",
+        cursor: "pointer",
       }}
       src={imagePath}
       alt={label}

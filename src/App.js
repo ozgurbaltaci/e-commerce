@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import axios from "axios";
 
 import "./App.css";
 import MainPage from "./MainPage";
@@ -27,6 +28,20 @@ function App() {
   const navTo = (comp) => {
     return isLoggedIn ? comp : <Navigate to="/login" />;
   };
+  useEffect(() => {
+    axios.interceptors.request.use(
+      (config) => {
+        const accessToken = localStorage.getItem("accessToken");
+        if (accessToken) {
+          config.headers["Authorization"] = `Bearer ${accessToken}`;
+        }
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      }
+    );
+  }, []);
 
   return (
     <div style={{ padding: "0px 90px 0px 90px" }}>
