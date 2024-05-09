@@ -60,11 +60,7 @@ const SavedAddresses = () => {
 
   useEffect(() => {
     axios
-      .get(
-        `http://localhost:3002/getSavedAddressesOfUser/${localStorage.getItem(
-          "user_id"
-        )}`
-      )
+      .get(`http://localhost:3002/getSavedAddressesOfUser`)
       .then((response) => {
         if (response.data) {
           setSavedAddresses(response.data);
@@ -105,9 +101,7 @@ const SavedAddresses = () => {
 
       // Make an Axios request to save the new address
       const response = await axios.put(
-        `http://localhost:3002/saveNewAddressToCurrentUser/${localStorage.getItem(
-          "user_id"
-        )}`,
+        `http://localhost:3002/saveNewAddressToCurrentUser`,
         { address_data }
       );
 

@@ -27,11 +27,7 @@ const MyReviews = () => {
   useEffect(() => {
     // Fetch categories with subcategories from backend API using Axios
     axios
-      .get(
-        `http://localhost:3002/getReviewsOfCurrentUser/${localStorage.getItem(
-          "user_id"
-        )}`
-      )
+      .get(`http://localhost:3002/getReviewsOfCurrentUser`)
       .then((response) => {
         setReviews(response.data);
         setIsReviewsLoading(false);

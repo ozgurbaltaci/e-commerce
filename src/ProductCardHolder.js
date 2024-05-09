@@ -46,7 +46,6 @@ const ProductCardHolder = ({
 }) => {
   const [hoveredProductId, setHoveredProductId] = useState(null);
   const [addedProductId, setAddedProductId] = useState(null);
-  const currentUserId = localStorage.getItem("user_id");
   const [isThereFavoritesUpdateOperation, setIsThereFavoritesUpdateOperation] =
     useState(false);
   const [isThereAddToCartOperation, setIsThereAddToCartOperation] =
@@ -65,7 +64,7 @@ const ProductCardHolder = ({
   }, [products]);
 
   const handleAddToCart = async (product) => {
-    if (localStorage.getItem("user_id")) {
+    if (localStorage.getItem("accessToken")) {
       setIsThereAddToCartOperation(true);
       const price_on_add =
         product.discountedPrice !== null
@@ -74,7 +73,7 @@ const ProductCardHolder = ({
 
       try {
         const response = await axios.post(
-          `http://localhost:3002/addToCart/${currentUserId}/${product.product_id}/${price_on_add}`
+          `http://localhost:3002/addToCart/${product.product_id}/${price_on_add}`
         );
 
         if (response.status === 201) {
@@ -94,7 +93,7 @@ const ProductCardHolder = ({
   };
 
   const handleAddToFavorites = async (product) => {
-    if (localStorage.getItem("user_id")) {
+    if (localStorage.getItem("accessToken")) {
       setIsThereFavoritesUpdateOperation(true);
 
       if (product.is_favorite) {
@@ -102,7 +101,7 @@ const ProductCardHolder = ({
 
         try {
           const response = await axios.delete(
-            `http://localhost:3002/removeFromFavorite/${currentUserId}/${product.product_id}`
+            `http://localhost:3002/removeFromFavorite/${product.product_id}`
           );
           if (isItCalledFromFavoritesPage) {
             setFavoriteItems(
@@ -118,7 +117,7 @@ const ProductCardHolder = ({
         // If it doesn't exist, add it to the favorites array
         try {
           const response = await axios.post(
-            `http://localhost:3002/addToFavorite/${currentUserId}/${product.product_id}`
+            `http://localhost:3002/addToFavorite/${product.product_id}`
           );
         } catch (error) {
           console.log(error);

@@ -46,6 +46,7 @@ import MyButton from "./components/MyButton";
 import AuthContext from "./auth-context";
 import { useContext } from "react";
 import ReceiverInfoForm from "./ReceiverInfoForm";
+import { errorToast } from "./Toaster";
 
 const availablePaymentMethods = [
   /**  {
@@ -181,11 +182,7 @@ const Cart = () => {
 
   useEffect(() => {
     axios
-      .get(
-        `http://localhost:3002/getSavedAddressesOfUser/${localStorage.getItem(
-          "user_id"
-        )}`
-      )
+      .get(`http://localhost:3002/getSavedAddressesOfUser`)
       .then((response) => {
         if (response.data) {
           setSavedAddresses(response.data);
@@ -222,14 +219,22 @@ const Cart = () => {
 
   useEffect(() => {
     //get Cart Items HTTP request will be here
-    const user_id = localStorage.getItem("user_id");
+
     axios
-      .get(`http://localhost:3002/getCart/${user_id}`) // Make a GET request with Axios, including the product_id as a parameter in the URL
+      .get(`http://localhost:3002/getCart`) // Make a GET request with Axios, including the product_id as a parameter in the URL
       .then((response) => {
         setCartItems(response.data);
       })
       .catch((error) => {
-        console.error("Error:", error);
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          errorToast(error.response.data.message);
+        } else {
+          console.error("Error fetching user data:", error);
+        }
       });
   }, []);
   useEffect(() => {
@@ -323,21 +328,21 @@ const Cart = () => {
 
     try {
       // Make an Axios request to update the desired amount on the server
-      const user_id = localStorage.getItem("user_id");
+
       if (newAmount === 0) {
         const updatedItems = cartItems.filter(
           (item) => item.product_id !== product_id
         );
         setCartItems(updatedItems);
         await axios.delete(
-          `http://localhost:3002/removeFromCart/${user_id}/${product_id}`
+          `http://localhost:3002/removeFromCart/${product_id}`
         );
         setIsThereUpdateOperation(false);
         return; // Exit the function early if removeFromCart is called
       }
 
       const response = await axios.put(
-        `http://localhost:3002/updateDesiredAmount/${user_id}/${product_id}`,
+        `http://localhost:3002/updateDesiredAmount/${product_id}`,
         {
           desired_amount: newAmount,
         }
@@ -433,30 +438,28 @@ const Cart = () => {
   ));
   const saveOrder = async () => {
     try {
-      const saveOrderResponse = await fetch(
-        `http://localhost:3002/saveOrder/${localStorage.getItem("user_id")}`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            selectedProducts: selectedProducts,
-            receiverName: receiverName,
-            receiverPhone: receiverPhone,
-            deliveryAddress: selectedAddress.full_address,
-          }),
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const saveOrderResponse = await fetch(`http://localhost:3002/saveOrder`, {
+        method: "POST",
+        body: JSON.stringify({
+          selectedProducts: selectedProducts,
+          receiverName: receiverName,
+          receiverPhone: receiverPhone,
+          deliveryAddress: selectedAddress.full_address,
+        }),
+      });
 
-      if (saveOrderResponse.status === 200) {
-        alert(`Order saved successfully.`);
+      alert(`Order saved successfully.`);
+    } catch (error) {
+      alert("something wrong");
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        alert(error.response.data.message);
       } else {
-        alert(`Error: Failed to save the order.`);
+        console.error("Error fetching user data:", error);
       }
-    } catch (err) {
-      alert(err);
     }
   };
 
@@ -472,9 +475,7 @@ const Cart = () => {
     try {
       // Make an Axios request to save the new address
       const response = await axios.put(
-        `http://localhost:3002/saveNewAddressToCurrentUser/${localStorage.getItem(
-          "user_id"
-        )}`,
+        `http://localhost:3002/saveNewAddressToCurrentUser`,
         { address_data }
       );
 

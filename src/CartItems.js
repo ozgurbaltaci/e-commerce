@@ -13,6 +13,8 @@ import {
 import Labels from "./Labels";
 import { FiPackage } from "react-icons/fi";
 import IncrementDecrementButtonGroup from "./IncrementDecrementButtonGroup";
+import { errorToast } from "./Toaster";
+import axios from "axios";
 const CartItems = ({
   handleUpdateDesiredAmount,
   cartItems,
@@ -141,13 +143,21 @@ const CartItems = ({
                             : (item.price * item.desired_amount).toFixed(2)}
                         </Typography>
                         <Button
-                          onClick={() => {
+                          onClick={async () => {
                             const afterDeleteCartItems = cartItems.filter(
                               (product) =>
                                 product.product_id !== item.product_id
                             );
                             setCartItems(afterDeleteCartItems);
-                            //TODO: set desired amount of that product as 0 by UPDATE request.
+                            try {
+                              await axios.delete(
+                                `http://localhost:3002/removeFromCart/${item.product_id}`
+                              );
+                            } catch (err) {
+                              errorToast(
+                                "Failed to remove the product from the cart!"
+                              );
+                            }
                           }}
                         >
                           X

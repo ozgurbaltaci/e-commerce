@@ -15,9 +15,9 @@ const Favorites = () => {
 
   useEffect(() => {
     //get Cart Items HTTP request will be here
-    const user_id = localStorage.getItem("user_id");
+
     axios
-      .get(`http://localhost:3002/getCart/${user_id}`) // Make a GET request with Axios, including the product_id as a parameter in the URL
+      .get(`http://localhost:3002/getCart`) // Make a GET request with Axios, including the product_id as a parameter in the URL
       .then((response) => {
         setCartItems(response.data);
       })
@@ -27,9 +27,8 @@ const Favorites = () => {
   }, []);
 
   useEffect(() => {
-    const user_id = localStorage.getItem("user_id");
     axios
-      .get(`http://localhost:3002/getFavoritesOfUser/${user_id}`) // Make a GET request with Axios, including the product_id as a parameter in the URL
+      .get(`http://localhost:3002/getFavoritesOfUser`) // Make a GET request with Axios, including the product_id as a parameter in the URL
       .then((response) => {
         setFavoriteItems(response.data);
         setIsProductsLoading(false);
@@ -42,8 +41,6 @@ const Favorites = () => {
   const handleUpdateDesiredAmount = async (product_id, newAmount) => {
     setIsThereUpdateOperation(true);
     try {
-      const user_id = localStorage.getItem("user_id");
-
       // Check if the newAmount is 0 and call removeFromCart endpoint
       if (newAmount === 0) {
         const updatedItems = cartItems.filter(
@@ -51,14 +48,14 @@ const Favorites = () => {
         );
         setCartItems(updatedItems);
         await axios.delete(
-          `http://localhost:3002/removeFromCart/${user_id}/${product_id}`
+          `http://localhost:3002/removeFromCart/${product_id}`
         );
         setIsThereUpdateOperation(false);
         return; // Exit the function early if removeFromCart is called
       }
 
       const response = await axios.put(
-        `http://localhost:3002/updateDesiredAmount/${user_id}/${product_id}`,
+        `http://localhost:3002/updateDesiredAmount/${product_id}`,
         {
           desired_amount: newAmount,
         }

@@ -29,10 +29,6 @@ const MainPage = () => {
     //TODO: getCartItems first with the GET method.
 
     let apiUrl = "http://localhost:3002/getProducts";
-    const userId = localStorage.getItem("user_id");
-    if (userId) {
-      apiUrl += `?user_id=${userId}`;
-    }
 
     // Use Axios to make the GET request
     axios
@@ -71,9 +67,8 @@ const MainPage = () => {
 
   useEffect(() => {
     //get Cart Items HTTP request will be here
-    const user_id = localStorage.getItem("user_id");
     axios
-      .get(`http://localhost:3002/getCart/${user_id}`) // Make a GET request with Axios, including the product_id as a parameter in the URL
+      .get(`http://localhost:3002/getCart`) // Make a GET request with Axios, including the product_id as a parameter in the URL
       .then((response) => {
         setCartItems(response.data);
       })
@@ -83,7 +78,6 @@ const MainPage = () => {
   }, []);
 
   useEffect(() => {
-    const user_id = localStorage.getItem("user_id");
     axios
       .get(`http://localhost:3002/getAllSubCategories`)
       .then((response) => {
@@ -97,8 +91,6 @@ const MainPage = () => {
   const handleUpdateDesiredAmount = async (product_id, newAmount) => {
     setIsThereUpdateOperation(true);
     try {
-      const user_id = localStorage.getItem("user_id");
-
       // Check if the newAmount is 0 and call removeFromCart endpoint
       if (newAmount === 0) {
         const updatedItems = cartItems.filter(
@@ -106,14 +98,14 @@ const MainPage = () => {
         );
         setCartItems(updatedItems);
         await axios.delete(
-          `http://localhost:3002/removeFromCart/${user_id}/${product_id}`
+          `http://localhost:3002/removeFromCart/${product_id}`
         );
         setIsThereUpdateOperation(false);
         return; // Exit the function early if removeFromCart is called
       }
 
       const response = await axios.put(
-        `http://localhost:3002/updateDesiredAmount/${user_id}/${product_id}`,
+        `http://localhost:3002/updateDesiredAmount/${product_id}`,
         {
           desired_amount: newAmount,
         }

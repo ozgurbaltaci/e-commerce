@@ -98,12 +98,9 @@ const AccountSettings = () => {
 
   const handleSavePersonalInformationChanges = async () => {
     try {
-      await axios.put(
-        `http://localhost:3002/updateUser/${localStorage.getItem("user_id")}`,
-        {
-          currentUser: currentUser,
-        }
-      );
+      await axios.put(`http://localhost:3002/updateUser`, {
+        currentUser: currentUser,
+      });
       const keysToUpdate = [
         "user_phone",
         "user_mail",
@@ -147,15 +144,10 @@ const AccountSettings = () => {
 
       try {
         await axios
-          .put(
-            `http://localhost:3002/updatePassword/${localStorage.getItem(
-              "user_id"
-            )}`,
-            {
-              newPassword: newPassword,
-              currentPassword: currentPassword,
-            }
-          )
+          .put(`http://localhost:3002/updatePassword`, {
+            newPassword: newPassword,
+            currentPassword: currentPassword,
+          })
           .then((response) => {
             successToast(response.data.message);
           });

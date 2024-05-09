@@ -126,9 +126,7 @@ const ProductDeteailsPage = () => {
       try {
         if (commentInput.trim() !== "" && rating > 0) {
           const response = await axios.post(
-            `http://localhost:3002/saveRatingAndReview/${localStorage.getItem(
-              "user_id"
-            )}/${productId}`,
+            `http://localhost:3002/saveRatingAndReview/${productId}`,
             {
               ratingPoint: rating,
               review: commentInput,
