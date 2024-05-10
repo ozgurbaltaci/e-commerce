@@ -5,8 +5,26 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { AuthContextProvider } from "./auth-context";
 import { BrowserRouter } from "react-router-dom";
+import axios from "axios";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+const setupAxiosInterceptors = () => {
+  axios.interceptors.request.use(
+    (config) => {
+      const accessToken = localStorage.getItem("accessToken");
+      if (accessToken) {
+        config.headers["Authorization"] = `Bearer ${accessToken}`;
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+};
+
+setupAxiosInterceptors();
+
 root.render(
   <AuthContextProvider>
     <BrowserRouter>
