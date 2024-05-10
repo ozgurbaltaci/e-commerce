@@ -33,8 +33,6 @@ import Labels from "./Labels";
 
 const ProductCardHolder = ({
   products,
-  setCartItems,
-  cartItems,
   parentComponent,
   handleUpdateDesiredAmount,
   custom_xs = 12,
@@ -43,6 +41,7 @@ const ProductCardHolder = ({
   custom_lg = 3,
   isItCalledFromFavoritesPage = false,
   setFavoriteItems,
+  setProducts,
 }) => {
   const [hoveredProductId, setHoveredProductId] = useState(null);
   const [addedProductId, setAddedProductId] = useState(null);
@@ -78,8 +77,13 @@ const ProductCardHolder = ({
 
         if (response.status === 201) {
           setIsThereAddToCartOperation(false);
-          const insertedRow = response.data;
-          setCartItems([...cartItems, insertedRow]);
+          setProducts((prevProducts) =>
+            prevProducts.map((mappedProduct) =>
+              mappedProduct.product_id === product.product_id
+                ? { ...mappedProduct, cart_amount: 1 }
+                : mappedProduct
+            )
+          );
         }
       } catch (error) {
         setIsThereAddToCartOperation(false);
@@ -143,20 +147,6 @@ const ProductCardHolder = ({
     setHoveredProductId(null);
   };
 
-  const isItemAddedToCart = (product) => {
-    console.log("cartItems", cartItems);
-    return cartItems
-      ? cartItems.some((item) => item.product_id === product.product_id)
-      : false;
-  };
-
-  const getCartItemAmount = (product_id) => {
-    console.log("ajajjaj", cartItems, " ve product_id: ", product_id);
-
-    const cartItem = cartItems.find((item) => item.product_id === product_id);
-    return cartItem ? cartItem.desired_amount : 0;
-  };
-
   const renderStars = (starPoint) => {
     const starElements = [];
     const fullStars = Math.floor(starPoint);
@@ -188,8 +178,6 @@ const ProductCardHolder = ({
       ></LoaderInBackdrop>
       {products.map((product) => (
         <>
-          {console.log("render edilen productlar ", products)}
-
           <Grid
             item
             key={product.id}
@@ -351,13 +339,13 @@ const ProductCardHolder = ({
                     left: "5px",
                   }}
                 >
-                  {isItemAddedToCart(product) ? (
+                  {parseInt(product.cart_amount) > 0 ? (
                     <>
                       <div style={{ width: "60%" }}>
                         <IncrementDecrementButtonGroup
                           counterWidth="500px"
                           height="25"
-                          initialValue={getCartItemAmount(product.product_id)}
+                          initialValue={product.cart_amount}
                           item={product}
                           handleUpdateDesiredAmount={handleUpdateDesiredAmount}
                         />

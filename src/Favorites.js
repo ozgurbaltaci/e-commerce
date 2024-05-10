@@ -101,8 +101,6 @@ const Favorites = () => {
           products={favoriteItems}
           isItCalledFromFavoritesPage={true}
           setFavoriteItems={setFavoriteItems}
-          setCartItems={setCartItems}
-          cartItems={cartItems}
           handleUpdateDesiredAmount={handleUpdateDesiredAmount}
         />
       )}

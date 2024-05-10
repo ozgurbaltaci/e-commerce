@@ -11,13 +11,13 @@ import ProductCardSkeleton from "./ProductCardSkeleton";
 import Carousel from "./components/Carousel";
 import CategoryBox from "./components/CategoryBox";
 import LoaderInBackdrop from "./components/LoaderInBackdrop";
+import { errorToast } from "./Toaster";
 
 const MainPage = () => {
   const navigate = useNavigate();
   const [isProductsLoading, setIsProductsLoading] = useState(true);
   const [isThereUpdateOperation, setIsThereUpdateOperation] = useState(false);
 
-  const [cartItems, setCartItems] = useState([]);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
 
@@ -26,8 +26,6 @@ const MainPage = () => {
   const [allSubCategories, setAllSubCategories] = useState([]);
 
   useEffect(() => {
-    //TODO: getCartItems first with the GET method.
-
     let apiUrl = "http://localhost:3002/getProducts";
 
     // Use Axios to make the GET request
@@ -39,14 +37,19 @@ const MainPage = () => {
         setIsProductsLoading(false);
       })
       .catch((error) => {
-        // Handle any errors that occurred during the request
-        alert("Error fetching data:", error);
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          errorToast(error.response.data.message);
+        } else {
+          errorToast("Server error");
+        }
       });
   }, []); // The empty array as the second argument makes this useEffect run once on component mount
 
   useEffect(() => {
-    //TODO: getCartItems first with the GET method.
-
     // Define the URL of the API you want to request
     const apiUrl = "http://localhost:3002/getCategories"; // Replace with your API URL
 
@@ -66,18 +69,6 @@ const MainPage = () => {
   }, []); // The empty array as the second argument makes this useEffect run once on component mount
 
   useEffect(() => {
-    //get Cart Items HTTP request will be here
-    axios
-      .get(`http://localhost:3002/getCart`) // Make a GET request with Axios, including the product_id as a parameter in the URL
-      .then((response) => {
-        setCartItems(response.data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
-
-  useEffect(() => {
     axios
       .get(`http://localhost:3002/getAllSubCategories`)
       .then((response) => {
@@ -90,13 +81,16 @@ const MainPage = () => {
 
   const handleUpdateDesiredAmount = async (product_id, newAmount) => {
     setIsThereUpdateOperation(true);
+    setProducts((prevProducts) =>
+      prevProducts.map((product) =>
+        product.product_id === product_id
+          ? { ...product, cart_amount: newAmount }
+          : product
+      )
+    );
     try {
       // Check if the newAmount is 0 and call removeFromCart endpoint
       if (newAmount === 0) {
-        const updatedItems = cartItems.filter(
-          (item) => item.product_id !== product_id
-        );
-        setCartItems(updatedItems);
         await axios.delete(
           `http://localhost:3002/removeFromCart/${product_id}`
         );
@@ -112,8 +106,6 @@ const MainPage = () => {
       );
 
       if (response.status === 200) {
-        console.log("Cart items: ", cartItems);
-
         setIsThereUpdateOperation(false);
       } else {
         console.error("Failed to update desired amount.");
@@ -137,6 +129,7 @@ const MainPage = () => {
 
   return (
     <>
+      {console.log(products)}
       <LoaderInBackdrop
         isThereUpdateOperation={isThereUpdateOperation}
       ></LoaderInBackdrop>
@@ -250,9 +243,8 @@ const MainPage = () => {
         ) : (
           <ProductCardHolder
             products={products}
-            setCartItems={setCartItems}
-            cartItems={cartItems}
             handleUpdateDesiredAmount={handleUpdateDesiredAmount}
+            setProducts={setProducts}
           />
         )}
       </div>

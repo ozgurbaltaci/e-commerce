@@ -83,7 +83,7 @@ const AccountSettings = () => {
         ) {
           errorToast(error.response.data.message);
         } else {
-          console.error("Error fetching user data:", error);
+          errorToast("Error fetching user data");
         }
       });
   }, []);
