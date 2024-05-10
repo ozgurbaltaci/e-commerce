@@ -99,9 +99,8 @@ const Favorites = () => {
       ) : (
         <ProductCardHolder
           products={favoriteItems}
+          setProducts={setFavoriteItems}
           isItCalledFromFavoritesPage={true}
-          setFavoriteItems={setFavoriteItems}
-          handleUpdateDesiredAmount={handleUpdateDesiredAmount}
         />
       )}
     </>

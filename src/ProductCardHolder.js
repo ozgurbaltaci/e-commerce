@@ -34,7 +34,6 @@ import Labels from "./Labels";
 const ProductCardHolder = ({
   products,
   parentComponent,
-  handleUpdateDesiredAmount,
   custom_xs = 12,
   custom_sm = 4,
   custom_md = 3,
@@ -96,6 +95,42 @@ const ProductCardHolder = ({
     }
   };
 
+  const handleUpdateDesiredAmount = async (product_id, newAmount) => {
+    setIsThereAddToCartOperation(true);
+    setProducts((prevProducts) =>
+      prevProducts.map((product) =>
+        product.product_id === product_id
+          ? { ...product, cart_amount: newAmount }
+          : product
+      )
+    );
+    try {
+      // Check if the newAmount is 0 and call removeFromCart endpoint
+      if (newAmount === 0) {
+        await axios.delete(
+          `http://localhost:3002/removeFromCart/${product_id}`
+        );
+        setIsThereAddToCartOperation(false);
+        return; // Exit the function early if removeFromCart is called
+      }
+
+      const response = await axios.put(
+        `http://localhost:3002/updateDesiredAmount/${product_id}`,
+        {
+          desired_amount: newAmount,
+        }
+      );
+
+      if (response.status === 200) {
+        setIsThereAddToCartOperation(false);
+      } else {
+        console.error("Failed to update desired amount.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   const handleAddToFavorites = async (product) => {
     if (localStorage.getItem("accessToken")) {
       setIsThereFavoritesUpdateOperation(true);
@@ -108,7 +143,7 @@ const ProductCardHolder = ({
             `http://localhost:3002/removeFromFavorite/${product.product_id}`
           );
           if (isItCalledFromFavoritesPage) {
-            setFavoriteItems(
+            setProducts(
               products.filter((item) => product.product_id !== item.product_id)
             );
           }

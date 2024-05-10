@@ -36,6 +36,7 @@ const SearchResultPage = () => {
       <h2>Search Results for "{searchInput}"</h2>
       <ProductCardHolder
         products={matchedProducts}
+        setProducts={setMatchedProducts}
         custom_xs={12}
         custom_sm={6}
         custom_md={3}

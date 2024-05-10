@@ -98,6 +98,7 @@ const SellerPage = () => {
       <div style={{ display: "flex" }}>
         <ProductCardHolder
           products={productsOfManufacturer}
+          setProducts={setProductsOfManufacturer}
           custom_xs={12}
           custom_sm={6}
           custom_md={3}

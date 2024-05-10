@@ -79,42 +79,6 @@ const MainPage = () => {
       });
   }, []);
 
-  const handleUpdateDesiredAmount = async (product_id, newAmount) => {
-    setIsThereUpdateOperation(true);
-    setProducts((prevProducts) =>
-      prevProducts.map((product) =>
-        product.product_id === product_id
-          ? { ...product, cart_amount: newAmount }
-          : product
-      )
-    );
-    try {
-      // Check if the newAmount is 0 and call removeFromCart endpoint
-      if (newAmount === 0) {
-        await axios.delete(
-          `http://localhost:3002/removeFromCart/${product_id}`
-        );
-        setIsThereUpdateOperation(false);
-        return; // Exit the function early if removeFromCart is called
-      }
-
-      const response = await axios.put(
-        `http://localhost:3002/updateDesiredAmount/${product_id}`,
-        {
-          desired_amount: newAmount,
-        }
-      );
-
-      if (response.status === 200) {
-        setIsThereUpdateOperation(false);
-      } else {
-        console.error("Failed to update desired amount.");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
   const handleClick = (
     category_id,
     category_name,
@@ -241,11 +205,7 @@ const MainPage = () => {
             ))}
           </Grid>
         ) : (
-          <ProductCardHolder
-            products={products}
-            handleUpdateDesiredAmount={handleUpdateDesiredAmount}
-            setProducts={setProducts}
-          />
+          <ProductCardHolder products={products} setProducts={setProducts} />
         )}
       </div>
     </>

@@ -44,6 +44,7 @@ const SubCategoriesPage = () => {
 
         <ProductCardHolder
           products={productsOfCurrentSubCategory}
+          setProducts={setProductsOfCurrentSubCategory}
           custom_xs={12}
           custom_sm={6}
           custom_md={3}
