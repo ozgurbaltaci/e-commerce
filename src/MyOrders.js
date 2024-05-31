@@ -290,10 +290,23 @@ const MyOrders = () => {
                         fontWeight: "bold",
                       }}
                     >
-                      {order.total_price} TL
+                      {order.total_price - order.applied_discount} TL
                     </div>
                   </div>
                 </AccordionSummary>
+                {order.applied_discount && (
+                  <div
+                    style={{
+                      padding: "0px 16px",
+                      color: "#00990F",
+                      fontWeight: "bold",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    You applied {order.applied_discount}TL discount code in this
+                    order.
+                  </div>
+                )}
                 <AccordionDetails>{getOrderedProducts(order)}</AccordionDetails>
               </Accordion>
             ))

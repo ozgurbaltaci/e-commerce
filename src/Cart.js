@@ -94,7 +94,7 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalItemPrice, setTotalItemPrice] = useState(0);
   const [shippingFee, setShippingFee] = useState(0);
-  const [totalCartPrice, setTotalCartPrice] = useState(0);
+  const [appliedDiscount, setAppliedDiscount] = useState(0);
   const [selectedValue, setSelectedValue] = React.useState("a");
   const [open, setOpen] = React.useState(false);
   const [provinces, setProvinces] = useState([]);
@@ -137,6 +137,50 @@ const Cart = () => {
 
   const [isThereUpdateOperation, setIsThereUpdateOperation] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [couponCode, setCouponCode] = useState("");
+
+  const handleCouponCodeChange = (event) => {
+    const enteredCouponCode = event.target.value;
+
+    setCouponCode(enteredCouponCode);
+  };
+
+  const handleAddCoupon = (event) => {
+    axios
+      .get(`http://localhost:3002/applyCoupon`, {
+        params: {
+          couponCode: couponCode,
+          totalItemPrice: totalItemPrice,
+        },
+      })
+      .then((response) => {
+        if (response.data) {
+          var coupon = response.data;
+          console.log(coupon);
+          if (coupon.coupon_discount_amount !== null) {
+            setAppliedDiscount(coupon.coupon_discount_amount);
+          } else if (coupon.coupon_discount_percentage !== null) {
+            setAppliedDiscount(
+              (totalItemPrice * coupon.coupon_discount_percentage) / 100
+            );
+          } else {
+            errorToast("This coupon code is invalid!");
+          }
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          errorToast(error.response.data.message);
+        } else {
+          errorToast("Error fetching user data");
+        }
+      });
+  };
 
   const handleProductSelection = (product, isSelected) => {
     setSelectedProducts((prevSelectedProducts) => {
@@ -438,17 +482,18 @@ const Cart = () => {
   ));
   const saveOrder = async () => {
     try {
-      const saveOrderResponse = await fetch(`http://localhost:3002/saveOrder`, {
-        method: "POST",
-        body: JSON.stringify({
+      const saveOrderResponse = await axios.post(
+        "http://localhost:3002/saveOrder",
+        {
           selectedProducts: selectedProducts,
           receiverName: receiverName,
           receiverPhone: receiverPhone,
           deliveryAddress: selectedAddress.full_address,
-        }),
-      });
+          applied_discount: appliedDiscount,
+        }
+      );
 
-      alert(`Order saved successfully.`);
+      alert("Order saved successfully.");
     } catch (error) {
       alert("something wrong");
       if (
@@ -514,87 +559,82 @@ const Cart = () => {
 
      */
     try {
-      const payment = await fetch(`http://localhost:3002/createPayment`, {
-        method: "POST",
-        body: JSON.stringify({
-          price: (totalItemPrice + shippingFee + payInDoorFee).toFixed(2),
-          paidPrice: (totalItemPrice + shippingFee + payInDoorFee).toFixed(2),
-          paymentCard: {
-            cardHolderName: "John Doe",
-            cardNumber: cardNumber.replace(/\s+/g, ""),
-            expireMonth: "12",
-            expireYear: "2030",
-            cvc: cardCVV,
-            registerCard: "0",
-          },
-          basketItems: [
-            ...selectedProducts.map((item) => ({
-              id: item.product_id,
-              name: item.product_name,
-              category1: "Collectibles", // Replace with your actual category1
-              category2: "Accessories", // Replace with your actual category2
-              itemType: "PHYSICAL", // Replace with your actual itemType
-              price: item.currPrice.toFixed(2) * item.desired_amount,
-            })),
-            // Add shipping fee item if it's non-zero
-            ...(shippingFee > 0
-              ? [
-                  {
-                    id: 10,
-                    name: "Shipping Fee",
-                    category1: "Collectibles", // Replace with your actual category1
-                    category2: "Accessories", // Replace with your actual category2
-                    itemType: "PHYSICAL", // Replace with your actual itemType
-                    price: shippingFee.toFixed(2),
-                  },
-                ]
-              : []),
-            // Add PayInDoor fee item if it's non-zero
-            ...(payInDoorFee > 0
-              ? [
-                  {
-                    id: 11,
-                    name: "PayInDoor Fee",
-                    category1: "Collectibles", // Replace with your actual category1
-                    category2: "Accessories", // Replace with your actual category2
-                    itemType: "PHYSICAL", // Replace with your actual itemType
-
-                    price: payInDoorFee.toFixed(2),
-                  },
-                ]
-              : []),
-          ],
-          shippingAddress: {
-            contactName: "Jane Doe",
-            city: "Istanbul",
-            country: "Turkey",
-            address: "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1",
-            zipCode: "34742",
-          },
-          buyerInfo: {
-            user_id: localStorage.getItem("user_id"),
-            user_name: localStorage.getItem("user_name"),
-            user_surname: localStorage.getItem("user_surname"),
-            user_phone: localStorage.getItem("user_phone"),
-            user_mail: localStorage.getItem("user_mail"),
-          },
-        }),
-
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          "Content-Type": "application/json",
+      const response = await axios.post("http://localhost:3002/createPayment", {
+        price: (totalItemPrice + shippingFee + payInDoorFee).toFixed(2),
+        paidPrice: (
+          totalItemPrice +
+          shippingFee +
+          payInDoorFee -
+          appliedDiscount
+        ).toFixed(2),
+        paymentCard: {
+          cardHolderName: "John Doe",
+          cardNumber: cardNumber.replace(/\s+/g, ""),
+          expireMonth: "12",
+          expireYear: "2030",
+          cvc: cardCVV,
+          registerCard: "0",
+        },
+        basketItems: [
+          ...selectedProducts.map((item) => ({
+            id: item.product_id,
+            name: item.product_name,
+            category1: "Collectibles",
+            category2: "Accessories",
+            itemType: "PHYSICAL",
+            price: (item.currPrice * item.desired_amount).toFixed(2),
+          })),
+          ...(shippingFee > 0
+            ? [
+                {
+                  id: 10,
+                  name: "Shipping Fee",
+                  category1: "Collectibles",
+                  category2: "Accessories",
+                  itemType: "PHYSICAL",
+                  price: shippingFee.toFixed(2),
+                },
+              ]
+            : []),
+          ...(payInDoorFee > 0
+            ? [
+                {
+                  id: 11,
+                  name: "PayInDoor Fee",
+                  category1: "Collectibles",
+                  category2: "Accessories",
+                  itemType: "PHYSICAL",
+                  price: payInDoorFee.toFixed(2),
+                },
+              ]
+            : []),
+        ],
+        shippingAddress: {
+          contactName: "Jane Doe",
+          city: "Istanbul",
+          country: "Turkey",
+          address: "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1",
+          zipCode: "34742",
+        },
+        buyerInfo: {
+          user_id: localStorage.getItem("user_id"),
+          user_name: localStorage.getItem("user_name"),
+          user_surname: localStorage.getItem("user_surname"),
+          user_phone: localStorage.getItem("user_phone"),
+          user_mail: localStorage.getItem("user_mail"),
         },
       });
-      if (payment.status === 200) {
-        alert(`Payment is successful.`);
+
+      if (response.status === 200) {
+        alert("Payment is successful.");
         await saveOrder();
-      } else if (payment.status === 201) {
+      } else if (response.status === 201) {
         alert("You are not authorized");
-      } else if (payment.status === 403) {
+      } else if (response.status === 403) {
         alert("Your session expired!");
         authCtx.logout();
       } else {
-        alert(`Error: Payment failed.`);
+        alert("Error: Payment failed.");
       }
     } catch (err) {
       alert(err);
@@ -1032,6 +1072,38 @@ const Cart = () => {
                   </div>
                 </div>
                 <Divider></Divider>
+                <div
+                  style={{
+                    padding: "2px 10px",
+                  }}
+                >
+                  <Typography
+                    style={{ padding: "10px 0px", fontWeight: "bold" }}
+                  >
+                    Add Coupon
+                  </Typography>
+                  <Divider></Divider>
+
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <TextField
+                      id="coupon"
+                      label="coupon"
+                      size="small"
+                      variant="outlined"
+                      fullWidth
+                      value={couponCode}
+                      onChange={handleCouponCodeChange}
+                      style={{ width: "70%" }}
+                    />
+
+                    <MyButton
+                      buttonText={"Add"}
+                      onClick={() => handleAddCoupon()}
+                      width="30%"
+                    ></MyButton>
+                  </div>
+                </div>
+                <Divider></Divider>
 
                 <div style={{ padding: "2px 10px" }}>
                   <Typography
@@ -1075,6 +1147,17 @@ const Cart = () => {
                       )}
                     </div>
 
+                    {appliedDiscount > 0 && (
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <div>Applied Discount</div>
+                        <div>-{appliedDiscount.toFixed(2)} TL</div>
+                      </div>
+                    )}
                     <div
                       style={{
                         display: "flex",
@@ -1084,9 +1167,12 @@ const Cart = () => {
                     >
                       <div>Cart total</div>
                       <div>
-                        {(totalItemPrice + shippingFee + payInDoorFee).toFixed(
-                          2
-                        )}{" "}
+                        {(
+                          totalItemPrice +
+                          shippingFee +
+                          payInDoorFee -
+                          appliedDiscount
+                        ).toFixed(2)}{" "}
                         TL
                       </div>
                     </div>
