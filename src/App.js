@@ -19,11 +19,13 @@ import AuthContext from "./auth-context";
 import { useContext } from "react";
 import SellerMainPage from "./Seller/SellerMainPage";
 import SearchResultPage from "./SearchResultsPage";
+import SellerRegister from "./SellerRegister";
 import Toast, { successToast, errorToast } from "./Toaster";
 
 function App() {
   const authCtx = useContext(AuthContext);
   const isLoggedIn = authCtx.isLoggedIn;
+  const isSeller = authCtx.isSeller;
 
   const navTo = (comp) => {
     return isLoggedIn ? comp : <Navigate to="/login" />;
@@ -36,13 +38,22 @@ function App() {
       <Routes>
         {!isLoggedIn && <Route path="/login" element={<Login />} />}
         {!isLoggedIn && <Route path="/register" element={<Register />} />}
-        <Route path="*" element={<Navigate to="/mainPage" />} />
+        {!isLoggedIn && (
+          <Route path="/sellerRegister" element={<SellerRegister />} />
+        )}
+
+        <Route
+          path="*"
+          element={
+            <Navigate to={isSeller ? "/seller/mainPage" : "/mainPage"} />
+          }
+        />
 
         <Route path="/mainPage" element={<MainPage />} />
-        <Route
-          path="/seller/:manufacturer_id/mainPage"
-          element={<SellerMainPage />}
-        />
+
+        {isSeller && (
+          <Route path="/seller/mainPage" element={<SellerMainPage />} />
+        )}
 
         <Route path="/cart" element={navTo(<Cart />)} />
         <Route path="/favorites" element={navTo(<Favorites />)} />
