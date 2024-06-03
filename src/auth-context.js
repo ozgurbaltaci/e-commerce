@@ -6,6 +6,7 @@ let logoutTimer;
 const AuthContext = React.createContext({
   token: "",
   isLoggedIn: false,
+  isSeller: false,
   login: (token) => {},
   logout: () => {},
 });
@@ -78,6 +79,7 @@ const theme = createMuiTheme({
 });
 
 export const AuthContextProvider = (props) => {
+  const isSellerInLocalStorage = localStorage.getItem("isSeller");
   const tokenData = retrieveStoredToken();
 
   let initialToken;
@@ -91,6 +93,7 @@ export const AuthContextProvider = (props) => {
 
   const [userId, setUserId] = useState(-1);
   const [userName, setUserName] = useState("");
+  const [isSeller, setIsSeller] = useState(isSellerInLocalStorage);
 
   const logoutHandler = useCallback(() => {
     setToken(null);
@@ -106,12 +109,22 @@ export const AuthContextProvider = (props) => {
     }
   }, []);
 
-  const loginHandler = (token, expirationTime, user_id, user_name) => {
+  const loginHandler = (
+    token,
+    expirationTime,
+    user_id,
+    manufacturer_id,
+    user_name
+  ) => {
     setToken(token);
     localStorage.setItem("accessToken", token);
     localStorage.setItem("expirationTime", expirationTime);
     setUserId(user_id);
     setUserName(user_name);
+
+    if (manufacturer_id !== null) {
+      setIsSeller(true);
+    }
 
     const remainingTime = calculateRemainingTime(expirationTime);
 
@@ -135,6 +148,7 @@ export const AuthContextProvider = (props) => {
     logout: logoutHandler,
     userId: userId,
     userName: userName,
+    isSeller: isSeller,
   };
 
   return (
