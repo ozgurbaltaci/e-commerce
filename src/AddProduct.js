@@ -12,7 +12,6 @@ const ProductUpload = () => {
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
 
-  const { manufacturer_id } = useParams();
   const fileInputRef = useRef(null);
 
   const [product, setProduct] = useState({
@@ -24,7 +23,6 @@ const ProductUpload = () => {
     stock_quantity: 0,
     category_id: -1,
     sub_category_id: -1,
-    manufacturer_id: manufacturer_id,
   });
 
   useEffect(() => {
