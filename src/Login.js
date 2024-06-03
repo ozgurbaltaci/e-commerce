@@ -14,6 +14,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import Toast, { successToast, errorToast } from "./Toaster";
 import AuthContext from "./auth-context";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import HandyGreenLogo from "./HandyGreenLogo";
 
 function isValidEmail(email) {
   // Basic email validation regex
@@ -49,6 +50,7 @@ export default function SignIn() {
   });
 
   const [errors, setErrors] = useState({});
+  const [isSellerLogin, setIsSellerLogin] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -72,6 +74,96 @@ export default function SignIn() {
     setFormData({ ...formData, [name]: value });
   };
 
+  const doUserLoginRequest = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3002/login",
+        formData
+      );
+
+      if (response.status === 200) {
+        const response_data = response.data;
+        if (response_data) {
+          localStorage.setItem("user_id", response_data.user_id);
+          localStorage.setItem("user_name", response_data.user_name);
+          const expirationTime = new Date(
+            response_data.accessTokenExpirationTime
+          );
+
+          authCtx.login(
+            response_data.accessToken,
+            expirationTime.toISOString(),
+            response_data.user_id,
+            null, //seller_id
+            response_data.user_name
+          );
+          localStorage.setItem("user_surname", response_data.user_surname);
+          localStorage.setItem("user_phone", response_data.user_phone);
+          localStorage.setItem("user_mail", response_data.user_mail);
+
+          successToast(`Welcome back ${response_data.user_name}`);
+          setTimeout(() => navigate("/mainPage"), 1000);
+        }
+      } else {
+        errorToast("A server error happened.");
+      }
+    } catch (error) {
+      if (error.response.status === 401) {
+        errorToast("Invalid credentials!");
+      }
+    }
+  };
+
+  const doSellerLoginRequest = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3002/sellerLogin",
+        formData
+      );
+
+      if (response.status === 200) {
+        const response_data = response.data;
+        if (response_data) {
+          const expirationTime = new Date(
+            response_data.accessTokenExpirationTime
+          );
+
+          authCtx.login(
+            response_data.accessToken,
+            expirationTime.toISOString(),
+            null, //user_id
+            response_data.manufacturer_id,
+            response_data.user_name
+          );
+          console.log("bakalim neymiş", response.data.manufacturer_id);
+          localStorage.setItem("isSeller", true);
+          localStorage.setItem(
+            "seller_id",
+            parseInt(response.data.manufacturer_id)
+          );
+
+          navigate(
+            `/seller/${parseInt(response.data.manufacturer_id)}/mainPage`
+          );
+        }
+      } else {
+        errorToast("A server error happened.");
+      }
+    } catch (error) {
+      if (error.response.status === 401) {
+        errorToast("Invalid credentials!");
+      }
+    }
+  };
+
+  const doLoginRequest = () => {
+    if (!isSellerLogin) {
+      doUserLoginRequest();
+    } else {
+      doSellerLoginRequest();
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
@@ -83,42 +175,7 @@ export default function SignIn() {
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
     } else {
-      try {
-        const response = await axios.post(
-          "http://localhost:3002/login",
-          formData
-        );
-
-        if (response.status === 200) {
-          const response_data = response.data;
-          if (response_data) {
-            localStorage.setItem("user_id", response_data.user_id);
-            localStorage.setItem("user_name", response_data.user_name);
-            const expirationTime = new Date(
-              response_data.accessTokenExpirationTime
-            );
-
-            authCtx.login(
-              response_data.accessToken,
-              expirationTime.toISOString(),
-              response_data.user_id,
-              response_data.user_name
-            );
-            localStorage.setItem("user_surname", response_data.user_surname);
-            localStorage.setItem("user_phone", response_data.user_phone);
-            localStorage.setItem("user_mail", response_data.user_mail);
-
-            successToast(`Welcome back ${response_data.user_name}`);
-            setTimeout(() => navigate("/mainPage"), 1000);
-          }
-        } else {
-          errorToast("A server error happened.");
-        }
-      } catch (error) {
-        if (error.response.status === 401) {
-          errorToast("Invalid credentials!");
-        }
-      }
+      doLoginRequest();
     }
   };
 
@@ -134,10 +191,41 @@ export default function SignIn() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>organics</Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
+          <div style={{ fontWeight: "bold", fontSize: "32px" }}>Login</div>
+          <div
+            style={{
+              fontSize: "10px",
+              display: "flex",
+              gap: "6px",
+              marginTop: "10px",
+            }}
+          >
+            <div
+              style={{
+                fontWeight: !isSellerLogin && "bold",
+                color: !isSellerLogin && "#2FB009",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                setIsSellerLogin(false);
+              }}
+            >
+              User
+            </div>
+            <div
+              style={{
+                fontWeight: isSellerLogin && "bold",
+                color: isSellerLogin && "#2FB009",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                setIsSellerLogin(true);
+              }}
+            >
+              Seller
+            </div>
+          </div>
+
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -148,6 +236,7 @@ export default function SignIn() {
               margin="normal"
               required
               fullWidth
+              size="small"
               id="email"
               label="Email Address"
               name="user_mail"
@@ -161,6 +250,7 @@ export default function SignIn() {
               margin="normal"
               required
               fullWidth
+              size="small"
               name="user_password"
               label="Password"
               type="password"
@@ -169,26 +259,37 @@ export default function SignIn() {
               onChange={handleChange}
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+
             <Button
+              style={{ backgroundColor: "#2FB009", fontFamily: "Cabin" }}
+              sx={{
+                mt: 2,
+                mb: 2,
+              }}
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
             >
               Sign In
             </Button>
-            <Grid container>
+            <Grid
+              container
+              sx={{
+                ".MuiTypography-root": {
+                  fontFamily: "Cabin",
+                },
+              }}
+            >
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href="#" variant="body2" style={{ fontStyle: "Cabin" }}>
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/register" variant="body2">
+                <Link
+                  href={!isSellerLogin ? "/register" : "/sellerRegister"}
+                  variant="body2"
+                >
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
