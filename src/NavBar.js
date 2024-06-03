@@ -13,6 +13,7 @@ import { Divider } from "@material-ui/core";
 import AuthContext from "./auth-context";
 import { useContext } from "react";
 import LoginIcon from "@mui/icons-material/Login";
+import HandyGreenLogo from "./HandyGreenLogo";
 
 import "./NavBar.css";
 
@@ -43,116 +44,110 @@ const NavBar = () => {
         alignItems="center" // Set alignItems to "center" for vertical alignment
       >
         <Grid item xs={12} sm={4} md={3} lg={3}>
-          <div
-            style={{
-              fontWeight: "bold",
-              fontSize: "24px",
-              color: "#2FB009",
-              cursor: "pointer",
-            }}
-            onClick={() => navigate("/mainPage")}
-          >
-            HandyGreen
-          </div>
+          <HandyGreenLogo></HandyGreenLogo>
         </Grid>
-        <Grid item xs={12} sm={4} md={6} lg={6}>
-          <TextField
-            variant="outlined"
-            fullWidth
-            placeholder="Search for products or manufacturers"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            InputProps={{
-              style: {
-                height: 35,
-                fontSize: "10px",
-                color: "#555555",
-                width: "90%",
-              },
-              endAdornment: (
-                <SearchIcon
-                  style={{ cursor: "pointer", fontSize: "16px" }}
-                  onClick={handleSearch}
-                />
-              ),
-            }}
-          />
-        </Grid>
-        {authCtx.isLoggedIn ? (
+        {localStorage.getItem("isSeller") !== "true" && (
           <>
-            <Grid item xs={12} sm={1} md={1} lg={1}>
-              <div
-                style={{
-                  textAlign: "right",
-                  fontSize: "12px",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  cursor: "pointer",
+            <Grid item xs={12} sm={4} md={6} lg={6}>
+              <TextField
+                variant="outlined"
+                fullWidth
+                placeholder="Search for products or manufacturers"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                InputProps={{
+                  style: {
+                    height: 35,
+                    fontSize: "10px",
+                    color: "#555555",
+                    width: "90%",
+                  },
+                  endAdornment: (
+                    <SearchIcon
+                      style={{ cursor: "pointer", fontSize: "16px" }}
+                      onClick={handleSearch}
+                    />
+                  ),
                 }}
-                onClick={() => navigate("/profile")}
-              >
-                <PersonOutlineOutlinedIcon
-                  style={{ fontSize: "18px" }}
-                ></PersonOutlineOutlinedIcon>
-                Profile
-              </div>
-            </Grid>{" "}
-            <Grid item xs={12} sm={1} md={1} lg={1}>
-              <div
-                style={{
-                  textAlign: "right",
-                  fontSize: "12px",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  cursor: "pointer",
-                }}
-                onClick={() => navigate("/favorites")}
-              >
-                <FavoriteBorderOutlinedIcon
-                  style={{ fontSize: "18px" }}
-                ></FavoriteBorderOutlinedIcon>
-                Favorites
-              </div>
+              />
             </Grid>
-            <Grid item xs={12} sm={1} md={1} lg={1}>
-              <div
-                style={{
-                  textAlign: "right",
-                  fontSize: "12px",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  cursor: "pointer",
-                }}
-                onClick={() => navigate("/cart")}
-              >
-                <ShoppingCartOutlinedIcon
-                  style={{ fontSize: "18px" }}
-                ></ShoppingCartOutlinedIcon>
-                Cart
-              </div>
-            </Grid>
+            {authCtx.isLoggedIn ? (
+              <>
+                <Grid item xs={12} sm={1} md={1} lg={1}>
+                  <div
+                    style={{
+                      textAlign: "right",
+                      fontSize: "12px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => navigate("/profile")}
+                  >
+                    <PersonOutlineOutlinedIcon
+                      style={{ fontSize: "18px" }}
+                    ></PersonOutlineOutlinedIcon>
+                    Profile
+                  </div>
+                </Grid>{" "}
+                <Grid item xs={12} sm={1} md={1} lg={1}>
+                  <div
+                    style={{
+                      textAlign: "right",
+                      fontSize: "12px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => navigate("/favorites")}
+                  >
+                    <FavoriteBorderOutlinedIcon
+                      style={{ fontSize: "18px" }}
+                    ></FavoriteBorderOutlinedIcon>
+                    Favorites
+                  </div>
+                </Grid>
+                <Grid item xs={12} sm={1} md={1} lg={1}>
+                  <div
+                    style={{
+                      textAlign: "right",
+                      fontSize: "12px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => navigate("/cart")}
+                  >
+                    <ShoppingCartOutlinedIcon
+                      style={{ fontSize: "18px" }}
+                    ></ShoppingCartOutlinedIcon>
+                    Cart
+                  </div>
+                </Grid>
+              </>
+            ) : (
+              <Grid item xs={12} sm={3} md={3} lg={3}>
+                <div
+                  style={{
+                    textAlign: "right",
+                    fontSize: "12px",
+                    display: "flex",
+                    width: "100%",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => navigate("/login")}
+                >
+                  <LoginIcon style={{ fontSize: "18px" }}></LoginIcon>
+                  Login
+                </div>
+              </Grid>
+            )}
           </>
-        ) : (
-          <Grid item xs={12} sm={3} md={3} lg={3}>
-            <div
-              style={{
-                textAlign: "right",
-                fontSize: "12px",
-                display: "flex",
-                width: "100%",
-                justifyContent: "flex-end",
-                alignItems: "center",
-                cursor: "pointer",
-              }}
-              onClick={() => navigate("/login")}
-            >
-              <LoginIcon style={{ fontSize: "18px" }}></LoginIcon>
-              Login
-            </div>
-          </Grid>
         )}
       </Grid>
       <Divider style={{ position: "absolute", right: 0, left: 0 }}></Divider>
