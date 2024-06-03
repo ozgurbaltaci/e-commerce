@@ -41,13 +41,13 @@ import EditIcon from "@mui/icons-material/Edit";
 
 const SellerMainPage = () => {
   const [manufacturerData, setManufacturerData] = useState({
-    manufacturer_id: 0,
     manufacturer_name: "",
     manufacturer_image: null,
     manufacturer_rating: 0.0,
     totalSales: 0,
     totalIncome: 0.0,
     pendingOrders: 0,
+    manufacturer_description: "",
   });
   const [orders, setOrders] = useState([]);
   const [orderStatuses, setOrderStatuses] = useState({}); // State to store order statuses individually
@@ -84,12 +84,9 @@ const SellerMainPage = () => {
   const handleUpdateManufacturerImage = async () => {
     setOpenDialog(false);
     try {
-      await axios.put(
-        `http://localhost:3002/updateManufacturer/${manufacturer_id}`,
-        {
-          manufacturer_image: imagePreview,
-        }
-      );
+      await axios.put(`http://localhost:3002/updateManufacturer`, {
+        manufacturer_image: imagePreview,
+      });
 
       alert("Changes saved successfully");
     } catch (error) {
@@ -97,7 +94,7 @@ const SellerMainPage = () => {
     }
   };
 
-  const handleOrderStatusChange = async (event, orderId, manufacturer_id) => {
+  const handleOrderStatusChange = async (event, orderId) => {
     const newOrderStatus = event.target.value;
     // Update the order status for the specific order ID
     setOrderStatuses((prevStatuses) => ({
@@ -107,7 +104,7 @@ const SellerMainPage = () => {
     try {
       await axios
         .put(
-          `http://localhost:3002/updateOrderStatus/${orderId}/${manufacturer_id}/${newOrderStatus}
+          `http://localhost:3002/updateOrderStatus/${orderId}/${newOrderStatus}
           )}`
         )
         .then((response) => {
@@ -119,17 +116,16 @@ const SellerMainPage = () => {
       alert(error);
     }
   };
-  const { manufacturer_id } = useParams();
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3002/getManufacturersOrders/${manufacturer_id}`)
+      .get(`http://localhost:3002/getManufacturersOrders`)
       .then((response) => {
         setManufacturerData(response.data.manufacturerInfo);
         setImagePreview(response.data.manufacturerInfo.manufacturer_image);
         setOrders(response.data.orders);
       });
-  }, [manufacturer_id]);
+  }, []);
   const arr = {
     averageRating: 4.3,
     pendingOrders: 3,
@@ -260,208 +256,211 @@ const SellerMainPage = () => {
   };
   const renderOrders = () => {
     return (
-      <div style={{ fontSize: "9px", width: "100%" }}>
-        {orders.length > 0 ? (
-          orders.map((order) => (
-            <Accordion key={order.order_id}>
-              <AccordionSummary
-                expandIcon={<ArrowDownwardIcon />}
-                aria-controls={`panel-${order.order_id}-content`}
-                id={`panel-${order.order_id}-header`}
-                style={{ display: "flex", alignItems: "center" }}
-              >
-                <div style={{ display: "flex", width: "100%" }}>
-                  <div
-                    className="avatars"
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      width: "12%",
-                    }}
-                  >
-                    {order.products.slice(0, 2).map((product, index) => (
-                      <Avatar
-                        className={classes.imgAvatar}
-                        key={index}
-                        alt={product.product_name}
-                        src={product.image}
-                        sx={{
-                          width: "38px",
-                          height: "38px",
-                          boxShadow: "0 0 5px 2px rgba(0,0,0,0.08)",
-                        }}
-                      />
-                    ))}
-                    {order.products.length > 2 && (
-                      <Avatar
-                        sx={{
-                          width: "38px",
-                          height: "38px",
-                          backgroundColor: "#EDEDED",
-                          fontSize: "12px",
-                          color: "black",
-                          marginLeft: "-15px",
-                        }}
-                      >
-                        +{order.products.length - 2}
-                      </Avatar>
-                    )}
-                  </div>
-                  <div
-                    className="order_id_and_date"
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "11%",
-                    }}
-                  >
-                    <div>
-                      <strong>Order ID: {order.order_id}</strong>
-
-                      <div>{order.order_date}</div>
+      <>
+        <div
+          style={{ fontWeight: "bold", fontSize: "24px", marginBottom: "8px" }}
+        >
+          Your Orders
+        </div>
+        <div style={{ fontSize: "9px", width: "100%" }}>
+          {orders.length > 0 ? (
+            orders.map((order) => (
+              <Accordion key={order.order_id}>
+                <AccordionSummary
+                  expandIcon={<ArrowDownwardIcon />}
+                  aria-controls={`panel-${order.order_id}-content`}
+                  id={`panel-${order.order_id}-header`}
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <div style={{ display: "flex", width: "100%" }}>
+                    <div
+                      className="avatars"
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "12%",
+                      }}
+                    >
+                      {order.products.slice(0, 2).map((product, index) => (
+                        <Avatar
+                          className={classes.imgAvatar}
+                          key={index}
+                          alt={product.product_name}
+                          src={product.image}
+                          sx={{
+                            width: "38px",
+                            height: "38px",
+                            boxShadow: "0 0 5px 2px rgba(0,0,0,0.08)",
+                          }}
+                        />
+                      ))}
+                      {order.products.length > 2 && (
+                        <Avatar
+                          sx={{
+                            width: "38px",
+                            height: "38px",
+                            backgroundColor: "#EDEDED",
+                            fontSize: "12px",
+                            color: "black",
+                            marginLeft: "-15px",
+                          }}
+                        >
+                          +{order.products.length - 2}
+                        </Avatar>
+                      )}
                     </div>
-                  </div>
-                  <div
-                    className="receiver_info"
-                    style={{
-                      width: "71%",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Grid
-                      container
-                      spacing={1}
-                      style={{ display: "flex", alignItems: "center" }}
+                    <div
+                      className="order_id_and_date"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "11%",
+                      }}
+                    >
+                      <div>
+                        <strong>Order ID: {order.order_id}</strong>
+
+                        <div>{order.order_date}</div>
+                      </div>
+                    </div>
+                    <div
+                      className="receiver_info"
+                      style={{
+                        width: "71%",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
                     >
                       <Grid
-                        item
-                        xs={2}
-                        sm={2}
-                        md={2}
-                        lg={2}
-                        style={{ paddingLeft: "15px" }}
+                        container
+                        spacing={1}
+                        style={{ display: "flex", alignItems: "center" }}
                       >
-                        {order.receiver_name}
-                      </Grid>
-                      <Grid item xs={2} sm={2} md={2} lg={2}>
-                        {order.receiver_phone}
-                      </Grid>
-                      <Grid item xs={5} sm={5} md={5} lg={5}>
-                        {order.delivery_address}
-                      </Grid>
+                        <Grid
+                          item
+                          xs={2}
+                          sm={2}
+                          md={2}
+                          lg={2}
+                          style={{ paddingLeft: "15px" }}
+                        >
+                          {order.receiver_name}
+                        </Grid>
+                        <Grid item xs={2} sm={2} md={2} lg={2}>
+                          {order.receiver_phone}
+                        </Grid>
+                        <Grid item xs={5} sm={5} md={5} lg={5}>
+                          {order.delivery_address}
+                        </Grid>
 
-                      <Grid
-                        item
-                        xs={3}
-                        sm={3}
-                        md={3}
-                        lg={3}
-                        style={{
-                          display: "flex",
-                          width: "100%",
-                          justifyContent: "flex-end",
-                        }}
-                      >
-                        <div>
-                          <FormControl
-                            onClick={(e) => e.stopPropagation()}
-                            sx={{
-                              ".MuiOutlinedInput-root": {
-                                display: "flex",
-                                width: "100px",
+                        <Grid
+                          item
+                          xs={3}
+                          sm={3}
+                          md={3}
+                          lg={3}
+                          style={{
+                            display: "flex",
+                            width: "100%",
+                            justifyContent: "flex-end",
+                          }}
+                        >
+                          <div>
+                            <FormControl
+                              onClick={(e) => e.stopPropagation()}
+                              sx={{
+                                ".MuiOutlinedInput-root": {
+                                  display: "flex",
+                                  width: "100px",
 
-                                height: "24px !important",
-                                padding: "0px",
-                                margin: "0px",
-                                fontSize: "9px",
-                                fontWeight: "bold",
-                                fontStyle: "normal",
-                                color: "rgba(47,176,9)",
-                                backgroundColor: "rgba(47,176,9, 0.16)",
+                                  height: "24px !important",
+                                  padding: "0px",
+                                  margin: "0px",
+                                  fontSize: "9px",
+                                  fontWeight: "bold",
+                                  fontStyle: "normal",
+                                  color: "rgba(47,176,9)",
+                                  backgroundColor: "rgba(47,176,9, 0.16)",
 
-                                border: "none",
-                                borderRadius: "2px",
-                                fontFamily: "Cabin",
-                                fontStyle: "normal",
-                              },
-                              ".MuiOutlinedInput-root em": {
-                                fontStyle: "normal",
-                              },
-                              "& fieldset": {
-                                border: "none",
-                              },
-                              ".MuiSvgIcon-root": {
-                                fontSize: "16px",
-                                color: "rgba(47,176,9)",
-                              },
-                              ".MuiMenuItem-root ": {
-                                fontStyle: "normal",
-                                fontSize: "8px",
-                              },
+                                  border: "none",
+                                  borderRadius: "2px",
+                                  fontFamily: "Cabin",
+                                  fontStyle: "normal",
+                                },
+                                ".MuiOutlinedInput-root em": {
+                                  fontStyle: "normal",
+                                },
+                                "& fieldset": {
+                                  border: "none",
+                                },
+                                ".MuiSvgIcon-root": {
+                                  fontSize: "16px",
+                                  color: "rgba(47,176,9)",
+                                },
+                                ".MuiMenuItem-root ": {
+                                  fontStyle: "normal",
+                                  fontSize: "8px",
+                                },
 
-                              ".MuiMenuItem-root": {
-                                color: "rgba(47,176,9,0.16)",
-                              },
-                            }}
-                          >
-                            <Select
-                              value={
-                                orderStatuses[order.order_id] ||
-                                order.order_status_id
-                              }
-                              onChange={(event) =>
-                                handleOrderStatusChange(
-                                  event,
-                                  order.order_id,
-                                  manufacturerData.manufacturer_id
-                                )
-                              }
-                              displayEmpty
-                              inputProps={{
-                                "aria-label": "Without label",
+                                ".MuiMenuItem-root": {
+                                  color: "rgba(47,176,9,0.16)",
+                                },
                               }}
                             >
-                              <MenuItem value={1}>Recived</MenuItem>
-                              <MenuItem value={2}>Preparing</MenuItem>
-                              <MenuItem value={3}>On the way</MenuItem>
-                              <MenuItem value={4}>Arrived</MenuItem>
-                              <MenuItem value={5}>Completed</MenuItem>
-                            </Select>
-                          </FormControl>
-                        </div>
+                              <Select
+                                value={
+                                  orderStatuses[order.order_id] ||
+                                  order.order_status_id
+                                }
+                                onChange={(event) =>
+                                  handleOrderStatusChange(event, order.order_id)
+                                }
+                                displayEmpty
+                                inputProps={{
+                                  "aria-label": "Without label",
+                                }}
+                              >
+                                <MenuItem value={1}>Recived</MenuItem>
+                                <MenuItem value={2}>Preparing</MenuItem>
+                                <MenuItem value={3}>On the way</MenuItem>
+                                <MenuItem value={4}>Arrived</MenuItem>
+                                <MenuItem value={5}>Completed</MenuItem>
+                              </Select>
+                            </FormControl>
+                          </div>
+                        </Grid>
                       </Grid>
-                    </Grid>
+                    </div>
+                    <div
+                      className="order_total_price"
+                      style={{
+                        width: "6%",
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                        color: "#00990F",
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                        marginLeft: "2px",
+                      }}
+                    >
+                      {order.total_price} TL
+                    </div>
                   </div>
-                  <div
-                    className="order_total_price"
-                    style={{
-                      width: "6%",
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      alignItems: "center",
-                      color: "#00990F",
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                      marginLeft: "2px",
-                    }}
-                  >
-                    {order.total_price} TL
-                  </div>
-                </div>
-              </AccordionSummary>
-              <AccordionDetails>{getOrderedProducts(order)}</AccordionDetails>
-            </Accordion>
-          ))
-        ) : (
-          <div style={{ fontSize: "14px" }}>
-            Looks like you haven't placed any orders yet. Start exploring our
-            amazing products now!
-          </div>
-        )}
-      </div>
+                </AccordionSummary>
+                <AccordionDetails>{getOrderedProducts(order)}</AccordionDetails>
+              </Accordion>
+            ))
+          ) : (
+            <div style={{ fontSize: "14px" }}>
+              Looks like you haven't received any orders yet.
+            </div>
+          )}
+        </div>
+        <Divider style={{ margin: "8px 0px" }}></Divider>
+      </>
     );
   };
 
@@ -523,117 +522,131 @@ const SellerMainPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <div style={{ fontWeight: "bold" }}>
-        {manufacturerData.manufacturer_name}
-      </div>
-      <div
-        style={{
-          height: "200px",
-          width: "100%",
-          display: "flex",
-          position: "relative", // To position the edit icon
-        }}
-      >
-        <div style={{ width: "200px", height: "192px", position: "relative" }}>
-          {/** Edit Manufacturer Image Functionality Added */}
-          <IconButton
+      <div>
+        <div style={{ fontWeight: "bold", fontSize: "24px" }}>
+          {manufacturerData.manufacturer_name}
+        </div>
+        <div style={{ fontSize: "16px", marginBottom: "14px" }}>
+          {manufacturerData.manufacturer_description}
+        </div>
+        <div
+          style={{
+            height: "200px",
+            width: "100%",
+            display: "flex",
+            position: "relative", // To position the edit icon
+          }}
+        >
+          <div
             style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              zIndex: 1,
-            }}
-            onClick={handleOpenDialog}
-          >
-            <EditIcon />
-          </IconButton>
-          <img
-            src={newImage || manufacturerData.manufacturer_image}
-            width={"200px"}
-            height={"192px"}
-            style={{
-              objectFit: "cover",
+              width: "200px",
+              height: "192px",
+              position: "relative",
               marginRight: "16px",
             }}
-            alt="seller image"
-          />
-        </div>
-
-        <Grid container spacing={1}>
-          <Grid item xs={6} sm={6} md={6} lg={6}>
-            <Grid
-              container
-              spacing={1}
-              style={{ height: "200px", overflow: "hidden" }}
+          >
+            {/** Edit Manufacturer Image Functionality Added */}
+            <IconButton
+              style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                zIndex: 1,
+              }}
+              onClick={handleOpenDialog}
             >
-              <Grid item xs={4} sm={4} md={4} lg={4}>
-                {renderDataCard(
-                  "Rating",
+              <EditIcon />
+            </IconButton>
+            <img
+              src={newImage || manufacturerData.manufacturer_image}
+              width={"200px"}
+              height={"192px"}
+              style={{
+                objectFit: "cover",
+                marginRight: "16px",
+                borderRadius: "5px",
+              }}
+              alt="seller image"
+            />
+          </div>
 
-                  parseFloat(manufacturerData.manufacturer_rating).toFixed(1)
-                )}
-              </Grid>
-              <Grid item xs={4} sm={4} md={4} lg={4}>
-                {renderDataCard("Total Sales", manufacturerData.totalSales)}
-              </Grid>
-              <Grid item xs={4} sm={4} md={4} lg={4}>
-                {renderDataCard("Total Income", manufacturerData.totalIncome)}
-              </Grid>
-              <Grid item xs={4} sm={4} md={4} lg={4}>
-                {renderDataCard(
-                  "Pending Orders",
-                  manufacturerData.pendingOrders
-                )}
+          <Grid container spacing={1}>
+            <Grid item xs={6} sm={6} md={6} lg={6}>
+              <Grid
+                container
+                spacing={1}
+                style={{ height: "200px", overflow: "hidden" }}
+              >
+                <Grid item xs={4} sm={4} md={4} lg={4}>
+                  {renderDataCard(
+                    "Rating",
+
+                    parseFloat(manufacturerData.manufacturer_rating).toFixed(1)
+                  )}
+                </Grid>
+                <Grid item xs={4} sm={4} md={4} lg={4}>
+                  {renderDataCard("Total Sales", manufacturerData.totalSales)}
+                </Grid>
+                <Grid item xs={4} sm={4} md={4} lg={4}>
+                  {renderDataCard("Total Income", manufacturerData.totalIncome)}
+                </Grid>
+                <Grid item xs={4} sm={4} md={4} lg={4}>
+                  {renderDataCard(
+                    "Pending Orders",
+                    manufacturerData.pendingOrders
+                  )}
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-          <Grid item xs={6} sm={6} md={6} lg={6}>
-            <Grid
-              container
-              spacing={1}
-              style={{
-                height: "200px",
-                overflow: "hidden",
-              }}
-            >
-              {functions.map((item) => {
-                return (
-                  <Grid item xs={4} sm={4} md={4} lg={4}>
-                    <Card
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        backgroundColor: "rgba(0,139,255, 0.16)",
-                      }}
-                    >
-                      <div
+            <Grid item xs={6} sm={6} md={6} lg={6}>
+              <Grid
+                container
+                spacing={1}
+                style={{
+                  height: "200px",
+                  overflow: "hidden",
+                }}
+              >
+                {functions.map((item) => {
+                  return (
+                    <Grid item xs={4} sm={4} md={4} lg={4}>
+                      <Card
                         style={{
+                          width: "100%",
+                          height: "100%",
                           display: "flex",
                           alignItems: "center",
-                          flexDirection: "column",
+                          justifyContent: "center",
+                          backgroundColor: "rgba(0,139,255, 0.16)",
                         }}
                       >
                         <div
                           style={{
-                            fontWeight: "bold",
-                            fontSize: "12px",
-                            color: "#008BFF",
+                            display: "flex",
+                            alignItems: "center",
+                            flexDirection: "column",
                           }}
                         >
-                          {item.function_name}
+                          <div
+                            style={{
+                              fontWeight: "bold",
+                              fontSize: "12px",
+                              color: "#008BFF",
+                            }}
+                          >
+                            {item.function_name}
+                          </div>
                         </div>
-                      </div>
-                    </Card>
-                  </Grid>
-                );
-              })}
+                      </Card>
+                    </Grid>
+                  );
+                })}
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
+        </div>
       </div>
+      <Divider style={{ margin: "8px 0px" }}></Divider>
 
       {renderOrders()}
       <div className="addProductForm">{renderAddProduct()}</div>
