@@ -4,12 +4,22 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Breadcrumb from "./components/BreadCrumb";
 import SideBarOfAllCategories from "./SideBarOfAllCategories";
+import {
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Checkbox,
+} from "@mui/material";
+import FilterBar from "./components/FilterBar";
 
 const SubCategoriesPage = () => {
   const { categoryId, categoryName, subCategoryId, subCategoryName } =
     useParams();
   const [productsOfCurrentSubCategory, setProductsOfCurrentSubCategory] =
     useState([]);
+  const [sortOrder, setSortOrder] = useState("");
+  const [inStockOnly, setInStockOnly] = useState(false);
 
   const breadCrumbData = [
     { name: "Home Page", navigation: "/mainPage" },
@@ -22,12 +32,12 @@ const SubCategoriesPage = () => {
       navigation: `/category/${categoryId}/${categoryName}/${subCategoryId}/${subCategoryName}`,
     },
   ];
+
   useEffect(() => {
     try {
       axios
         .get(
-          `http://localhost:3002/getProductsOfCurrentSubCategory/${subCategoryId}
-          )}`
+          `http://localhost:3002/getProductsOfCurrentSubCategory/${subCategoryId}`
         )
         .then((response) => {
           setProductsOfCurrentSubCategory(response.data);
@@ -42,14 +52,24 @@ const SubCategoriesPage = () => {
           currentSelectedSubCategoryId={subCategoryId}
         ></SideBarOfAllCategories>
 
-        <ProductCardHolder
-          products={productsOfCurrentSubCategory}
-          setProducts={setProductsOfCurrentSubCategory}
-          custom_xs={12}
-          custom_sm={6}
-          custom_md={3}
-          custom_lg={3}
-        />
+        <div style={{ width: "100%" }}>
+          <FilterBar
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+            inStockOnly={inStockOnly}
+            setInStockOnly={setInStockOnly}
+            productsToBeSorted={productsOfCurrentSubCategory}
+            setProductsToBeSorted={setProductsOfCurrentSubCategory}
+          ></FilterBar>
+          <ProductCardHolder
+            products={productsOfCurrentSubCategory}
+            setProducts={setProductsOfCurrentSubCategory}
+            custom_xs={12}
+            custom_sm={6}
+            custom_md={3}
+            custom_lg={3}
+          />
+        </div>
       </div>
     </>
   );
