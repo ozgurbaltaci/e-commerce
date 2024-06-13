@@ -27,6 +27,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import Toast, { successToast, errorToast } from "../Toaster";
 
 import "./SellerMainPage.css";
 import {
@@ -88,7 +89,7 @@ const SellerMainPage = () => {
         manufacturer_image: imagePreview,
       });
 
-      alert("Changes saved successfully");
+      successToast("Changes saved successfully");
     } catch (error) {
       console.error("Error saving changes:", error);
     }
@@ -109,11 +110,11 @@ const SellerMainPage = () => {
         )
         .then((response) => {
           if (response.status === 200) {
-            alert("successfull");
+            successToast("successfull");
           }
         });
     } catch (error) {
-      alert(error);
+      errorToast(error);
     }
   };
 
@@ -328,7 +329,7 @@ const SellerMainPage = () => {
                     <div
                       className="receiver_info"
                       style={{
-                        width: "71%",
+                        width: "70%",
                         display: "flex",
                         alignItems: "center",
                       }}
@@ -436,17 +437,17 @@ const SellerMainPage = () => {
                     <div
                       className="order_total_price"
                       style={{
-                        width: "6%",
+                        width: "9%",
                         display: "flex",
                         justifyContent: "flex-end",
                         alignItems: "center",
                         color: "#00990F",
                         fontSize: "14px",
                         fontWeight: "bold",
-                        marginLeft: "2px",
+                        marginLeft: "10px",
                       }}
                     >
-                      {order.total_price} TL
+                      {parseFloat(order.total_price).toFixed(2)} TL
                     </div>
                   </div>
                 </AccordionSummary>
@@ -581,7 +582,11 @@ const SellerMainPage = () => {
                   {renderDataCard(
                     "Rating",
 
-                    parseFloat(manufacturerData.manufacturer_rating).toFixed(1)
+                    manufacturerData.manufacturer_rating !== null
+                      ? parseFloat(
+                          manufacturerData.manufacturer_rating
+                        ).toFixed(1)
+                      : parseFloat(0.0).toFixed(1)
                   )}
                 </Grid>
                 <Grid item xs={4} sm={4} md={4} lg={4}>

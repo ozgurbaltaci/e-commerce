@@ -25,7 +25,7 @@ import Toast, { successToast, errorToast } from "./Toaster";
 function App() {
   const authCtx = useContext(AuthContext);
   const isLoggedIn = authCtx.isLoggedIn;
-  const isSeller = authCtx.isSeller;
+  const isSeller = localStorage.getItem("isSeller");
 
   const navTo = (comp) => {
     return isLoggedIn ? comp : <Navigate to="/login" />;

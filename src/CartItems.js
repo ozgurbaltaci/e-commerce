@@ -113,7 +113,7 @@ const CartItems = ({
                               wordWrap: "break-word", // Break words that exceed the width
                             }}
                           >
-                            {item.product_name.length > 35
+                            {item.product_name && item.product_name.length > 35
                               ? item.product_name.substring(0, 35) + "..."
                               : item.product_name}
                             <Labels
@@ -122,7 +122,7 @@ const CartItems = ({
                                   style={{ fontSize: "6px" }}
                                 ></FiPackage>
                               }
-                              labelName="Free Shipping"
+                              labelName="Woman-made"
                             ></Labels>
                             <Typography style={{ fontSize: "8px" }}>
                               Will be delivered until 27th of July
@@ -166,9 +166,10 @@ const CartItems = ({
                     </div>
                   }
                 />
-                {childIndex !== itemsInManufacturer.length - 1 && (
-                  <Divider></Divider>
-                )}
+                {itemsInManufacturer.length &&
+                  childIndex !== itemsInManufacturer.length - 1 && (
+                    <Divider></Divider>
+                  )}
               </>
             );
           })}

@@ -16,12 +16,17 @@ const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 };
 
-const SideBarOfAllCategories = ({ currentSelectedSubCategoryId }) => {
+const SideBarOfAllCategories = ({
+  currentSelectedSubCategoryId,
+  setIsProductsLoading,
+}) => {
   const [selectedOption, setSelectedOption] = useState(
     currentSelectedSubCategoryId
   );
   const userName = localStorage.getItem("user_name");
   const userSurname = localStorage.getItem("user_surname");
+
+  const navigate = useNavigate();
 
   const handleOptionClick = (
     category_id,
@@ -30,14 +35,13 @@ const SideBarOfAllCategories = ({ currentSelectedSubCategoryId }) => {
     sub_category_name
   ) => {
     setSelectedOption(sub_category_id);
+    setIsProductsLoading(true);
     navigate(
       `/category/${category_id}/${category_name}/${sub_category_id}/${sub_category_name}`
     );
   };
 
   const [categories, setCategories] = useState([]);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch categories with subcategories from backend API using Axios

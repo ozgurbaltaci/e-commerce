@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AppBar, Toolbar, IconButton, Typography, Button } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Grid } from "@material-ui/core";
+import { div } from "@material-ui/core";
 import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
@@ -33,22 +33,21 @@ const NavBar = () => {
       className="navBar"
       style={{ marginBottom: "20px", overflow: "hidden" }}
     >
-      <Grid
-        container
-        spacing={3}
+      <div
         style={{
-          height: "80px",
+          display: "flex",
           overflow: "hidden",
           padding: "10px 0px",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
-        alignItems="center" // Set alignItems to "center" for vertical alignment
       >
-        <Grid item xs={12} sm={4} md={3} lg={3}>
+        <div>
           <HandyGreenLogo></HandyGreenLogo>
-        </Grid>
-        {localStorage.getItem("isSeller") !== "true" && (
+        </div>
+        {localStorage.getItem("isSeller") !== "true" ? (
           <>
-            <Grid item xs={12} sm={4} md={6} lg={6}>
+            <div>
               <TextField
                 variant="outlined"
                 fullWidth
@@ -58,6 +57,7 @@ const NavBar = () => {
                 InputProps={{
                   style: {
                     height: 35,
+                    minWidth: 370,
                     fontSize: "10px",
                     color: "#555555",
                     width: "90%",
@@ -70,10 +70,10 @@ const NavBar = () => {
                   ),
                 }}
               />
-            </Grid>
+            </div>
             {authCtx.isLoggedIn ? (
-              <>
-                <Grid item xs={12} sm={1} md={1} lg={1}>
+              <div style={{ display: "flex", gap: "32px" }}>
+                <div>
                   <div
                     style={{
                       textAlign: "right",
@@ -90,8 +90,8 @@ const NavBar = () => {
                     ></PersonOutlineOutlinedIcon>
                     Profile
                   </div>
-                </Grid>{" "}
-                <Grid item xs={12} sm={1} md={1} lg={1}>
+                </div>{" "}
+                <div>
                   <div
                     style={{
                       textAlign: "right",
@@ -108,8 +108,8 @@ const NavBar = () => {
                     ></FavoriteBorderOutlinedIcon>
                     Favorites
                   </div>
-                </Grid>
-                <Grid item xs={12} sm={1} md={1} lg={1}>
+                </div>
+                <div>
                   <div
                     style={{
                       textAlign: "right",
@@ -126,10 +126,10 @@ const NavBar = () => {
                     ></ShoppingCartOutlinedIcon>
                     Cart
                   </div>
-                </Grid>
-              </>
+                </div>
+              </div>
             ) : (
-              <Grid item xs={12} sm={3} md={3} lg={3}>
+              <div>
                 <div
                   style={{
                     textAlign: "right",
@@ -145,11 +145,21 @@ const NavBar = () => {
                   <LoginIcon style={{ fontSize: "18px" }}></LoginIcon>
                   Login
                 </div>
-              </Grid>
+              </div>
             )}
           </>
+        ) : (
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              authCtx.logout();
+              navigate("/login");
+            }}
+          >
+            Logout{" "}
+          </div>
         )}
-      </Grid>
+      </div>
       <Divider style={{ position: "absolute", right: 0, left: 0 }}></Divider>
     </div>
   );

@@ -40,8 +40,6 @@ function isValidPassword(password) {
   return passwordRegex.test(password);
 }
 
-const defaultTheme = createTheme();
-
 export default function SignUp() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -52,6 +50,7 @@ export default function SignUp() {
     confirm_password: "",
     contact_person_full_name: "",
     contact_person_phone_number: "",
+    manufacturer_description: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -202,145 +201,160 @@ export default function SignUp() {
   return (
     <div>
       <Toast />
-      <ThemeProvider theme={defaultTheme}>
-        <Container component="main" maxWidth="xs">
-          <CssBaseline />
+      <Container maxWidth="xs">
+        <Box
+          sx={{
+            marginTop: 5,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography component="h1" variant="h5">
+            Sign up as a Seller
+          </Typography>
           <Box
-            sx={{
-              marginTop: 5,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
+            component="form"
+            noValidate
+            onSubmit={handleSubmit}
+            sx={{ mt: 3 }}
           >
-            <Typography component="h1" variant="h5">
-              Sign up as a Seller
-            </Typography>
-            <Box
-              component="form"
-              noValidate
-              onSubmit={handleSubmit}
-              sx={{ mt: 3 }}
+            <Grid container spacing={1}>
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  autoComplete="given-name"
+                  name="user_name"
+                  size="small"
+                  required
+                  fullWidth
+                  id="fullName"
+                  label="Full Name"
+                  value={formData.user_name}
+                  onChange={handleChange}
+                  autoFocus
+                  error={!!errors.user_name}
+                  helperText={errors.user_name}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="email"
+                  size="small"
+                  label="Email Address"
+                  name="user_mail"
+                  value={formData.user_mail}
+                  onChange={handleChange}
+                  autoComplete="email"
+                  error={!!errors.user_mail}
+                  helperText={errors.user_mail}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="description"
+                  size="small"
+                  label="Store Description"
+                  name="manufacturer_description"
+                  value={formData.manufacturer_description}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  name="contact_person_full_name"
+                  size="small"
+                  required
+                  fullWidth
+                  id="contactPersonFullName"
+                  label="Contact PersonFull Name"
+                  value={formData.contact_person_full_name}
+                  onChange={handleChange}
+                  autoFocus
+                  error={!!errors.contact_person_full_name}
+                  helperText={errors.contact_person_full_name}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  size="small"
+                  fullWidth
+                  id="phoneNumber"
+                  label="Phone Number"
+                  name="contact_person_phone_number"
+                  value={formData.contact_person_phone_number}
+                  onChange={handleChange}
+                  inputProps={{
+                    inputMode: "numeric", // Ensure numeric keyboard on mobile
+                    pattern: "[0-9]*", // Only allow numeric input
+                  }}
+                  error={!!errors.contact_person_phone_number}
+                  helperText={errors.contact_person_phone_number}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  size="small"
+                  name="user_password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="new-password"
+                  value={formData.user_password}
+                  onChange={handleChange}
+                  error={!!errors.user_password}
+                  helperText={errors.user_password}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  size="small"
+                  name="confirm_password"
+                  value={formData.confirm_password}
+                  onChange={handleChange}
+                  label="Confirm Password"
+                  type="password"
+                  id="confirmPassword"
+                  error={!!errors.confirm_password}
+                  helperText={errors.confirm_password}
+                />
+              </Grid>
+            </Grid>
+            <Button
+              style={{ backgroundColor: "#2FB009", fontFamily: "Cabin" }}
+              sx={{
+                mt: 2,
+                mb: 2,
+              }}
+              type="submit"
+              fullWidth
+              variant="contained"
             >
-              <Grid container spacing={1}>
-                <Grid item xs={12} sm={12}>
-                  <TextField
-                    autoComplete="given-name"
-                    name="user_name"
-                    size="small"
-                    required
-                    fullWidth
-                    id="fullName"
-                    label="Full Name"
-                    value={formData.user_name}
-                    onChange={handleChange}
-                    autoFocus
-                    error={!!errors.user_name}
-                    helperText={errors.user_name}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    id="email"
-                    size="small"
-                    label="Email Address"
-                    name="user_mail"
-                    value={formData.user_mail}
-                    onChange={handleChange}
-                    autoComplete="email"
-                    error={!!errors.user_mail}
-                    helperText={errors.user_mail}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <TextField
-                    name="contact_person_full_name"
-                    size="small"
-                    required
-                    fullWidth
-                    id="contactPersonFullName"
-                    label="Contact PersonFull Name"
-                    value={formData.contact_person_full_name}
-                    onChange={handleChange}
-                    autoFocus
-                    error={!!errors.contact_person_full_name}
-                    helperText={errors.contact_person_full_name}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <TextField
-                    required
-                    size="small"
-                    fullWidth
-                    id="phoneNumber"
-                    label="Phone Number"
-                    name="contact_person_phone_number"
-                    value={formData.contact_person_phone_number}
-                    onChange={handleChange}
-                    inputProps={{
-                      inputMode: "numeric", // Ensure numeric keyboard on mobile
-                      pattern: "[0-9]*", // Only allow numeric input
-                    }}
-                    error={!!errors.contact_person_phone_number}
-                    helperText={errors.contact_person_phone_number}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    size="small"
-                    name="user_password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="new-password"
-                    value={formData.user_password}
-                    onChange={handleChange}
-                    error={!!errors.user_password}
-                    helperText={errors.user_password}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    size="small"
-                    name="confirm_password"
-                    value={formData.confirm_password}
-                    onChange={handleChange}
-                    label="Confirm Password"
-                    type="password"
-                    id="confirmPassword"
-                    error={!!errors.confirm_password}
-                    helperText={errors.confirm_password}
-                  />
-                </Grid>
+              Sign Up
+            </Button>
+            <Grid container justifyContent="flex-end">
+              <Grid item>
+                <Link href="/login" variant="body2">
+                  Already have an account? Sign in
+                </Link>
               </Grid>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Sign Up
-              </Button>
-              <Grid container justifyContent="flex-end">
-                <Grid item>
-                  <Link href="/login" variant="body2">
-                    Already have an account? Sign in
-                  </Link>
-                </Grid>
-              </Grid>
-            </Box>
+            </Grid>
           </Box>
-        </Container>
-      </ThemeProvider>
+        </Box>
+      </Container>
     </div>
   );
 }

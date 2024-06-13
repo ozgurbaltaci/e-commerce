@@ -15,6 +15,7 @@ const FilterBar = ({
   setProductsToBeSorted,
   inStockOnly,
   setInStockOnly,
+  selectedCategory,
 }) => {
   const [initialProducts, setInitialProducts] = useState([]);
 
@@ -27,13 +28,16 @@ const FilterBar = ({
   };
 
   useEffect(() => {
+    setSortOrder(""); // Reset sort order when category changes
+  }, [selectedCategory, setSortOrder]);
+  useEffect(() => {
     if (initialProducts.length === 0) {
       setInitialProducts(productsToBeSorted);
     }
   }, [productsToBeSorted, initialProducts]);
 
   useEffect(() => {
-    let filteredProducts = [...initialProducts];
+    let filteredProducts = [...productsToBeSorted];
     if (inStockOnly) {
       filteredProducts = filteredProducts.filter(
         (product) => product.stockQuantity > 0
@@ -46,7 +50,7 @@ const FilterBar = ({
     }
 
     setProductsToBeSorted(filteredProducts);
-  }, [sortOrder, inStockOnly, initialProducts, setProductsToBeSorted]);
+  }, [sortOrder, inStockOnly, setProductsToBeSorted]);
 
   return (
     <div

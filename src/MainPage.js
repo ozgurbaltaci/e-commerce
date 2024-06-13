@@ -11,7 +11,7 @@ import ProductCardSkeleton from "./ProductCardSkeleton";
 import Carousel from "./components/Carousel";
 import CategoryBox from "./components/CategoryBox";
 import LoaderInBackdrop from "./components/LoaderInBackdrop";
-import { errorToast } from "./Toaster";
+import Toast, { successToast, errorToast } from "./Toaster";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -64,7 +64,7 @@ const MainPage = () => {
       })
       .catch((error) => {
         // Handle any errors that occurred during the request
-        alert("Error fetching data:", error);
+        errorToast("Error fetching data:", error);
       });
   }, []); // The empty array as the second argument makes this useEffect run once on component mount
 
@@ -192,9 +192,13 @@ const MainPage = () => {
           ))}
         </div>
         <div
-          style={{ fontWeight: "bold", fontSize: "17px", marginBottom: "12px" }}
+          style={{
+            fontWeight: "bold",
+            fontSize: "17px",
+            margin: "30px 0px 12px 0px",
+          }}
         >
-          Best Sellers of HandyGreen
+          Explore Latest Added Products to HandyGreen
         </div>
         {isProductsLoading ? (
           <Grid container spacing={3} style={{ overflowX: "hidden" }}>

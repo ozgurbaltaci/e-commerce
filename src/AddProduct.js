@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 
 import { Button, Select, TextField, MenuItem } from "@material-ui/core";
+import Toast, { successToast, errorToast } from "./Toaster";
+
 import axios from "axios";
 import "./AddProduct.css";
 
@@ -78,11 +80,11 @@ const ProductUpload = () => {
     axios
       .post("http://localhost:3002/uploadProduct", product)
       .then((response) => {
-        alert("Product uploaded successfully!");
+        successToast("Product uploaded successfully!");
       })
       .catch((error) => {
         console.error("Error uploading product:", error);
-        alert("Product upload failed.");
+        errorToast("Product upload failed.");
       });
   };
 

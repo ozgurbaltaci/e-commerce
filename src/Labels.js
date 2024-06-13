@@ -3,6 +3,7 @@ import classes from "./Labels.module.css";
 import { useEffect, useState } from "react";
 import { FiPackage } from "react-icons/fi";
 import { GoTag } from "react-icons/go";
+import { IoWomanOutline } from "react-icons/io5";
 
 const Labels = (props) => {
   const [backgroundColor, setBackgroundColor] = useState("aqua");
@@ -12,10 +13,12 @@ const Labels = (props) => {
     console.log("labelName: ", props.labelName);
     if (props.labelName) {
       switch (props.labelName) {
-        case "Free Shipping":
+        case "Woman-made":
           setBackgroundColor("rgba(0, 245, 25, 0.65)");
           setBorder("1px solid rgba(0, 245, 25, 0.65)");
-          setLabelIcon(<FiPackage style={{ fontSize: "6px" }}></FiPackage>);
+          setLabelIcon(
+            <IoWomanOutline style={{ fontSize: "8px" }}></IoWomanOutline>
+          );
           break;
         case "Buy 1, Get 1 Free":
           setBackgroundColor("rgba(255, 92, 0, 0.65)");

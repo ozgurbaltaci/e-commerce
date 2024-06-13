@@ -20,6 +20,7 @@ const SubCategoriesPage = () => {
     useState([]);
   const [sortOrder, setSortOrder] = useState("");
   const [inStockOnly, setInStockOnly] = useState(false);
+  const [isProductsLoading, setIsProductsLoading] = useState(true);
 
   const breadCrumbData = [
     { name: "Home Page", navigation: "/mainPage" },
@@ -41,6 +42,7 @@ const SubCategoriesPage = () => {
         )
         .then((response) => {
           setProductsOfCurrentSubCategory(response.data);
+          setIsProductsLoading(false);
         });
     } catch (err) {}
   }, [categoryId, subCategoryId]);
@@ -49,6 +51,7 @@ const SubCategoriesPage = () => {
       <Breadcrumb breadCrumbData={breadCrumbData} />
       <div style={{ display: "flex" }}>
         <SideBarOfAllCategories
+          setIsProductsLoading={setIsProductsLoading}
           currentSelectedSubCategoryId={subCategoryId}
         ></SideBarOfAllCategories>
 
@@ -60,15 +63,20 @@ const SubCategoriesPage = () => {
             setInStockOnly={setInStockOnly}
             productsToBeSorted={productsOfCurrentSubCategory}
             setProductsToBeSorted={setProductsOfCurrentSubCategory}
+            selectedCategory={subCategoryId}
           ></FilterBar>
-          <ProductCardHolder
-            products={productsOfCurrentSubCategory}
-            setProducts={setProductsOfCurrentSubCategory}
-            custom_xs={12}
-            custom_sm={6}
-            custom_md={3}
-            custom_lg={3}
-          />
+          {isProductsLoading ? (
+            <div>Products are loading...</div>
+          ) : (
+            <ProductCardHolder
+              products={productsOfCurrentSubCategory}
+              setProducts={setProductsOfCurrentSubCategory}
+              custom_xs={12}
+              custom_sm={6}
+              custom_md={3}
+              custom_lg={3}
+            />
+          )}
         </div>
       </div>
     </>

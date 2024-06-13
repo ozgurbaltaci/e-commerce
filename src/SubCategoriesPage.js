@@ -44,7 +44,10 @@ const SubCategoriesPage = () => {
           {subCategories.map((subCategory, index) => (
             <Grid item xs={6} sm={4} md={3} lg={3}>
               <>
-                <div key={index} style={{ textAlign: "center" }}>
+                <div
+                  key={index}
+                  style={{ textAlign: "center", cursor: "pointer" }}
+                >
                   <img
                     src={subCategory.sub_category_img}
                     style={{

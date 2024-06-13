@@ -46,7 +46,7 @@ import MyButton from "./components/MyButton";
 import AuthContext from "./auth-context";
 import { useContext } from "react";
 import ReceiverInfoForm from "./ReceiverInfoForm";
-import { errorToast } from "./Toaster";
+import Toast, { successToast, errorToast } from "./Toaster";
 
 const availablePaymentMethods = [
   /**  {
@@ -493,17 +493,17 @@ const Cart = () => {
         }
       );
 
-      alert("Order saved successfully.");
+      successToast("Order saved successfully.");
     } catch (error) {
-      alert("something wrong");
+      errorToast("something wrong");
       if (
         error.response &&
         error.response.data &&
         error.response.data.message
       ) {
-        alert(error.response.data.message);
+        errorToast(error.response.data.message);
       } else {
-        console.error("Error fetching user data:", error);
+        errorToast("Error fetching user data:", error);
       }
     }
   };
@@ -525,7 +525,7 @@ const Cart = () => {
       );
 
       if (response.status === 201) {
-        alert(response.data.message);
+        successToast(response.data.message);
       } else {
         console.error("Failed to save the address.");
       }
@@ -626,18 +626,18 @@ const Cart = () => {
       });
 
       if (response.status === 200) {
-        alert("Payment is successful.");
+        successToast("Payment is successful.");
         await saveOrder();
       } else if (response.status === 201) {
-        alert("You are not authorized");
+        errorToast("You are not authorized");
       } else if (response.status === 403) {
-        alert("Your session expired!");
+        errorToast("Your session expired!");
         authCtx.logout();
       } else {
-        alert("Error: Payment failed.");
+        errorToast("Error: Payment failed.");
       }
     } catch (err) {
-      alert(err);
+      errorToast(err);
     }
   };
 
@@ -1002,66 +1002,74 @@ const Cart = () => {
                   </Typography>
                   <Divider></Divider>
 
-                  <FormControl>
-                    <RadioGroup
-                      aria-labelledby="demo-radio-buttons-group-label"
-                      name="delivery-radio-group"
-                      onChange={handleAddressChange}
-                      value={
-                        selectedAddress
-                          ? selectedAddress.address_id.toString()
-                          : ""
-                      }
-                    >
-                      <div
-                        style={{
-                          overflow: "auto",
-                          height: "140px",
-                          padding: "2px",
-                        }}
+                  {savedAdresses.length > 0 ? (
+                    <FormControl>
+                      <RadioGroup
+                        aria-labelledby="demo-radio-buttons-group-label"
+                        name="delivery-radio-group"
+                        onChange={handleAddressChange}
+                        value={
+                          selectedAddress
+                            ? selectedAddress.address_id.toString()
+                            : ""
+                        }
                       >
-                        {savedAdresses.map((item, index) => (
-                          <FormControlLabel
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              marginTop: "5px",
-                            }} // Adjust the margin here
-                            value={item.address_id.toString()}
-                            control={<GreenRadio />}
-                            label={
-                              <>
-                                <div
-                                  style={{
-                                    borderRadius: "5px",
-                                    backgroundColor: "#F3F3F3",
-                                    padding: "5px",
-                                    fontSize: "11px",
-                                    width: "100%",
-                                    maxHeight: "100px",
-                                    overflow: "auto",
-                                  }}
-                                >
-                                  <div style={{ fontWeight: "bold" }}>
-                                    {item.address_title}
-                                  </div>
-                                  <div>
-                                    {item.receiver_full_name},{" "}
-                                    {item.receiver_phone_number}
-                                  </div>
+                        <div
+                          style={{
+                            overflow: "auto",
+                            height: "140px",
+                            padding: "2px",
+                          }}
+                        >
+                          {savedAdresses.map((item, index) => (
+                            <FormControlLabel
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                marginTop: "5px",
+                              }} // Adjust the margin here
+                              value={item.address_id.toString()}
+                              control={<GreenRadio />}
+                              label={
+                                <>
+                                  <div
+                                    style={{
+                                      borderRadius: "5px",
+                                      backgroundColor: "#F3F3F3",
+                                      padding: "5px",
+                                      fontSize: "11px",
+                                      width: "100%",
+                                      maxHeight: "100px",
+                                      overflow: "auto",
+                                    }}
+                                  >
+                                    <div style={{ fontWeight: "bold" }}>
+                                      {item.address_title}
+                                    </div>
+                                    <div>
+                                      {item.receiver_full_name},{" "}
+                                      {item.receiver_phone_number}
+                                    </div>
 
-                                  {item.full_address &&
-                                  item.full_address.length > 80
-                                    ? item.full_address.substring(0, 80) + "..." // Display first 50 characters and add "..." at the end
-                                    : item.full_address}
-                                </div>
-                              </>
-                            }
-                          />
-                        ))}
-                      </div>
-                    </RadioGroup>
-                  </FormControl>
+                                    {item.full_address &&
+                                    item.full_address.length > 80
+                                      ? item.full_address.substring(0, 80) +
+                                        "..." // Display first 50 characters and add "..." at the end
+                                      : item.full_address}
+                                  </div>
+                                </>
+                              }
+                            />
+                          ))}
+                        </div>
+                      </RadioGroup>
+                    </FormControl>
+                  ) : (
+                    <div style={{ fontSize: "11px", marginBottom: "30px" }}>
+                      You have no saved delivery address. Please add a new
+                      delivery address!
+                    </div>
+                  )}
                   <div style={{ margin: "5px 0px" }}>
                     <MyButton
                       buttonText={"Add New+"}

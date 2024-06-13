@@ -106,7 +106,7 @@ const SavedAddresses = () => {
       );
 
       if (response.status === 201) {
-        alert(response.data.message);
+        successToast(response.data.message);
       } else {
         console.error("Failed to save the address.");
       }

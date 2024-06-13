@@ -86,7 +86,7 @@ const ProductCardHolder = ({
         }
       } catch (error) {
         setIsThereAddToCartOperation(false);
-        alert("Product could not be added to your cart");
+        errorToast("Product could not be added to your cart");
         console.log(error);
       }
     } else {
@@ -149,6 +149,13 @@ const ProductCardHolder = ({
           }
 
           setIsThereFavoritesUpdateOperation(false);
+          setProducts((prevProducts) =>
+            prevProducts.map((mappedProduct) =>
+              mappedProduct.product_id === product.product_id
+                ? { ...mappedProduct, is_favorite: false }
+                : mappedProduct
+            )
+          );
         } catch (error) {
           console.log(error);
         }
@@ -163,6 +170,13 @@ const ProductCardHolder = ({
         }
 
         setIsThereFavoritesUpdateOperation(false);
+        setProducts((prevProducts) =>
+          prevProducts.map((mappedProduct) =>
+            mappedProduct.product_id === product.product_id
+              ? { ...mappedProduct, is_favorite: true }
+              : mappedProduct
+          )
+        );
       }
       setFavorites((prevFavorites) => ({
         ...prevFavorites,

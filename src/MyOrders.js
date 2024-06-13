@@ -290,11 +290,14 @@ const MyOrders = () => {
                         fontWeight: "bold",
                       }}
                     >
-                      {order.total_price - order.applied_discount} TL
+                      {parseFloat(
+                        order.total_price - order.applied_discount
+                      ).toFixed(2)}{" "}
+                      TL
                     </div>
                   </div>
                 </AccordionSummary>
-                {order.applied_discount && (
+                {order.applied_discount && order.applied_discount > 0 && (
                   <div
                     style={{
                       padding: "0px 16px",
@@ -303,8 +306,8 @@ const MyOrders = () => {
                       fontStyle: "italic",
                     }}
                   >
-                    You applied {order.applied_discount}TL discount code in this
-                    order.
+                    You applied {parseFloat(order.applied_discount).toFixed(2)}
+                    TL discount code in this order.
                   </div>
                 )}
                 <AccordionDetails>{getOrderedProducts(order)}</AccordionDetails>

@@ -100,9 +100,13 @@ export const AuthContextProvider = (props) => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("expirationTime");
     localStorage.removeItem("user_name");
+    localStorage.removeItem("user_surname");
+
     localStorage.removeItem("user_mail");
     localStorage.removeItem("user_phone");
     localStorage.removeItem("user_id");
+    localStorage.removeItem("isSeller");
+    localStorage.removeItem("seller_id");
 
     if (logoutTimer) {
       clearTimeout(logoutTimer);

@@ -10,6 +10,7 @@ import { TiStarFullOutline, TiStarHalfOutline } from "react-icons/ti";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { FavoriteBorder, Favorite } from "@material-ui/icons";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { successToast } from "./Toaster";
 
 const theme = createTheme({
   components: {
@@ -125,14 +126,17 @@ const ProductDeteailsPage = () => {
 
       try {
         if (commentInput.trim() !== "" && rating > 0) {
-          const response = await axios.post(
-            `http://localhost:3002/saveRatingAndReview/${productId}`,
-            {
+          const response = await axios
+            .post(`http://localhost:3002/saveRatingAndReview/${productId}`, {
               ratingPoint: rating,
               review: commentInput,
               manufacturer_id: productDetails.manufacturer_id,
-            }
-          );
+            })
+            .then((response) => {
+              if (response.status === 201) {
+                successToast("Your review saved successfully!");
+              }
+            });
           setComments([...comments, commentInput]);
           setCommentInput(""); // Clear input field after submission
           setRating(0);
@@ -283,7 +287,6 @@ const ProductDeteailsPage = () => {
               </div>
             )}
           </div>
-          {console.log("product details:", productDetails)}
 
           <Divider style={{ margin: "5px 0px" }}></Divider>
           <div style={{ fontSize: "12px" }}>
