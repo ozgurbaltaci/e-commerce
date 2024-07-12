@@ -47,7 +47,7 @@ const SideBarOfAllCategories = ({
     // Fetch categories with subcategories from backend API using Axios
     axios
       .get(
-        `https://handygreen-back-end.vercel.app//getCategoriesWithSubCategories`
+        `https://handygreen-back-end.vercel.app/getCategoriesWithSubCategories`
       )
       .then((response) => {
         setCategories(response.data);

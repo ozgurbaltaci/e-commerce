@@ -19,7 +19,7 @@ const MyReviews = () => {
     // special_coupons_for_users table: show the coupons for the defined users only
 
     axios
-      .get(`https://handygreen-back-end.vercel.app//getCoupons`)
+      .get(`https://handygreen-back-end.vercel.app/getCoupons`)
       .then((response) => {
         setCoupons(response.data);
         setIsDiscountCodesLoading(false);

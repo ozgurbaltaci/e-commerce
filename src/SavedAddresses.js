@@ -60,7 +60,7 @@ const SavedAddresses = () => {
 
   useEffect(() => {
     axios
-      .get(`https://handygreen-back-end.vercel.app//getSavedAddressesOfUser`)
+      .get(`https://handygreen-back-end.vercel.app/getSavedAddressesOfUser`)
       .then((response) => {
         if (response.data) {
           setSavedAddresses(response.data);
@@ -101,7 +101,7 @@ const SavedAddresses = () => {
 
       // Make an Axios request to save the new address
       const response = await axios.put(
-        `https://handygreen-back-end.vercel.app//saveNewAddressToCurrentUser`,
+        `https://handygreen-back-end.vercel.app/saveNewAddressToCurrentUser`,
         { address_data }
       );
 

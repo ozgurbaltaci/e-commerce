@@ -26,7 +26,7 @@ const MainPage = () => {
   const [allSubCategories, setAllSubCategories] = useState([]);
 
   useEffect(() => {
-    let apiUrl = "https://handygreen-back-end.vercel.app//getProducts";
+    let apiUrl = "https://handygreen-back-end.vercel.app/getProducts";
 
     // Use Axios to make the GET request
     axios
@@ -51,7 +51,7 @@ const MainPage = () => {
 
   useEffect(() => {
     // Define the URL of the API you want to request
-    const apiUrl = "https://handygreen-back-end.vercel.app//getCategories"; // Replace with your API URL
+    const apiUrl = "https://handygreen-back-end.vercel.app/getCategories"; // Replace with your API URL
 
     // Use Axios to make the GET request
     axios
@@ -70,7 +70,7 @@ const MainPage = () => {
 
   useEffect(() => {
     axios
-      .get(`https://handygreen-back-end.vercel.app//getAllSubCategories`)
+      .get(`https://handygreen-back-end.vercel.app/getAllSubCategories`)
       .then((response) => {
         setAllSubCategories(response.data);
       })

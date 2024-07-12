@@ -17,7 +17,7 @@ const Favorites = () => {
     //get Cart Items HTTP request will be here
 
     axios
-      .get(`https://handygreen-back-end.vercel.app//getCart`) // Make a GET request with Axios, including the product_id as a parameter in the URL
+      .get(`https://handygreen-back-end.vercel.app/getCart`) // Make a GET request with Axios, including the product_id as a parameter in the URL
       .then((response) => {
         setCartItems(response.data);
       })
@@ -28,7 +28,7 @@ const Favorites = () => {
 
   useEffect(() => {
     axios
-      .get(`https://handygreen-back-end.vercel.app//getFavoritesOfUser`) // Make a GET request with Axios, including the product_id as a parameter in the URL
+      .get(`https://handygreen-back-end.vercel.app/getFavoritesOfUser`) // Make a GET request with Axios, including the product_id as a parameter in the URL
       .then((response) => {
         setFavoriteItems(response.data);
         setIsProductsLoading(false);
@@ -48,14 +48,14 @@ const Favorites = () => {
         );
         setCartItems(updatedItems);
         await axios.delete(
-          `https://handygreen-back-end.vercel.app//removeFromCart/${product_id}`
+          `https://handygreen-back-end.vercel.app/removeFromCart/${product_id}`
         );
         setIsThereUpdateOperation(false);
         return; // Exit the function early if removeFromCart is called
       }
 
       const response = await axios.put(
-        `https://handygreen-back-end.vercel.app//updateDesiredAmount/${product_id}`,
+        `https://handygreen-back-end.vercel.app/updateDesiredAmount/${product_id}`,
         {
           desired_amount: newAmount,
         }

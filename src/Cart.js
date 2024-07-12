@@ -147,7 +147,7 @@ const Cart = () => {
 
   const handleAddCoupon = (event) => {
     axios
-      .get(`https://handygreen-back-end.vercel.app//applyCoupon`, {
+      .get(`https://handygreen-back-end.vercel.app/applyCoupon`, {
         params: {
           couponCode: couponCode,
           totalItemPrice: totalItemPrice,
@@ -226,7 +226,7 @@ const Cart = () => {
 
   useEffect(() => {
     axios
-      .get(`https://handygreen-back-end.vercel.app//getSavedAddressesOfUser`)
+      .get(`https://handygreen-back-end.vercel.app/getSavedAddressesOfUser`)
       .then((response) => {
         if (response.data) {
           setSavedAddresses(response.data);
@@ -265,7 +265,7 @@ const Cart = () => {
     //get Cart Items HTTP request will be here
 
     axios
-      .get(`https://handygreen-back-end.vercel.app//getCart`) // Make a GET request with Axios, including the product_id as a parameter in the URL
+      .get(`https://handygreen-back-end.vercel.app/getCart`) // Make a GET request with Axios, including the product_id as a parameter in the URL
       .then((response) => {
         setCartItems(response.data);
       })
@@ -379,14 +379,14 @@ const Cart = () => {
         );
         setCartItems(updatedItems);
         await axios.delete(
-          `https://handygreen-back-end.vercel.app//removeFromCart/${product_id}`
+          `https://handygreen-back-end.vercel.app/removeFromCart/${product_id}`
         );
         setIsThereUpdateOperation(false);
         return; // Exit the function early if removeFromCart is called
       }
 
       const response = await axios.put(
-        `https://handygreen-back-end.vercel.app//updateDesiredAmount/${product_id}`,
+        `https://handygreen-back-end.vercel.app/updateDesiredAmount/${product_id}`,
         {
           desired_amount: newAmount,
         }
@@ -483,7 +483,7 @@ const Cart = () => {
   const saveOrder = async () => {
     try {
       const saveOrderResponse = await axios.post(
-        "https://handygreen-back-end.vercel.app//saveOrder",
+        "https://handygreen-back-end.vercel.app/saveOrder",
         {
           selectedProducts: selectedProducts,
           receiverName: receiverName,
@@ -520,7 +520,7 @@ const Cart = () => {
     try {
       // Make an Axios request to save the new address
       const response = await axios.put(
-        `https://handygreen-back-end.vercel.app//saveNewAddressToCurrentUser`,
+        `https://handygreen-back-end.vercel.app/saveNewAddressToCurrentUser`,
         { address_data }
       );
 
@@ -560,7 +560,7 @@ const Cart = () => {
      */
     try {
       const response = await axios.post(
-        "https://handygreen-back-end.vercel.app//createPayment",
+        "https://handygreen-back-end.vercel.app/createPayment",
         {
           price: (totalItemPrice + shippingFee + payInDoorFee).toFixed(2),
           paidPrice: (

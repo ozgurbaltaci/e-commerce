@@ -25,7 +25,7 @@ const SellerPage = () => {
     try {
       axios
         .get(
-          `https://handygreen-back-end.vercel.app//getManufacturerAndProducts/${manufacturerId}`
+          `https://handygreen-back-end.vercel.app/getManufacturerAndProducts/${manufacturerId}`
         )
         .then((response) => {
           const data = response.data;
