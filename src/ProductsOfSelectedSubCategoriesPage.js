@@ -38,7 +38,7 @@ const SubCategoriesPage = () => {
     try {
       axios
         .get(
-          `https://handygreen-back-end.vercel.app/getProductsOfCurrentSubCategory/${subCategoryId}`
+          `https://e-commerce-back-end-two.vercel.app/getProductsOfCurrentSubCategory/${subCategoryId}`
         )
         .then((response) => {
           setProductsOfCurrentSubCategory(response.data);

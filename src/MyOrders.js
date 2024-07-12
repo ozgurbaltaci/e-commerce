@@ -19,7 +19,7 @@ const MyOrders = () => {
 
   useEffect(() => {
     axios
-      .get(`https://handygreen-back-end.vercel.app/getOrders`)
+      .get(`https://e-commerce-back-end-two.vercel.app/getOrders`)
       .then((response) => {
         setOrders({ orders: response.data.orders });
         setIsOrdersLoading(false);

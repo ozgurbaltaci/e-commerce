@@ -177,7 +177,7 @@ export default function SignUp() {
     } else {
       try {
         const response = await axios.post(
-          "https://handygreen-back-end.vercel.app/sellerRegister",
+          "https://e-commerce-back-end-two.vercel.app/sellerRegister",
           formData
         );
 

@@ -30,7 +30,7 @@ const ProductUpload = () => {
   useEffect(() => {
     try {
       axios
-        .get("https://handygreen-back-end.vercel.app/getCategories")
+        .get("https://e-commerce-back-end-two.vercel.app/getCategories")
         .then((response) => {
           setCategories(response.data);
           console.log("categories:", response.data);
@@ -47,7 +47,7 @@ const ProductUpload = () => {
       setSelectedSubCategory("");
       axios
         .get(
-          `https://handygreen-back-end.vercel.app/getSubCategoriesOfCurrentCategory/${value}`
+          `https://e-commerce-back-end-two.vercel.app/getSubCategoriesOfCurrentCategory/${value}`
         )
         .then((response) => {
           setSubCategories(response.data);
@@ -82,7 +82,7 @@ const ProductUpload = () => {
 
   const handleUploadProduct = () => {
     axios
-      .post("https://handygreen-back-end.vercel.app/uploadProduct", product)
+      .post("https://e-commerce-back-end-two.vercel.app/uploadProduct", product)
       .then((response) => {
         successToast("Product uploaded successfully!");
       })

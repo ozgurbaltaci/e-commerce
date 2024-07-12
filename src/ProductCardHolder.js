@@ -71,7 +71,7 @@ const ProductCardHolder = ({
 
       try {
         const response = await axios.post(
-          `https://handygreen-back-end.vercel.app/addToCart/${product.product_id}/${price_on_add}`
+          `https://e-commerce-back-end-two.vercel.app/addToCart/${product.product_id}/${price_on_add}`
         );
 
         if (response.status === 201) {
@@ -108,14 +108,14 @@ const ProductCardHolder = ({
       // Check if the newAmount is 0 and call removeFromCart endpoint
       if (newAmount === 0) {
         await axios.delete(
-          `https://handygreen-back-end.vercel.app/removeFromCart/${product_id}`
+          `https://e-commerce-back-end-two.vercel.app/removeFromCart/${product_id}`
         );
         setIsThereAddToCartOperation(false);
         return; // Exit the function early if removeFromCart is called
       }
 
       const response = await axios.put(
-        `https://handygreen-back-end.vercel.app/updateDesiredAmount/${product_id}`,
+        `https://e-commerce-back-end-two.vercel.app/updateDesiredAmount/${product_id}`,
         {
           desired_amount: newAmount,
         }
@@ -140,7 +140,7 @@ const ProductCardHolder = ({
 
         try {
           const response = await axios.delete(
-            `https://handygreen-back-end.vercel.app/removeFromFavorite/${product.product_id}`
+            `https://e-commerce-back-end-two.vercel.app/removeFromFavorite/${product.product_id}`
           );
           if (isItCalledFromFavoritesPage) {
             setProducts(
@@ -163,7 +163,7 @@ const ProductCardHolder = ({
         // If it doesn't exist, add it to the favorites array
         try {
           const response = await axios.post(
-            `https://handygreen-back-end.vercel.app/addToFavorite/${product.product_id}`
+            `https://e-commerce-back-end-two.vercel.app/addToFavorite/${product.product_id}`
           );
         } catch (error) {
           console.log(error);

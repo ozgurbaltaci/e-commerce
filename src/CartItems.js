@@ -151,7 +151,7 @@ const CartItems = ({
                             setCartItems(afterDeleteCartItems);
                             try {
                               await axios.delete(
-                                `https://handygreen-back-end.vercel.app/removeFromCart/${item.product_id}`
+                                `https://e-commerce-back-end-two.vercel.app/removeFromCart/${item.product_id}`
                               );
                             } catch (err) {
                               errorToast(

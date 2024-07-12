@@ -36,7 +36,7 @@ const ProductDeteailsPage = () => {
   const [nonSelectedRatingPointError, setNonSelectedRatingPointError] =
     useState(false);
   useEffect(() => {
-    let apiUrl = `https://handygreen-back-end.vercel.app/getProductDetails/${productId}`;
+    let apiUrl = `https://e-commerce-back-end-two.vercel.app/getProductDetails/${productId}`;
     const userId = localStorage.getItem("user_id");
     if (userId) {
       apiUrl += `?user_id=${userId}`;
@@ -128,7 +128,7 @@ const ProductDeteailsPage = () => {
         if (commentInput.trim() !== "" && rating > 0) {
           const response = await axios
             .post(
-              `https://handygreen-back-end.vercel.app/saveRatingAndReview/${productId}`,
+              `https://e-commerce-back-end-two.vercel.app/saveRatingAndReview/${productId}`,
               {
                 ratingPoint: rating,
                 review: commentInput,

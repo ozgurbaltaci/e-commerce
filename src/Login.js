@@ -77,7 +77,7 @@ export default function SignIn() {
   const doUserLoginRequest = async () => {
     try {
       const response = await axios.post(
-        "https://handygreen-back-end.vercel.app/login",
+        "https://e-commerce-back-end-two.vercel.app/login",
         formData
       );
 
@@ -117,7 +117,7 @@ export default function SignIn() {
   const doSellerLoginRequest = async () => {
     try {
       const response = await axios.post(
-        "https://handygreen-back-end.vercel.app/sellerLogin",
+        "https://e-commerce-back-end-two.vercel.app/sellerLogin",
         formData
       );
 
