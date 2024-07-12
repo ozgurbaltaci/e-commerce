@@ -18,10 +18,12 @@ const MyOrders = () => {
   const [isOrdersLoading, setIsOrdersLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`http://localhost:3002/getOrders`).then((response) => {
-      setOrders({ orders: response.data.orders });
-      setIsOrdersLoading(false);
-    });
+    axios
+      .get(`https://handygreen-back-end.vercel.app//getOrders`)
+      .then((response) => {
+        setOrders({ orders: response.data.orders });
+        setIsOrdersLoading(false);
+      });
   }, []);
 
   const getOrderedProducts = (order) => {

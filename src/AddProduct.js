@@ -29,10 +29,12 @@ const ProductUpload = () => {
 
   useEffect(() => {
     try {
-      axios.get("http://localhost:3002/getCategories").then((response) => {
-        setCategories(response.data);
-        console.log("categories:", response.data);
-      });
+      axios
+        .get("https://handygreen-back-end.vercel.app//getCategories")
+        .then((response) => {
+          setCategories(response.data);
+          console.log("categories:", response.data);
+        });
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
@@ -44,7 +46,9 @@ const ProductUpload = () => {
       setSelectedCategory(value);
       setSelectedSubCategory("");
       axios
-        .get(`http://localhost:3002/getSubCategoriesOfCurrentCategory/${value}`)
+        .get(
+          `https://handygreen-back-end.vercel.app//getSubCategoriesOfCurrentCategory/${value}`
+        )
         .then((response) => {
           setSubCategories(response.data);
           setProduct((prevProduct) => ({
@@ -78,7 +82,7 @@ const ProductUpload = () => {
 
   const handleUploadProduct = () => {
     axios
-      .post("http://localhost:3002/uploadProduct", product)
+      .post("https://handygreen-back-end.vercel.app//uploadProduct", product)
       .then((response) => {
         successToast("Product uploaded successfully!");
       })

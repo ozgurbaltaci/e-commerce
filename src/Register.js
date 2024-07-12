@@ -172,7 +172,7 @@ export default function SignUp() {
     } else {
       try {
         const response = await axios.post(
-          "http://localhost:3002/register",
+          "https://handygreen-back-end.vercel.app//register",
           formData
         );
 

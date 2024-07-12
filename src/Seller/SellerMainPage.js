@@ -85,9 +85,12 @@ const SellerMainPage = () => {
   const handleUpdateManufacturerImage = async () => {
     setOpenDialog(false);
     try {
-      await axios.put(`http://localhost:3002/updateManufacturer`, {
-        manufacturer_image: imagePreview,
-      });
+      await axios.put(
+        `https://handygreen-back-end.vercel.app//updateManufacturer`,
+        {
+          manufacturer_image: imagePreview,
+        }
+      );
 
       successToast("Changes saved successfully");
     } catch (error) {
@@ -105,7 +108,7 @@ const SellerMainPage = () => {
     try {
       await axios
         .put(
-          `http://localhost:3002/updateOrderStatus/${orderId}/${newOrderStatus}
+          `https://handygreen-back-end.vercel.app//updateOrderStatus/${orderId}/${newOrderStatus}
           )}`
         )
         .then((response) => {
@@ -120,7 +123,7 @@ const SellerMainPage = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3002/getManufacturersOrders`)
+      .get(`https://handygreen-back-end.vercel.app//getManufacturersOrders`)
       .then((response) => {
         setManufacturerData(response.data.manufacturerInfo);
         setImagePreview(response.data.manufacturerInfo.manufacturer_image);

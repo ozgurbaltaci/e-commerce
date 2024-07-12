@@ -10,7 +10,7 @@ const SearchResultPage = () => {
   useEffect(() => {
     const fetchSearchResults = async () => {
       // Define the URL of the API you want to request
-      let apiUrl = "http://localhost:3002/searchProducts";
+      let apiUrl = "https://handygreen-back-end.vercel.app//searchProducts";
       const userId = localStorage.getItem("user_id");
       if (userId) {
         apiUrl += `?user_id=${userId}`;

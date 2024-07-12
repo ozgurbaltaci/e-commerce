@@ -147,7 +147,7 @@ const Cart = () => {
 
   const handleAddCoupon = (event) => {
     axios
-      .get(`http://localhost:3002/applyCoupon`, {
+      .get(`https://handygreen-back-end.vercel.app//applyCoupon`, {
         params: {
           couponCode: couponCode,
           totalItemPrice: totalItemPrice,
@@ -226,7 +226,7 @@ const Cart = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3002/getSavedAddressesOfUser`)
+      .get(`https://handygreen-back-end.vercel.app//getSavedAddressesOfUser`)
       .then((response) => {
         if (response.data) {
           setSavedAddresses(response.data);
@@ -265,7 +265,7 @@ const Cart = () => {
     //get Cart Items HTTP request will be here
 
     axios
-      .get(`http://localhost:3002/getCart`) // Make a GET request with Axios, including the product_id as a parameter in the URL
+      .get(`https://handygreen-back-end.vercel.app//getCart`) // Make a GET request with Axios, including the product_id as a parameter in the URL
       .then((response) => {
         setCartItems(response.data);
       })
@@ -379,14 +379,14 @@ const Cart = () => {
         );
         setCartItems(updatedItems);
         await axios.delete(
-          `http://localhost:3002/removeFromCart/${product_id}`
+          `https://handygreen-back-end.vercel.app//removeFromCart/${product_id}`
         );
         setIsThereUpdateOperation(false);
         return; // Exit the function early if removeFromCart is called
       }
 
       const response = await axios.put(
-        `http://localhost:3002/updateDesiredAmount/${product_id}`,
+        `https://handygreen-back-end.vercel.app//updateDesiredAmount/${product_id}`,
         {
           desired_amount: newAmount,
         }
@@ -483,7 +483,7 @@ const Cart = () => {
   const saveOrder = async () => {
     try {
       const saveOrderResponse = await axios.post(
-        "http://localhost:3002/saveOrder",
+        "https://handygreen-back-end.vercel.app//saveOrder",
         {
           selectedProducts: selectedProducts,
           receiverName: receiverName,
@@ -520,7 +520,7 @@ const Cart = () => {
     try {
       // Make an Axios request to save the new address
       const response = await axios.put(
-        `http://localhost:3002/saveNewAddressToCurrentUser`,
+        `https://handygreen-back-end.vercel.app//saveNewAddressToCurrentUser`,
         { address_data }
       );
 
@@ -559,71 +559,74 @@ const Cart = () => {
 
      */
     try {
-      const response = await axios.post("http://localhost:3002/createPayment", {
-        price: (totalItemPrice + shippingFee + payInDoorFee).toFixed(2),
-        paidPrice: (
-          totalItemPrice +
-          shippingFee +
-          payInDoorFee -
-          appliedDiscount
-        ).toFixed(2),
-        paymentCard: {
-          cardHolderName: "John Doe",
-          cardNumber: cardNumber.replace(/\s+/g, ""),
-          expireMonth: "12",
-          expireYear: "2030",
-          cvc: cardCVV,
-          registerCard: "0",
-        },
-        basketItems: [
-          ...selectedProducts.map((item) => ({
-            id: item.product_id,
-            name: item.product_name,
-            category1: "Collectibles",
-            category2: "Accessories",
-            itemType: "PHYSICAL",
-            price: (item.currPrice * item.desired_amount).toFixed(2),
-          })),
-          ...(shippingFee > 0
-            ? [
-                {
-                  id: 10,
-                  name: "Shipping Fee",
-                  category1: "Collectibles",
-                  category2: "Accessories",
-                  itemType: "PHYSICAL",
-                  price: shippingFee.toFixed(2),
-                },
-              ]
-            : []),
-          ...(payInDoorFee > 0
-            ? [
-                {
-                  id: 11,
-                  name: "PayInDoor Fee",
-                  category1: "Collectibles",
-                  category2: "Accessories",
-                  itemType: "PHYSICAL",
-                  price: payInDoorFee.toFixed(2),
-                },
-              ]
-            : []),
-        ],
-        shippingAddress: {
-          contactName: "Jane Doe",
-          city: "Istanbul",
-          country: "Turkey",
-          address: "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1",
-          zipCode: "34742",
-        },
-        buyerInfo: {
-          user_id: localStorage.getItem("user_id"),
-          user_name: localStorage.getItem("user_name"),
-          user_surname: localStorage.getItem("user_surname"),
-          user_phone: localStorage.getItem("user_phone"),
-          user_mail: localStorage.getItem("user_mail"),
-        },
-      });
+      const response = await axios.post(
+        "https://handygreen-back-end.vercel.app//createPayment",
+        {
+          price: (totalItemPrice + shippingFee + payInDoorFee).toFixed(2),
+          paidPrice: (
+            totalItemPrice +
+            shippingFee +
+            payInDoorFee -
+            appliedDiscount
+          ).toFixed(2),
+          paymentCard: {
+            cardHolderName: "John Doe",
+            cardNumber: cardNumber.replace(/\s+/g, ""),
+            expireMonth: "12",
+            expireYear: "2030",
+            cvc: cardCVV,
+            registerCard: "0",
+          },
+          basketItems: [
+            ...selectedProducts.map((item) => ({
+              id: item.product_id,
+              name: item.product_name,
+              category1: "Collectibles",
+              category2: "Accessories",
+              itemType: "PHYSICAL",
+              price: (item.currPrice * item.desired_amount).toFixed(2),
+            })),
+            ...(shippingFee > 0
+              ? [
+                  {
+                    id: 10,
+                    name: "Shipping Fee",
+                    category1: "Collectibles",
+                    category2: "Accessories",
+                    itemType: "PHYSICAL",
+                    price: shippingFee.toFixed(2),
+                  },
+                ]
+              : []),
+            ...(payInDoorFee > 0
+              ? [
+                  {
+                    id: 11,
+                    name: "PayInDoor Fee",
+                    category1: "Collectibles",
+                    category2: "Accessories",
+                    itemType: "PHYSICAL",
+                    price: payInDoorFee.toFixed(2),
+                  },
+                ]
+              : []),
+          ],
+          shippingAddress: {
+            contactName: "Jane Doe",
+            city: "Istanbul",
+            country: "Turkey",
+            address: "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1",
+            zipCode: "34742",
+          },
+          buyerInfo: {
+            user_id: localStorage.getItem("user_id"),
+            user_name: localStorage.getItem("user_name"),
+            user_surname: localStorage.getItem("user_surname"),
+            user_phone: localStorage.getItem("user_phone"),
+            user_mail: localStorage.getItem("user_mail"),
+          },
+        }
+      );
 
       if (response.status === 200) {
         successToast("Payment is successful.");

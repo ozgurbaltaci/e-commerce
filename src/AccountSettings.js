@@ -56,7 +56,7 @@ const AccountSettings = () => {
   }
   useEffect(() => {
     axios
-      .get(`http://localhost:3002/getCurrentUser`)
+      .get(`https://handygreen-back-end.vercel.app//getCurrentUser`)
 
       .then((response) => {
         if (response.data) {
@@ -98,7 +98,7 @@ const AccountSettings = () => {
 
   const handleSavePersonalInformationChanges = async () => {
     try {
-      await axios.put(`http://localhost:3002/updateUser`, {
+      await axios.put(`https://handygreen-back-end.vercel.app//updateUser`, {
         currentUser: currentUser,
       });
       const keysToUpdate = [
@@ -144,7 +144,7 @@ const AccountSettings = () => {
 
       try {
         await axios
-          .put(`http://localhost:3002/updatePassword`, {
+          .put(`https://handygreen-back-end.vercel.app//updatePassword`, {
             newPassword: newPassword,
             currentPassword: currentPassword,
           })

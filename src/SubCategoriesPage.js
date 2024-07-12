@@ -13,7 +13,7 @@ const SubCategoriesPage = () => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:3002/getSubCategoriesOfCurrentCategory/${categoryId}`
+        `https://handygreen-back-end.vercel.app//getSubCategoriesOfCurrentCategory/${categoryId}`
       )
       .then((response) => {
         setSubCategories(response.data);

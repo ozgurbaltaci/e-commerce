@@ -27,7 +27,7 @@ const MyReviews = () => {
   useEffect(() => {
     // Fetch categories with subcategories from backend API using Axios
     axios
-      .get(`http://localhost:3002/getReviewsOfCurrentUser`)
+      .get(`https://handygreen-back-end.vercel.app//getReviewsOfCurrentUser`)
       .then((response) => {
         setReviews(response.data);
         setIsReviewsLoading(false);
@@ -99,9 +99,12 @@ const MyReviews = () => {
   const handleDeleteReview = async (reviewId) => {
     try {
       await axios
-        .delete(`http://localhost:3002/deleteReview/${reviewId}`, {
-          manufacturer_id: selectedReview.manufacturer_id,
-        })
+        .delete(
+          `https://handygreen-back-end.vercel.app//deleteReview/${reviewId}`,
+          {
+            manufacturer_id: selectedReview.manufacturer_id,
+          }
+        )
         .then((response) => {
           // Remove the deleted review from the current state
           setReviews(reviews.filter((review) => review.id !== reviewId));
@@ -151,11 +154,14 @@ const MyReviews = () => {
   const handleSaveChanges = () => {
     // Send update request to backend
     axios
-      .put(`http://localhost:3002/updateReview/${selectedReview.id}`, {
-        updatedReviewText: editedReviewText,
-        updatedRating: updatedRating,
-        manufacturer_id: selectedReview.manufacturer_id,
-      })
+      .put(
+        `https://handygreen-back-end.vercel.app//updateReview/${selectedReview.id}`,
+        {
+          updatedReviewText: editedReviewText,
+          updatedRating: updatedRating,
+          manufacturer_id: selectedReview.manufacturer_id,
+        }
+      )
       .then((response) => {
         if (response.status === 201) {
           setReviews(
