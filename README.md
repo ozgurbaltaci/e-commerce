@@ -8,7 +8,7 @@ https://handygreen.vercel.app/
 
 ## Available Payment Cards
 
-Since this app using iyzico payment test API, only the cards in https://docs.iyzico.com/ek-bilgiler/test-kartlari are available.
+Since this app using iyzico payment test API, only the test cards in https://docs.iyzico.com/ek-bilgiler/test-kartlari are available.
 For ex. 5890040000000016
 
 
