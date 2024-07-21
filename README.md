@@ -6,6 +6,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 https://handygreen.vercel.app/
 
+## Available Payment Cards
+
+Since this app using iyzico payment test API, only the cards in https://docs.iyzico.com/ek-bilgiler/test-kartlari are available.
+For ex. 5890040000000016
+
+
 ## Available Scripts
 
 In the project directory, you can run:
