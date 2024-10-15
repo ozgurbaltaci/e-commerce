@@ -2,7 +2,11 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Demo Link
+## Demo Presentation Link
+
+https://www.youtube.com/watch?v=uOsiLIBxKVo
+
+## Try It Live!
 
 https://handygreen.vercel.app/
 
